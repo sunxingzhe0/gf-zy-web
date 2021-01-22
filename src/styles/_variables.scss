@@ -1,0 +1,154 @@
+$font-family-monospace: SFMono-Regular, Menlo, Monaco, Consolas,
+  'Liberation Mono', 'Courier New', monospace;
+
+$dialog-content-max-height: 70vh;
+
+$app-header-height: 40px;
+$app-router-view-margin: 6px;
+$app-router-view-padding: 20px;
+/* $app-header-height + router-view margin-top & margin-bottom 20px */
+$router-view-offset-height: $app-header-height + $app-router-view-margin * 2;
+
+/* Color
+-------------------------- */
+/// color|1|Brand Color|0
+$--color-primary: #0ab2c1 !default;
+/// color|1|Background Color|4
+$--color-white: #ffffff !default;
+/// color|1|Background Color|4
+$--color-black: #000000 !default;
+$--color-primary-light-1: mix(
+  $--color-white,
+  $--color-primary,
+  10%
+) !default; /* 53a8ff */
+$--color-primary-light-2: mix(
+  $--color-white,
+  $--color-primary,
+  20%
+) !default; /* 66b1ff */
+$--color-primary-light-3: mix(
+  $--color-white,
+  $--color-primary,
+  30%
+) !default; /* 79bbff */
+$--color-primary-light-4: mix(
+  $--color-white,
+  $--color-primary,
+  40%
+) !default; /* 8cc5ff */
+$--color-primary-light-5: mix(
+  $--color-white,
+  $--color-primary,
+  50%
+) !default; /* a0cfff */
+$--color-primary-light-6: mix(
+  $--color-white,
+  $--color-primary,
+  60%
+) !default; /* b3d8ff */
+$--color-primary-light-7: mix(
+  $--color-white,
+  $--color-primary,
+  70%
+) !default; /* c6e2ff */
+$--color-primary-light-8: mix(
+  $--color-white,
+  $--color-primary,
+  80%
+) !default; /* d9ecff */
+$--color-primary-light-9: mix(
+  $--color-white,
+  $--color-primary,
+  90%
+) !default; /* ecf5ff */
+/// color|1|Functional Color|1
+$--color-success: #13ce66 !default;
+/// color|1|Functional Color|1
+$--color-warning: #ffc037 !default;
+/// color|1|Functional Color|1
+$--color-danger: #fe5578 !default;
+/// color|1|Functional Color|1
+$--color-info: #909399 !default;
+
+$--color-blue: #1da1f2 !default;
+$--color-purple: #6c5ce7 !default;
+$--color-green: #0ad300 !default;
+
+$--color-danger-light-5: mix($--color-white, $--color-danger, 50%) !default;
+
+$--color-success-light: mix($--color-white, $--color-success, 80%) !default;
+$--color-warning-light: mix($--color-white, $--color-warning, 80%) !default;
+$--color-danger-light: mix($--color-white, $--color-danger, 80%) !default;
+$--color-info-light: mix($--color-white, $--color-info, 80%) !default;
+
+$--color-blue-light: mix($--color-white, $--color-blue, 80%) !default;
+$--color-purple-light: mix($--color-white, $--color-purple, 80%) !default;
+
+$--color-success-lighter: mix($--color-white, $--color-success, 90%) !default;
+$--color-warning-lighter: mix($--color-white, $--color-warning, 90%) !default;
+$--color-danger-lighter: mix($--color-white, $--color-danger, 90%) !default;
+$--color-info-lighter: mix($--color-white, $--color-info, 90%) !default;
+
+$--color-blue-lighter: mix($--color-white, $--color-blue, 90%) !default;
+$--color-purple-lighter: mix($--color-white, $--color-purple, 90%) !default;
+
+$--color-text-primary: #333333;
+
+// base color
+$blue: #324157;
+$light-blue: #3a71a8;
+$red: #c03639;
+$pink: #e65d6e;
+$green: #30b08f;
+$tiffany: #4ab7bd;
+$yellow: #fec171;
+$panGreen: #30b08f;
+
+// sidebar
+$menuText: $--color-text-primary;
+$menuActiveText: $--color-primary;
+$subMenuActiveText: $--color-primary; // https://github.com/ElemeFE/element/issues/12951
+
+$menuBg: #fff;
+$menuHover: $--color-primary-light-9;
+
+$subMenuBg: rgba(0, 0, 0, 0.03);
+$subMenuHover: $--color-primary-light-9;
+
+$sideBarWidth: 130px;
+
+// the :export directive is the magic sauce for webpack
+// https://www.bluematador.com/blog/how-to-share-variables-between-js-and-sass
+:export {
+  menuText: $menuText;
+  menuActiveText: $menuActiveText;
+  subMenuActiveText: $subMenuActiveText;
+  menuBg: $menuBg;
+  menuHover: $menuHover;
+  subMenuBg: $subMenuBg;
+  subMenuHover: $subMenuHover;
+  sideBarWidth: $sideBarWidth;
+  primary: $--color-primary;
+  primaryLight: $--color-primary-light-8;
+  primaryLighter: $--color-primary-light-9;
+  success: $--color-success;
+  successLight: $--color-success-light;
+  successLighter: $--color-success-lighter;
+  warning: $--color-warning;
+  warningLight: $--color-warning-light;
+  warningLighter: $--color-warning-lighter;
+  danger: $--color-danger;
+  dangerLight: $--color-danger-light;
+  dangerLighter: $--color-danger-lighter;
+  info: $--color-info;
+  infoLight: $--color-info-light;
+  infoLighter: $--color-info-lighter;
+  blue: $--color-blue;
+  blueLight: $--color-blue-light;
+  blueLighter: $--color-blue-lighter;
+  purple: $--color-purple;
+  purpleLight: $--color-purple-light;
+  purpleLighter: $--color-purple-lighter;
+  bottomOffset: $app-router-view-margin + $app-router-view-padding;
+}

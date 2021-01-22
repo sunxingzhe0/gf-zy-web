@@ -1,0 +1,124 @@
+syntax = "proto3";
+
+option java_package = "com.gftech.im.core.protocol";
+option java_outer_classname = "IMessageBuf";
+
+message IMessage{
+    RequestTypeEnum RequestType = 1;    //请求命令
+    Status status = 2;                  //状态信息
+    int32 ticket =3;                    //票据 （登陆回执消息返回 其余命令使用）
+    Login login = 4;                    //登录信息
+    Information info = 5;               //消息内容
+
+
+    message Information{
+        MessageTypeEnum messageType = 1;
+        ChildMessageTypeEnum childMessageType = 2;
+        string from = 3;                //发送者
+        string fromNickName = 4;        //发送者昵称
+        string to = 5;	                //接收者
+        string toNickName = 6;          //接受者昵称
+        string title = 7;               //会话名称
+        string summary = 8;             //摘要
+        string body = 9;                //内容
+        int64 clientTime = 10;          //客户端时间
+        int64 serverTime = 11;          //服务器端时间
+        int32 unReadNum = 12;           //消息未读数
+        int64 sequence = 13;            //消息sequence
+        int64 msgId = 14;               //消息id
+        ChatType chatType = 15;         //聊天类型
+        bool isNew = 16;                //是否是新消息
+        repeated string at = 17;        //@的用户列表
+
+
+        repeated string instruct = 30;  //存储同屏同步命令包含人的用户ID集合
+        string conferenceId = 31;       //视频房间ID
+        string location = 32;           //定位
+    }
+
+    //聊天类型【暂无使用】
+    enum ChatType{
+        SINGLE = 0;     //单聊 - 未使用
+        GROUP = 1;      //群聊 - 未使用
+        DOCTOR = 2;     //医生端标识
+        USER = 3;       //用户端标识
+    }
+
+    //登陆必须字段
+    message Login{
+        string token = 1;       //用户token
+        int64 timestamp = 2;    //登录时间
+        string systemType = 3;  //系统类型（IOS ANDROID、TV、PAD、WEB）
+        string deviceType = 4;  //设备类型 （苹果，华为，小米等）推送信息时使用
+    }
+
+    message Status{
+        bool state = 1;         //状态：true / false
+        int64 sequence = 2;     //序列号
+        int64 msgId = 3;        //消息ID
+        int64 serverTime = 4;   //服务器时间
+        string message = 5;     //消息内容
+        string sessionId = 6;   //会话ID
+    }
+    //发送消息类型
+    enum MessageTypeEnum{
+        SESSION = 0;        //会话（主要用于聊天消息）
+        MESSAGE = 1;        //消息（主要用于一些特殊消息）【暂无使用】
+        EVENT = 2;          //通知（事件）
+
+        INSTRUCT = 3;       //用于视频中的同屏同步指令
+    }
+    //发送消息子类型
+    enum ChildMessageTypeEnum{
+        DEFAULT = 0;            //默认(文字)
+        GROUPOUT = 1;           //退出会话
+        GROUPIN = 2;            //加入会话
+        REVOKE = 3;             //撤消消息
+        AUDIO = 4 ;             //离线语音
+        IMAGE = 5 ;             //图片
+        VIDEO = 6;              //视频
+        CRVIDEO = 7;            //诊室视频
+        INVITE = 8;             //邀请协助通知
+        RECOMMENDDOCTOR = 9;    //推荐医生
+
+        REPORT = 17;            //检查报告
+        INTERROGATION = 18;     //问诊
+        ARTICLE = 19;           //文章
+        FOLLOWUP = 20;          //随访
+        NOTICE=21;              //通知
+
+        MEMBER = 22;            //同步操作指令-成员
+        UPLOADILLNESS = 23;     //同步操作指令-上传的检查和记录
+        FOLLOWUPHISTORY = 24;   //同步操作指令-随访历史
+        INQUIRY = 25;           //同步操作指令-问诊与评估
+        IMG = 26;               //同步操作指令-手机胶片
+
+        RP = 27;                //处方
+        DIAS = 28;              //诊断
+        EMH = 29;               //病历
+
+        ANY = 30;               //通用指令（JSON格式自行封装数据）
+        ZJ = 31;                //诊间预约
+        DSO = 32                //处置单
+
+    }
+
+    //命令
+    enum RequestTypeEnum{
+        SYNC = 0;               //状态同步
+        LOGIN = 1;              //登陆
+        LOGOUT = 2;             //登出
+        KEEPALIVE = 3;          //心跳
+        SENDINFO = 4;           //发送消息
+        INITINFO = 5;           //初始信息
+        ACCEPTINFO = 6;         //接收信息
+
+        RESPSYNC = 100;         //同步回执
+        RESPLOGIN = 101;        //登陆回执
+        RESPLOGOUT = 102;       //登出回执
+        RESPKEEPALIVE = 103;    //心跳回执
+        RESPSENDINFO = 104;     //发送消息回执
+        RESPINITINFO = 105;     //初始信息回执
+        RESPACCEPTINFO = 106;   //接收信息回执
+    }
+}

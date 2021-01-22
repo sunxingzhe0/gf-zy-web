@@ -1,0 +1,318 @@
+@import '@/styles/_variables.scss';
+.prescription-item-header {
+  height: 28px;
+  display: flex;
+  line-height: 28px;
+  justify-content: space-between;
+  .prescription-no {
+    font-size: 18px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #333333;
+    .DRAFT,
+    .PASSED,
+    .REJECTED,
+    .PENDING_REVIEW {
+      height: 18px;
+      padding: 0 8px;
+      font-size: 12px;
+      font-weight: 500;
+      line-height: 18px;
+      text-align: center;
+      font-family: PingFang SC;
+      color: #333333;
+      background: #f2f2f2;
+    }
+    .DRAFT {
+      color: #333333;
+      background: #f2f2f2;
+    }
+    .PENDING_REVIEW {
+      color: #0ab2c1;
+      background: rgba(10, 178, 193, 0.1);
+    }
+    .REJECTED {
+      color: #f74a4a;
+      background: rgba(247, 74, 74, 0.1);
+    }
+    .PASSED {
+      color: #20991d;
+      background: rgba(32, 153, 29, 0.1);
+    }
+  }
+  .prescription-date {
+    font-size: 14px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: #666666;
+  }
+  .prescription-option {
+    display: flex;
+  }
+  & ::v-deep {
+    .el-button--danger.is-plain,
+    .el-button--primary.is-plain {
+      background: transparent;
+    }
+    .el-button--danger.is-plain {
+      border-color: $--color-danger-light-5;
+      &:hover,
+      &:active,
+      &:focus {
+        border-color: $--color-danger;
+        color: $--color-danger;
+      }
+    }
+    .el-button--primary.is-plain {
+      &:hover,
+      &:active,
+      &:focus {
+        color: $--color-primary;
+      }
+    }
+  }
+}
+.prescription-rejection {
+  width: 325px;
+  height: 16px;
+  font-size: 16px;
+  margin-top: 15px;
+  line-height: 16px;
+  font-family: PingFang SC;
+  font-weight: 500;
+  color: #666666;
+  .prescription-rejection-text {
+    color: #333;
+  }
+}
+.prescription-item-body {
+  overflow: hidden;
+  margin-top: 15px;
+  position: relative;
+  border: 1px solid #e6e6e6;
+}
+.scroll {
+  overflow: auto;
+}
+.prescription-table {
+  min-width: 1200px;
+  .checkbox {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    & ::v-deep {
+      .el-input__inner {
+        padding: 0 5px;
+      }
+      .el-input__suffix {
+        right: -3px;
+        transform: scale(0.8);
+      }
+      .el-icon-arrow-up {
+        color: #a1a1a1;
+      }
+    }
+  }
+  .column-item {
+    width: 0;
+    height: 48px;
+    font-size: 14px;
+    overflow: hidden;
+    line-height: 48px;
+    position: relative;
+    padding-right: 5px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    font-family: PingFang SC;
+    line-break: anywhere;
+    & ::v-deep {
+      .el-tooltip {
+        max-width: 100%;
+        > span {
+          display: block;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+      }
+      .el-input.is-disabled .el-input__inner {
+        border: none;
+        color: #666;
+        background: #fff;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+      }
+      .el-input .el-input__suffix {
+        display: none;
+      }
+    }
+  }
+}
+.prescription-table-header {
+  display: flex;
+  .column-item {
+    color: #666666;
+    font-weight: bold;
+  }
+  .index {
+    text-overflow: unset;
+  }
+}
+.class-prescription-table-body {
+  border-top: 2px solid #e6e6e6;
+  .row-item {
+    height: 48px;
+    display: flex;
+    position: relative;
+    border-bottom: 1px solid #e6e6e6;
+    &:last-child {
+      border: none;
+    }
+    &.groups::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 50px;
+      border: 2px solid $--color-primary;
+      border-right: none;
+      left: 7.5%;
+
+      bottom: 23px;
+      z-index: 1;
+    }
+    &.checkbox::before {
+      left: 10.2%;
+    }
+  }
+  .column-item {
+    margin: 0 3px;
+    font-weight: 500;
+    color: #333333;
+    display: flex;
+    align-items: center;
+    margin-top: -1px;
+    .grouped::before {
+      content: '';
+      position: absolute;
+      height: 1px;
+      width: 100%;
+      top: 0px;
+      background: #fff;
+      left: 0;
+    }
+    & ::v-deep {
+      .el-input__inner {
+        padding: 0 2px;
+      }
+    }
+  }
+  .total,
+  .treatment,
+  .singleDose {
+    height: 36px;
+    display: flex;
+    line-height: 36px;
+    border-radius: 4px;
+    border: 1px solid #dcdfe6;
+    &.disabled {
+      border: none;
+      & > .el-input {
+        width: 20px;
+      }
+    }
+    & ::v-deep {
+      input[type='number']::-webkit-outer-spin-button,
+      input[type='number']::-webkit-inner-spin-button {
+        -webkit-appearance: none;
+      }
+      .el-input__inner {
+        border: none;
+        height: 34px;
+        display: block;
+      }
+      .el-input {
+        flex: 1;
+        .el-input__inner {
+          padding-right: 0;
+        }
+      }
+      .el-select {
+        width: 30px;
+        &::before {
+          content: '';
+          width: 1px;
+          height: 20px;
+          background: #dcdfe6;
+          position: absolute;
+          top: 7px;
+          left: 0;
+          z-index: 1;
+        }
+        .el-input__inner {
+          padding-left: 0;
+          text-align: center;
+        }
+      }
+      .el-input__suffix {
+        right: 0;
+      }
+    }
+  }
+  .error {
+    .singleDose,
+    .treatment,
+    .total {
+      border-color: $--color-danger;
+    }
+    & ::v-deep {
+      .el-input__inner {
+        border-color: $--color-danger;
+      }
+    }
+  }
+  .operate {
+    width: 100%;
+    font-size: 14px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    color: $--color-primary;
+    display: flex;
+    &.operate-disabled span,
+    .disabled {
+      color: #ccc;
+      cursor: not-allowed;
+      pointer-events: none;
+    }
+    .danger {
+      color: $--color-danger;
+    }
+    span {
+      margin-right: 5px;
+      cursor: pointer;
+    }
+  }
+}
+
+.prescription-item-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0 30px;
+  font-size: 14px;
+  font-family: PingFang SC;
+  color: #666666;
+  span {
+    margin-left: 30px;
+  }
+  .total {
+    color: $--color-primary;
+    font-size: 16px;
+    font-weight: bold;
+  }
+}
+.name-split {
+  font-style: normal;
+  font-weight: 500;
+  color: RGBA(198, 198, 198, 1);
+  margin: 0 5px;
+}

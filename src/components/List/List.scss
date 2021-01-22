@@ -1,0 +1,14 @@
+.c__list {
+  > .c__filter + .el-table {
+    margin-top: 15px;
+  }
+
+  .table-wrap {
+    will-change: height;
+    transition: height .2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  > .c__tool {
+    padding: 15px 0 0 0;
+  }
+}

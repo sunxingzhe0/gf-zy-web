@@ -1,0 +1,140 @@
+@import '@/styles/_variables.scss';
+
+.primary {
+  color: $--color-primary;
+}
+
+.warning {
+  color: $--color-warning;
+}
+
+.danger {
+  color: $--color-danger;
+}
+
+.info {
+  color: $--color-info;
+}
+
+.view__detail {
+  > * + * {
+    margin-top: 30px;
+  }
+}
+
+.view__title {
+  margin: 30px 0;
+  padding-left: 10px;
+  border-left: 2px solid $--color-primary;
+  color: $--color-text-primary;
+
+  &:first-child {
+    margin-top: 0;
+  }
+}
+
+.view__content {
+  margin: 30px 0;
+
+  > .el-col {
+    min-height: 50px;
+    line-height: 30px;
+
+    &:empty::before {
+      content: '-'
+    }
+
+    > span {
+      margin-right: 15px;
+      color: #666;
+    }
+  }
+}
+
+.c__custom-tabs {
+  .el-tabs__nav-wrap::after {
+    content: unset;
+  }
+  .el-tabs__active-bar {
+    visibility: hidden;
+  }
+
+  .el-tabs__item {
+    padding: 0 !important;
+    width: 350px;
+    height: auto;
+    line-height: 20px;
+
+    & + .el-tabs__item {
+      margin-top: 10px;
+    }
+
+    &:hover,
+    &.is-active {
+      color: unset;
+      .el-row {
+        background: $--color-primary-light-9;
+      }
+    }
+
+    /* > * {
+      padding: 10px;
+    } */
+
+    .el-row {
+      padding: 20px;
+      text-align: left;
+      border: 1px solid $--color-info-lighter;
+
+      b {
+        line-height: 40px;
+      }
+    }
+  }
+}
+.portRight{
+  line-height: 26px;
+  margin-bottom: 4px;
+  .miniTitle{
+    font-size: 14px;
+    color:  $--color-info;
+  }
+  span{
+    display: inline-block;
+    width: 75px;
+  }
+}
+
+.steps {
+  margin-top: 30px;
+  margin-bottom: 40px;
+  .el-step__icon {
+    width: 40px;
+    height: 40px;
+    font-size: 18px;
+  }
+  .el-step.is-horizontal .el-step__line {
+    top: 19px;
+  }
+  .el-step__icon.is-text {
+    background: #ccc;
+    color: #fff;
+    border: 0;
+  }
+  .el-step__title {
+    color: #999;
+    font-weight: normal;
+  }
+  .is-finish {
+    .el-step__icon.is-text {
+      background: $--color-primary;
+      color: #fff;
+    }
+  }
+  .el-step__title.is-finish {
+    color: #333;
+  }
+  .el-step__description.is-finish {
+    color: #666;
+  }
+}

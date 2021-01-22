@@ -1,0 +1,268 @@
+@import './_variables.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './sidebar.scss';
+
+html {
+  box-sizing: border-box;
+  -webkit-overflow-scrolling: touch;
+}
+
+*,
+::after,
+::before {
+  box-sizing: inherit;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Microsoft YaHei',
+    Roboto, 'Helvetica Neue';
+}
+
+iframe,
+img,
+object,
+video {
+  max-width: 100%;
+}
+
+button {
+  cursor: pointer;
+  outline: none;
+  background-color: transparent;
+  border: none;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+  transition: color 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  outline: none;
+}
+
+img {
+  border: none;
+}
+
+code,
+kbd,
+pre,
+samp {
+  font-family: $font-family-monospace;
+  font-size: 1em;
+}
+
+html,
+body,
+#app {
+  height: 100%;
+}
+
+/* gennerator  .is-left .is-center .is-right */
+@each $var in left, center, right {
+  .is-#{$var} {
+    text-align: #{$var};
+  }
+}
+
+/* 文本两端对齐 */
+.text-align-justify {
+  text-align: justify;
+
+  &::after {
+    content: ' ';
+    display: inline-block;
+    width: 100%;
+    height: 0;
+  }
+}
+
+.text-overflow {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.image-wrap {
+  margin: -10px 0 0 -10px;
+
+  > .el-image {
+    margin: 10px 0 0 10px;
+  }
+}
+
+.flex {
+  display: flex;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: -ms-flex;
+}
+.flex_1 {
+  flex: 1;
+}
+.flex-center {
+  display: flex;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: -ms-flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flex-between {
+  display: flex;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: -ms-flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.flex-start-start {
+  display: flex;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: -ms-flex;
+  justify-content: flex-start;
+  align-items: center;
+  .el-form-item {
+    margin-bottom: 0;
+  }
+}
+.flex-start-end {
+  display: flex;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: -ms-flex;
+  justify-content: flex-start;
+  align-items: flex-end;
+}
+.flex-start-center {
+  display: flex;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: -ms-flex;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.flex-justify-end {
+  display: flex;
+  display: -moz-flex;
+  display: -webkit-flex;
+  display: -ms-flex;
+  justify-content: flex-end;
+  align-items: center;
+}
+.text-clamp {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  overflow: hidden;
+}
+
+.text-center {
+  text-align: center;
+}
+.textSwitch {
+  position: relative;
+  .el-switch__label {
+    position: absolute;
+    z-index: 3;
+    display: none;
+    color: #fff;
+    span {
+      font-size: 12px;
+    }
+  }
+  .is-active {
+    display: inline-block;
+  }
+  .el-switch__label--left {
+    right: 0;
+    margin-right: 5px;
+  }
+  .el-switch__label--right {
+    left: 0;
+    margin-left: 5px;
+  }
+}
+
+.avatar_round {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+}
+.el-form--label-left
+  .el-form-item.is-required:not(.is-no-asterisk)
+  .el-form-item__label-wrap
+  > .el-form-item__label:before,
+.el-form--label-left
+  .el-form-item.is-required:not(.is-no-asterisk)
+  > .el-form-item__label:before {
+  position: absolute;
+  left: -7px;
+}
+.el-form--label-left .el-form-item--medium .el-form-item__content,
+.el-form--label-left .el-form-item--medium .el-form-item__label {
+  position: relative;
+}
+
+div::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+div::-webkit-scrollbar-track {
+  -webkit-box-shadow: inset 0 0 2px rgba(0, 0, 0, 0.3);
+}
+div::-webkit-scrollbar-thumb {
+  background-color: #eaeaea;
+}
+
+// app-info=>[PatientInfo, PrescriptionInfo]
+.app-info {
+  overflow: hidden;
+  background: #fff;
+  margin-bottom: 5px;
+  .app-info-row {
+    width: 100%;
+    display: flex;
+  }
+  .app-info-item {
+    width: 50%;
+    display: flex;
+    margin-top: 20px;
+    height: 16px;
+    font-size: 16px;
+    line-height: 16px;
+    font-family: PingFang SC;
+    font-weight: 500;
+    &.full {
+      width: 100%;
+    }
+    .app-info-value {
+      span {
+        margin-right: 10px;
+      }
+    }
+  }
+  .app-info-label {
+    width: 64px;
+    flex-shrink: 0;
+    margin-right: 15px;
+    color: #666666;
+  }
+  .app-info-value {
+    flex: 1;
+    color: #333;
+    margin-right: 10px;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+}

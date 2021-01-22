@@ -1,0 +1,101 @@
+.totaClass {
+    width: 500px;
+    height: 350px;
+    .total {
+      position: relative;
+      width: 300px;
+      float: left;
+      .trapezoid {
+        display: flex;
+        align-items: center;
+
+        padding-left: 10%;
+        width: 300px;
+        height: 100px;
+        color: $--color-white;
+        > * {
+          position: absolute;
+          z-index: 999;
+        }
+        &::before {
+          position: absolute;
+          z-index: 33;
+          left: 0;
+          right: 0;
+          height: 0;
+          border-top: 100px solid $--color-primary;
+          border-right: 31px solid transparent;
+          content: '';
+        }
+        &:nth-child(2)::before {
+          width: 269px;
+          border-top-color: $--color-warning;
+        }
+        &:nth-child(3)::before {
+          width: 238px;
+          border-top-color: $--color-danger;
+        }
+        .indClsx {
+          position: absolute;
+          top: 166px;
+          left: 419px;
+          color: #000000;
+        }
+        .btnInde {
+          position: absolute;
+          top: 126px;
+          left: 300px;
+          color: #000000;
+        }
+        .payment {
+          position: absolute;
+          top: 212px;
+          left: 282px;
+          color: #000000;
+        }
+      }
+      .cogi {
+        img {
+          position: absolute;
+          top: 60px;
+          left: 244px;
+          z-index: 1;
+        }
+      }
+      .mall {
+        img {
+          position: absolute;
+          top: 88px;
+          left: 265px;
+          z-index: 1;
+        }
+      }
+      .mapng {
+        img {
+          position: absolute;
+          top: 178px;
+          left: 250px;
+          z-index: 1;
+        }
+      }
+    }
+    .cogiPng {
+      float: left;
+      .mabos {
+        z-index: 9999;
+        margin: 104px -4px 0px -9px;
+        position: relative;
+        font-size: 16px;
+      }
+      .clgbox {
+        z-index: 9999;
+        position: relative;
+        margin: 55px 2px 1px -23px;
+      }
+      .mabang {
+        z-index: 9999;
+        position: relative;
+        margin: -76px 6px 12px 111px;
+      }
+    }
+  }

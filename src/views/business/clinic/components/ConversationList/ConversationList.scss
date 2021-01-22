@@ -1,0 +1,56 @@
+@import '@/styles/_variables.scss';
+
+.c__conversation-list {
+  margin-left: 0 !important;
+  height: 100%;
+
+  & > .el-scrollbar__wrap {
+    overflow-x: auto;
+  }
+
+  .el-collapse-item > div:first-child {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+  }
+
+  .el-collapse-item__arrow {
+    order: -1;
+    margin: 0 8px;
+  }
+
+  .el-collapse-item__total {
+    margin: 0 8px 0 auto;
+
+    > span {
+      color: $--color-danger;
+    }
+  }
+
+  .el-collapse-item__content {
+    background: #f7f7f7;
+  }
+
+  // vue-recycle-scroller
+  .vue-recycle-scroller__item-view {
+    .c__conversation-item {
+      min-width: 280px;
+    }
+    &.hover > .c__conversation-item {
+      border-left-color: currentColor;
+      background: $--color-primary-light-9;
+      color: $--color-primary;
+    }
+
+    & + .vue-recycle-scroller__item-view {
+      background-image: linear-gradient(
+        90deg,
+        transparent,
+        transparent 26px,
+        $--color-info-light 26px
+      );
+      background-repeat: no-repeat;
+      background-size: 100% 1px;
+    }
+  }
+}

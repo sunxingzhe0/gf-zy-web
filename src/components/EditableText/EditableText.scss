@@ -1,0 +1,29 @@
+.c__editable-text {
+  display: inline-block;
+
+  > span {
+    line-height: 28px;
+    vertical-align: top;
+
+    & + .el-button {
+      margin-left: 10px;
+    }
+  }
+
+  &.is-edit {
+    display: inline-flex;
+
+    .el-input {
+      & + .el-button {
+        margin-left: 10px;
+      }
+      .el-input__inner {
+        padding: 0 4px;
+      }
+    }
+  }
+}
+
+.el-form-item__content .c__editable-text > span {
+  line-height: 36px;
+}
