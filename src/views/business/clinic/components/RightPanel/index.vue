@@ -326,14 +326,12 @@ export default {
       this.distance = 100
       this.identifier++
       this.patient = await patientInfo({ orderId: this.orderId })
-      console.log(this.patient, '===========')
     },
     updateListStatus(medicalId) {
       const index = this.seeDoctor.list.findIndex(item => item.id === medicalId)
       if (index !== -1) this.$set(this.seeDoctor.list[index], 'open', true)
     },
     async infiniteHandler($state) {
-      console.log(this.seeDoctor.query, '---------')
       const { data } = await webarchiveList({
         currentNum: this.seeDoctor.currentNum++,
         pageSize: this.seeDoctor.pageSize,

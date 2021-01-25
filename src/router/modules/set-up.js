@@ -35,6 +35,76 @@ export default {
         ],
       },
     },
+    {
+      path: 'systemMsg',
+      component: RouterView,
+      name: 'systemMsg',
+      redirect: '/set-up/systemMsg/list',
+      meta: {
+        title: '系统消息',
+        isrolesM: true,
+        roles: [
+          'DOC_WEB_SET_UP_SYSTEM_MESSAGE',
+          'ORG_WEB_SET_UP_SYSTEM_MESSAGE',
+          'DRUG_STORE_SET_UP_SYSTEM_MESSAGE',
+          'DRUG_DOC_NEWS_SYSTEM_MESSAGE',
+        ],
+        keepAlive: true,
+      },
+      children: [
+        {
+          path: 'list',
+          component: () => import('@/views/message/systemMsg/index'),
+          meta: {
+            title: '列表',
+            activeMenu: '/set-up/systemMsg',
+            keepAlive: true,
+          },
+          hidden: true,
+        },
+        {
+          path: 'detail',
+          component: () => import('@/views/message/systemMsg/detail'),
+          meta: { title: '消息详情', activeMenu: '/set-up/systemMsg' },
+          hidden: true,
+        },
+      ],
+    },
+    {
+      path: 'notice',
+      component: RouterView,
+      redirect: '/set-up/notice/list',
+      name: 'notice',
+      meta: {
+        title: '公告通知',
+        isrolesM: true,
+        roles: [
+          'DOC_WEB_SET_UP_ANNOUNCEMENT_NOTICE',
+          'DRUG_STORE_SET_UP_ANNOUNCEMENT_NOTICE',
+          'DRUG_STORE_SET_UP_ANNOUNCEMENT_NOTICE',
+          'DRUG_DOC_NEWS_ANNOUNCEMENT_NOTICE',
+        ],
+      },
+      children: [
+        {
+          path: 'list',
+          component: () => import('@/views/message/notice/list'),
+          meta: {
+            title: '列表',
+            activeMenu: '/set-up/notice',
+            keepAlive: true,
+          },
+
+          hidden: true,
+        },
+        {
+          path: 'detail',
+          component: () => import('@/views/message/notice/detail'),
+          meta: { title: '通知详情', activeMenu: '/set-up/notice' },
+          hidden: true,
+        },
+      ],
+    },
     // {
     //   path: 'account-single',
     //   component: () => import('@/views/setUp/account/password'),
@@ -82,48 +152,46 @@ export default {
       ],
     },
     {
+      path: 'journal',
+      component: () => import('@/views/setUp/journal/index'),
+      name: 'journal',
+      meta: {
+        title: '日志设置',
+        roles: [
+          'DOC_WEB_SET_UP_LOG_MANAGEMENT',
+          'DRUG_STORE_SET_UP',
+          'ORG_WEB_SET_UP_LOG_MANAGEMENT',
+          'DRUG_DOC',
+        ],
+      },
+    },
+    {
+      path: 'business',
+      component: () => import('@/views/setUp/business/list'),
+      name: 'business',
+      meta: {
+        title: '业务设置',
+        roles: [
+          'DOC_WEB_SET_UP_BUSINESS_SETTINGS',
+          'DRUG_STORE_SET_UP',
+          'ORG_WEB_SET_UP_BUSINESS_SETTINGS',
+          // 'DRUG_DOC',
+        ],
+      },
+    },
+    {
       path: 'agreement',
       component: () => import('@/views/setUp/agreement/index'),
       name: 'agreement',
       meta: {
-        title: '协议管理',
-        roles: ['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'],
-      },
-    },
-    {
-      path: 'systemMsg',
-      component: RouterView,
-      name: 'systemMsg',
-      redirect: '/set-up/systemMsg/list',
-      meta: {
-        title: '系统消息',
-        isroles: true,
+        title: '协议须知',
         roles: [
-          'DOC_WEB_SET_UP_SYSTEM_MESSAGE',
-          'ORG_WEB_SET_UP_SYSTEM_MESSAGE',
-          'DRUG_STORE_SET_UP',
+          'ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT',
+          'ZY_ORG_SETTING_XUZHI_MANAGEMENT',
         ],
-        keepAlive: true,
       },
-      children: [
-        {
-          path: 'list',
-          component: () => import('@/views/message/systemMsg/index'),
-          meta: {
-            title: '列表',
-            activeMenu: '/set-up/systemMsg',
-            keepAlive: true,
-          },
-          hidden: true,
-        },
-        {
-          path: 'detail',
-          component: () => import('@/views/message/systemMsg/detail'),
-          meta: { title: '消息详情', activeMenu: '/set-up/systemMsg' },
-          hidden: true,
-        },
-      ],
     },
+
     {
       path: 'ad-rotation',
       component: () => import('@/views/setUp/ad-rotation/List'),
@@ -134,7 +202,7 @@ export default {
       path: 'column',
       component: () => import('@/views/setUp/column/List'),
       name: 'column',
-      meta: { title: '首页栏目', roles: ['ORG_WEB_SET_UP'] },
+      meta: { title: '首页栏目', roles: ['ORG_WEB_SET_UP_HOME_PAGE_COLUMN'] },
     },
     {
       path: 'information',
@@ -176,76 +244,15 @@ export default {
         },
       ],
     },
-    {
-      path: 'notice',
-      component: RouterView,
-      redirect: '/set-up/notice/list',
-      name: 'notice',
-      meta: {
-        title: '公告通知',
-        isroles: true,
-        roles: [
-          'DOC_WEB_SET_UP_ANNOUNCEMENT_NOTICE',
-          'DRUG_STORE_SET_UP_ANNOUNCEMENT_NOTICE',
-          'DRUG_STORE_SET_UP',
-        ],
-      },
-      children: [
-        {
-          path: 'list',
-          component: () => import('@/views/message/notice/list'),
-          meta: {
-            title: '列表',
-            activeMenu: '/set-up/notice',
-            keepAlive: true,
-          },
 
-          hidden: true,
-        },
-        {
-          path: 'detail',
-          component: () => import('@/views/message/notice/detail'),
-          meta: { title: '通知详情', activeMenu: '/set-up/notice' },
-          hidden: true,
-        },
-      ],
-    },
-    {
-      path: 'business',
-      component: () => import('@/views/setUp/business/list'),
-      name: 'business',
-      meta: {
-        title: '业务设置',
-        roles: [
-          'DOC_WEB_SET_UP_BUSINESS_SETTINGS',
-          'DRUG_STORE_SET_UP',
-          'ORG_WEB_SET_UP_BUSINESS_SETTINGS',
-          // 'DRUG_DOC',
-        ],
-      },
-    },
-    {
-      path: 'journal',
-      component: () => import('@/views/setUp/journal/index'),
-      name: 'journal',
-      meta: {
-        title: '日志管理',
-        roles: [
-          'DOC_WEB_SET_UP_LOG_MANAGEMENT',
-          'DRUG_STORE_SET_UP',
-          'ORG_WEB_SET_UP_LOG_MANAGEMENT',
-          'DRUG_DOC',
-        ],
-      },
-    },
-    {
-      path: 'ghNotice',
-      component: () => import('@/views/zy-page/setUp/ghNotice'),
-      name: 'tjNotice',
-      meta: {
-        title: '须知管理',
-        roles: ['ZY_ORG_SETTING_XUZHI_MANAGEMENT'],
-      },
-    },
+    // {
+    //   path: 'ghNotice',
+    //   component: () => import('@/views/zy-page/setUp/ghNotice'),
+    //   name: 'tjNotice',
+    //   meta: {
+    //     title: '须知管理',
+    //     roles: ['ZY_ORG_SETTING_XUZHI_MANAGEMENT'],
+    //   },
+    // },
   ],
 }

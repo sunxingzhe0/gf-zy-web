@@ -1,15 +1,70 @@
 <template>
   <div class="accountWrap view__card">
-    <el-tabs type="border-card" v-model="active" :before-leave="beforeLeave">
-      <el-tab-pane label="互联网医院服务协议" name="4"> </el-tab-pane>
-      <el-tab-pane label="自提授权协议" name="1"> </el-tab-pane>
-      <el-tab-pane label="邮寄授权协议" name="2"> </el-tab-pane>
-      <el-tab-pane label="用户隐私使用条款" name="3"> </el-tab-pane>
-      <el-tab-pane label="在线咨询须知" name="5"> </el-tab-pane>
-      <el-tab-pane label="在线复诊须知" name="6"> </el-tab-pane>
-      <el-tab-pane label="慢病续方须知" name="7"> </el-tab-pane>
-      <el-tab-pane label="互联网医院患者知情同意书" name="0"> </el-tab-pane>
-    </el-tabs>
+    <div style="width: 210px; position: absolute;">
+      <el-tabs v-model="active" tab-position="left" :before-leave="beforeLeave">
+        <el-tab-pane
+          v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
+          label="互联网医院服务协议"
+          name="4"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
+          label="自提授权协议"
+          name="1"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
+          label="邮寄授权协议"
+          name="2"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
+          label="用户隐私使用条款"
+          name="3"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
+          label="在线咨询须知"
+          name="5"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
+          label="在线复诊须知"
+          name="6"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
+          label="慢病续方须知"
+          name="7"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
+          label="互联网医院患者知情同意书"
+          name="0"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ZY_ORG_SETTING_XUZHI_MANAGEMENT'])"
+          label="挂号须知"
+          name="zy_0"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ZY_ORG_SETTING_XUZHI_MANAGEMENT'])"
+          label="体检须知"
+          name="zy_1"
+        >
+        </el-tab-pane>
+      </el-tabs>
+    </div>
+
     <div class="account_main">
       <el-form label-width="80px" ref="ruleForm" :model="form">
         <el-form-item label="标题" prop="title">
@@ -41,6 +96,8 @@
 import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn'
 import { getAgrList, addAgreement, editArg } from '@/api/setup'
+import { editTjIns, getTjIns } from '@/api/zyapi/index'
+import checkPermission from '@/utils/permission'
 import MyUploadAdapter from '@/utils/MyUploadAdapter.js'
 export default {
   data() {
@@ -60,12 +117,16 @@ export default {
     this.showAgr()
   },
   methods: {
+    checkPermission,
     // 查看协议
     async showAgr() {
       console.log(this.active)
-      let res = await getAgrList({
-        genre: this.active,
-      })
+      let res =
+        this.active.indexOf('zy') > -1
+          ? await getTjIns({ type: this.active.split('_')[1] })
+          : await getAgrList({
+              genre: this.active,
+            })
 
       // this.form = res
       if (res) {
@@ -84,17 +145,33 @@ export default {
         if (valid) {
           // 有 id 则为编辑
           if (this.form.id) {
-            await editArg({
-              ...this.form,
-            })
+            if (this.active.indexOf('zy') > -1) {
+              await editTjIns({
+                ...this.form,
+                insType: this.active.split('_')[1],
+              })
+            } else {
+              await editArg({
+                ...this.form,
+              })
+            }
+
             this.showAgr()
             this.$message.success('操作成功!')
           } else {
-            // 无 id 为新增
-            await addAgreement({
-              ...this.form,
-              type: this.active,
-            })
+            if (this.active.indexOf('zy') > -1) {
+              await editTjIns({
+                ...this.form,
+                insType: this.active.split('_')[1],
+              })
+            } else {
+              // 无 id 为新增
+              await addAgreement({
+                ...this.form,
+                type: this.active,
+              })
+            }
+
             this.showAgr()
             this.$message.success('操作成功!')
           }
@@ -164,8 +241,12 @@ export default {
 <style lang="scss" scoped>
 .accountWrap {
   padding: 0;
+  padding-top: 30px;
+  position: relative;
+
   .account_main {
     padding: 0 90px;
+    padding-left: 210px;
     ::v-deep.ck-content {
       min-height: 300px;
     }

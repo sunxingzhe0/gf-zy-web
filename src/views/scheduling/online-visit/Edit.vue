@@ -435,7 +435,7 @@ export default {
     // 勾选事件
     handleChangeA(e) {
       console.log(e)
-      console.log(this.checkList)
+      console.log(this.checkList, '*****')
     },
     // 保存
     async handleSave() {
@@ -454,6 +454,7 @@ export default {
       }
       arr = this.checkList
       let work = arr.join(',')
+      console.log(this.active, '****')
       if (this.active == 0) {
         await deptSave({
           ...this.form,
@@ -466,6 +467,7 @@ export default {
         this.showInfoList()
         this.$message.success('保存成功')
       } else {
+        console.log(this.staff, '***2*')
         if (this.staff) {
           await deptSave({
             ...this.form,

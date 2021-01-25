@@ -158,6 +158,7 @@ export default {
     this.textarea = [
       { label: '主诉', prop: 'mainSuit' },
       { label: '现病史', prop: 'nowDisease' },
+      { label: '既往史', prop: 'hisDisease' },
       { label: '体格检查', prop: 'phyCheck' },
       { label: '辅助检查', prop: 'supCheck' },
       { label: '处理意见', prop: 'dealIdea' },
@@ -180,6 +181,7 @@ export default {
           tempDesc: '',
           mainSuit: '',
           nowDisease: '',
+          hisDisease: '',
           phyCheck: '',
           supCheck: '',
           dealIdea: '',

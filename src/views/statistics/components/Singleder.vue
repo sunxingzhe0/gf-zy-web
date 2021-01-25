@@ -483,133 +483,133 @@ export default {
     },
 
     initCharts() {
-      if (!this.chart) {
-        this.chart = this.chart || echarts.init(this.$refs.chart)
-        addResizeListener(this.$refs.chart, this.chart.resize)
+      // if (!this.chart) {
+      this.chart = this.chart || echarts.init(this.$refs.chart)
+      addResizeListener(this.$refs.chart, this.chart.resize)
 
-        this.chart.setOption({
-          tooltip: {
-            trigger: 'axis',
-          },
-          legend: {
-            y: 'bottom',
-            bottom: 'buttom',
-            itemGap: 80, //左右距离
-            data: [
-              '付款金额',
-              '退款金额',
-              '付款人数',
-              '付款件数',
-              '下单转化率(%)',
-              '付款转换率(%)',
-              '成交转化率(%)',
-            ],
-          },
-          grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '8%',
-            containLabel: true,
-          },
-          toolbox: {
-            feature: {
-              saveAsImage: {},
-            },
-          },
-          xAxis: {
-            type: 'category',
-            boundaryGap: false,
-            data: this.timeVbs,
-          },
-          yAxis: [
-            {
-              type: 'value',
-            },
-            {
-              name: '转化率%',
-              nameLocation: 'start',
-              type: 'value',
-              inverse: true,
-            },
+      this.chart.setOption({
+        tooltip: {
+          trigger: 'axis',
+        },
+        legend: {
+          y: 'bottom',
+          bottom: 'buttom',
+          itemGap: 80, //左右距离
+          data: [
+            '付款金额',
+            '退款金额',
+            '付款人数',
+            '付款件数',
+            '下单转化率(%)',
+            '付款转换率(%)',
+            '成交转化率(%)',
           ],
-          series: [
-            {
-              name: '付款金额',
-              type: 'line',
-              animation: false,
-              lineStyle: {
-                width: 2,
-              },
-              markArea: {
-                silent: true,
-              },
-              data: this.comprehensive.map(item => item.payAmount), //付款金额
+        },
+        grid: {
+          left: '3%',
+          right: '4%',
+          bottom: '8%',
+          containLabel: true,
+        },
+        toolbox: {
+          feature: {
+            saveAsImage: {},
+          },
+        },
+        xAxis: {
+          type: 'category',
+          boundaryGap: false,
+          data: this.timeVbs,
+        },
+        yAxis: [
+          {
+            type: 'value',
+          },
+          {
+            name: '转化率%',
+            nameLocation: 'start',
+            type: 'value',
+            inverse: true,
+          },
+        ],
+        series: [
+          {
+            name: '付款金额',
+            type: 'line',
+            animation: false,
+            lineStyle: {
+              width: 2,
             },
-            {
-              name: '退款金额',
-              type: 'line',
-              animation: false,
-              lineStyle: {
-                width: 2,
-              },
-              markArea: {
-                silent: true,
-              },
-              data: this.comprehensive.map(item => item.refundAmount), //退款金额
+            markArea: {
+              silent: true,
             },
-            {
-              name: '付款人数',
-              type: 'line',
-              animation: false,
-              lineStyle: {
-                width: 2,
-              },
-              markArea: {
-                silent: true,
-              },
-              data: this.comprehensive.map(item => item.payUserNum), //付款人数
+            data: this.comprehensive.map(item => item.payAmount), //付款金额
+          },
+          {
+            name: '退款金额',
+            type: 'line',
+            animation: false,
+            lineStyle: {
+              width: 2,
             },
-            {
-              name: '下单转化率(%)',
-              type: 'line',
-              animation: false,
-              lineStyle: {
-                width: 2,
-              },
-              markArea: {
-                silent: true,
-              },
-              data: this.comprehensive.map(item => item.orderRates), //下单转化率
+            markArea: {
+              silent: true,
             },
-            {
-              name: '付款转换率(%)',
-              type: 'line',
-              animation: false,
-              lineStyle: {
-                width: 2,
-              },
-              markArea: {
-                silent: true,
-              },
-              data: this.comprehensive.map(item => item.payRates),
+            data: this.comprehensive.map(item => item.refundAmount), //退款金额
+          },
+          {
+            name: '付款人数',
+            type: 'line',
+            animation: false,
+            lineStyle: {
+              width: 2,
             },
-            {
-              name: '成交转化率(%)',
-              type: 'line',
-              animation: false,
-              lineStyle: {
-                width: 2,
-              },
-              markArea: {
-                silent: true,
-              },
-              data: this.comprehensive.map(item => item.finalRates),
+            markArea: {
+              silent: true,
             },
-          ],
-        })
-      }
+            data: this.comprehensive.map(item => item.payUserNum), //付款人数
+          },
+          {
+            name: '下单转化率(%)',
+            type: 'line',
+            animation: false,
+            lineStyle: {
+              width: 2,
+            },
+            markArea: {
+              silent: true,
+            },
+            data: this.comprehensive.map(item => item.orderRates), //下单转化率
+          },
+          {
+            name: '付款转换率(%)',
+            type: 'line',
+            animation: false,
+            lineStyle: {
+              width: 2,
+            },
+            markArea: {
+              silent: true,
+            },
+            data: this.comprehensive.map(item => item.payRates),
+          },
+          {
+            name: '成交转化率(%)',
+            type: 'line',
+            animation: false,
+            lineStyle: {
+              width: 2,
+            },
+            markArea: {
+              silent: true,
+            },
+            data: this.comprehensive.map(item => item.finalRates),
+          },
+        ],
+      })
     },
   },
+  // },
 }
 </script>
 

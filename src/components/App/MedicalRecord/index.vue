@@ -45,6 +45,14 @@
     </div>
     <div class="app-info-row full">
       <div class="app-info-item">
+        <div class="app-info-label">既往史</div>
+        <div class="app-info-value">
+          {{ medicalRecord.hisDisease || '-' }}
+        </div>
+      </div>
+    </div>
+    <div class="app-info-row full">
+      <div class="app-info-item">
         <div class="app-info-label">体格检查</div>
         <div class="app-info-value">
           {{ medicalRecord.phyCheck || '-' }}

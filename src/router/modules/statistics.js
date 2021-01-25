@@ -52,6 +52,62 @@ export default {
     //     roles: ['DRUG_STORE_STATISTICS_DRUG_STATISTICS'],
     //   },
     // },
+
+    {
+      path: 'order',
+      component: () => import('@/views/statistics/components/OrderDoctor.vue'), //医生端
+      name: 'order',
+      meta: {
+        title: '我的订单',
+        roles: ['DOC_WEB_STATISTICS_EVALUATION_STATISTICS'],
+      },
+    },
+    {
+      path: 'comment',
+      component: () => import('@/views/statistics/components/Comment.vue'), //医生端
+      name: 'Comment',
+      meta: {
+        title: '我的评价',
+        roles: ['DOC_WEB_STATISTICS_ORDER_STATISTICS'], //医生端,
+      },
+    },
+    {
+      path: 'Drugorders',
+      component: () => import('@/views/statistics/components/Drugorders.vue'), //药房端
+      name: 'Drugorders',
+      meta: {
+        title: '药房药品',
+        roles: ['DRUG_STORE_STATISTICS_DRUG_STATISTICS'],
+      },
+    },
+    {
+      path: 'Singleder',
+      component: () => import('@/views/statistics/components/Singleder.vue'), //药房端
+      name: 'Singleder',
+      meta: {
+        title: '药房订单',
+        roles: ['DRUG_STORE_STATISTICS_ORDER_STATISTICS'],
+      },
+    },
+    {
+      path: 'mechanism',
+      component: () => import('@/views/statistics/components/mechanism.vue'), //机构端
+      name: 'Singleder',
+      meta: {
+        title: '机构订单',
+        roles: ['ORG_WEB_STATISTICS_ORDER_STATISTICS'],
+      },
+    },
+    {
+      path: 'institutional',
+      component: () =>
+        import('@/views/statistics/components/institutional.vue'), //机构端
+      name: 'Singleder',
+      meta: {
+        title: '所有评价',
+        roles: ['ORG_WEB_STATISTICS_EVALUATION_STATISTICS'],
+      },
+    },
     {
       path: 'registeDoctor',
       component: () => import('@/views/zy-page/statistics/registeDoctor.vue'),
@@ -90,62 +146,6 @@ export default {
       component: () => import('@/views/zy-page/statistics/ReportQuery.vue'),
       name: 'ReportQuery',
       meta: { title: '报告查询统计', roles: ['ZY_ORG_STATISTICS_REPORT'] },
-    },
-
-    {
-      path: 'order',
-      component: () => import('@/views/statistics/components/OrderDoctor.vue'), //医生端
-      name: 'order',
-      meta: {
-        title: '订单统计(医)',
-        roles: ['DOC_WEB_STATISTICS_EVALUATION_STATISTICS'],
-      },
-    },
-    {
-      path: 'comment',
-      component: () => import('@/views/statistics/components/Comment.vue'), //医生端
-      name: 'Comment',
-      meta: {
-        title: '评价统计(医)',
-        roles: ['DOC_WEB_STATISTICS_ORDER_STATISTICS'], //医生端,
-      },
-    },
-    {
-      path: 'Drugorders',
-      component: () => import('@/views/statistics/components/Drugorders.vue'), //药房端
-      name: 'Drugorders',
-      meta: {
-        title: '药品统计(药)',
-        roles: ['DRUG_STORE_STATISTICS_DRUG_STATISTICS'],
-      },
-    },
-    {
-      path: 'Singleder',
-      component: () => import('@/views/statistics/components/Singleder.vue'), //药房端
-      name: 'Singleder',
-      meta: {
-        title: '订单统计(药)',
-        roles: ['DRUG_STORE_STATISTICS_ORDER_STATISTICS'],
-      },
-    },
-    {
-      path: 'mechanism',
-      component: () => import('@/views/statistics/components/mechanism.vue'), //机构端
-      name: 'Singleder',
-      meta: {
-        title: '订单统计',
-        roles: ['ORG_WEB_STATISTICS_ORDER_STATISTICS'],
-      },
-    },
-    {
-      path: 'institutional',
-      component: () =>
-        import('@/views/statistics/components/institutional.vue'), //机构端
-      name: 'Singleder',
-      meta: {
-        title: '评价统计',
-        roles: ['ORG_WEB_STATISTICS_EVALUATION_STATISTICS'],
-      },
     },
   ],
 }

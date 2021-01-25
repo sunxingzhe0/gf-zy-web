@@ -1,7 +1,25 @@
 <template>
   <div
     v-if="
-      !item.hidden && !(item.meta.isroles && checkPermission(['DRUG_DOC_NEWS']))
+      !item.hidden &&
+      !(
+        item.meta.isroles &&
+        checkPermissionNUm([
+          'ORG_WEB_SET_UP',
+          'DRUG_STORE_SET_UP',
+          'DOC_WEB_SET_UP',
+        ]) > 0
+      ) &&
+      !(
+        item.meta.isrolesM &&
+        checkPermissionNUm([
+          'ORG_WEB_SET_UP',
+          'DRUG_STORE_SET_UP',
+          'DOC_WEB_SET_UP',
+          'DRUG_DOC_NEWS',
+        ]) == 1 &&
+        checkPermission(['DRUG_DOC_NEWS'])
+      )
     "
   >
     <template
@@ -56,6 +74,7 @@ import Item from './Item'
 import AppLink from './Link'
 import FixiOSBug from './FixiOSBug'
 import checkPermission from '@/utils/permission'
+import checkPermissionNUm from '@/utils/permissionNum'
 export default {
   name: 'SidebarItem',
   components: { Item, AppLink },
@@ -83,6 +102,7 @@ export default {
   },
   methods: {
     checkPermission,
+    checkPermissionNUm,
     hasOneShowingChild(children = [], parent) {
       const showingChildren = children.filter(item => {
         if (item.hidden) {

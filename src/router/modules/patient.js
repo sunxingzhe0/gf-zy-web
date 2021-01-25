@@ -9,23 +9,23 @@ export default {
   name: 'PatientModules',
   alwaysShow: true,
   meta: {
-    title: '患者',
+    title: '用户',
     icon: 'sidebar-patient',
-    roles: ['DOC_WEB_BUSINESSxxx'],
+    roles: ['DOC_WEB_PATIENT', 'ZY_ORG_PATIENT', 'ORG_WEB_USER_MENU'],
   },
   children: [
     {
       path: 'mine',
       component: RouterView,
       redirect: '/patient/mine/list',
-      meta: { title: '我的患者' },
+      meta: { title: '我的患者', roles: ['DOC_WEB_PATIENT_MY_PATIENTS'] },
       children: [
         {
           path: 'list',
           component: () => import('@/views/patient/mine/List.vue'),
           hidden: true,
           meta: {
-            roles: ['DOC_WEB_PATIENT_MY_PATIENTS'],
+            title: '列表',
             activeMenu: '/patient/mine',
           },
         },
@@ -42,6 +42,21 @@ export default {
       path: 'push',
       component: () => import('@/views/patient/Push.vue'),
       meta: { title: '我的推送', roles: ['DOC_WEB_PATIENT_MY_PUSH'] },
+    },
+    {
+      path: 'patient',
+      component: () => import('@/views/business/patient/List.vue'),
+      meta: {
+        title: '患者管理',
+        keepAlive: true,
+        // roles: ['ORG_WEB_BUSINESS_USER_MANAGEMENT'],
+        roles: ['ORG_WEB_USER_MENU_PATIENT_MANAGEMENT'],
+      },
+    },
+    {
+      path: 'usermanagement',
+      component: () => import('@/views/patient/mine/Institutionalusers.vue'),
+      meta: { title: '用户管理', roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT'] },
     },
     {
       path: 'blacklist',

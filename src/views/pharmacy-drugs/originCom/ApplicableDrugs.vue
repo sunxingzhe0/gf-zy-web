@@ -77,8 +77,12 @@ export default {
         },
         status: {
           formatter(row) {
-            return row.status ? '启用' : '禁用'
+            return row.status ? '禁用' : '启用'
           },
+        },
+        //排序
+        seq: {
+          hidden: true,
         },
       },
     }

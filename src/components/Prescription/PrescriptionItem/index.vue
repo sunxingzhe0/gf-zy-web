@@ -1082,6 +1082,7 @@ export default {
     },
     // 保存药品 index
     async savaHandler(index) {
+      console.log(this)
       if (this.validate(index)) return
       if (this.shouldMerge()) {
         const confirm = await this.$confirm(

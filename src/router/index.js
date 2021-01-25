@@ -7,30 +7,31 @@ Vue.use(VueRouter)
 import Layout from '@/components/layout'
 
 /* Router Modules */
-import business from './modules/business'
-import patient from './modules/patient'
-import template from './modules/template'
-import shift from './modules/shift'
+import business from './modules/business' // 业务
+import patient from './modules/patient' //患者
+import mechanism from './modules/mechanism' //患者
+import template from './modules/template' // 模板
+import shift from './modules/shift' // 排班
 // import statistics from './modules/statistics'
-import setUp from './modules/set-up'
-import prescription from './modules/prescription'
-import message from './modules/message'
-import pharmacyHome from './modules/pharmacyHome'
-import pharmacyDrugs from './modules/pharmacyDrugs'
+import setUp from './modules/set-up' // 设置
+import prescription from './modules/prescription' // 处方
+import message from './modules/message' // 消息
+import pharmacyHome from './modules/pharmacyHome' // 首页
+import pharmacyDrugs from './modules/pharmacyDrugs' // 药品
 /* import pharmacyOrder from './modules/pharmacyOrder'
 import pharmacySetup from './modules/pharmacySetup' */
 
 // import home from './modules/home'
-import organ from './modules/organ'
+import organ from './modules/organ' // 机构
 
-import order from './modules/order'
+import order from './modules/order' // 订单
 // import drugs from './modules/drugs'
-import dictionary from './modules/dictionary'
-import jurisdiction from './modules/jurisdiction'
-import statistics from '@/router/modules/statistics'
+import dictionary from './modules/dictionary' // 字典
+import jurisdiction from './modules/jurisdiction' // 权限
+import statistics from '@/router/modules/statistics' // 统计
 // import organize from './modules/organize'
-import payment from './modules/payment'
-import reconciliation from './modules/reconciliation'
+import payment from './modules/payment' // 缴费
+import reconciliation from './modules/reconciliation' // 对账
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -97,22 +98,23 @@ export const constantRoutes = [
  */
 export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
-  pharmacyHome,
-  pharmacyDrugs,
-  organ,
-  business,
-  order,
-  patient,
-  shift,
-  dictionary,
-  jurisdiction,
-  prescription,
-  message,
-  statistics,
-  reconciliation,
-  payment,
-  template,
-  setUp,
+  pharmacyHome, // 首页
+  prescription, // 处方
+  message, // 消息
+  business, // 业务
+  patient, // 患者
+  mechanism, //机构
+  template, // 模板
+  organ, // 机构
+  pharmacyDrugs, // 药品
+  dictionary, // 字典
+  order, // 订单
+  shift, // 排班
+  payment, // 缴费
+  reconciliation, // 对账
+  statistics, // 统计
+  jurisdiction, // 权限
+  setUp, // 设置
   {
     path: '/',
     hidden: true,

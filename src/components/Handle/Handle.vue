@@ -467,8 +467,14 @@ export default {
         ...item,
         ...res,
       }))
+      this.loadOptions(this.tableData[0])
       this.loadProjectInfo('categoryName', '')
       this.loadProjectTime()
+    },
+    loadOptions(res) {
+      this.loadProjectInfo('itemName', res.itemName, 1)
+      this.loadProjectInfo('methodName', res.methodName, 1)
+      this.loadProjectInfo('categoryName', res.categoryName, 1)
     },
     fillDispose(key, option) {
       const keys = [
@@ -513,7 +519,6 @@ export default {
         type: this.tableData[0].type,
       })
       const orderTimes = {}
-      console.log(this.res, '----------')
       this.orderDates = res.map(item => {
         if (type === 'EXAMINE') {
           item.list = item.list || []
@@ -539,7 +544,7 @@ export default {
       this.loadProjectInfo('categoryName', keyword)
     },
     // loadProjectInfo
-    async loadProjectInfo(key, keyword) {
+    async loadProjectInfo(key, keyword, options) {
       let {
         type,
         itemName,
@@ -557,6 +562,19 @@ export default {
       params[key] = keyword
       for (let p in params) {
         if (!params[p]) delete params[p]
+      }
+      if (options) {
+        switch (key) {
+          case 'itemName':
+            delete params.methodName
+            break
+          case 'methodName':
+            break
+          case 'categoryName':
+            delete params.itemName
+            delete params.methodName
+            break
+        }
       }
       const res = await business.disposeChooseList({
         ...params,
@@ -578,7 +596,7 @@ export default {
         }))
       this.$set(this.options, key, arr)
       // 只有一条数据则自动填充
-      if (res.length === 1) this.fillDispose(key, res[0])
+      if (res.length === 1 && !options) this.fillDispose(key, res[0])
     },
     // render
     /*

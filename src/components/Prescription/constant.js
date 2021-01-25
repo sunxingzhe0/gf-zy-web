@@ -114,6 +114,7 @@ const ValidateKeys = [
   'type',
   'name',
   'total',
+  'treatment',
   'useWays',
   'singleDose',
   'useFrequency',

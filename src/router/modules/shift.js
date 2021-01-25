@@ -18,7 +18,7 @@ export default {
       component: () => import('@/views/scheduling/index'),
       name: 'scheduling',
       meta: {
-        title: '排班信息',
+        title: '我的排班',
         roles: ['DOC_WEB_SCHEDULING_SCHEDULING_INFORMATION'],
       },
     },

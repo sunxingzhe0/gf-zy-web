@@ -133,7 +133,7 @@
     <el-row class="view__content">
       <el-col :md="12">
         <span>业务类型</span>
-        <el-select placeholder="全部" v-model="arrayS" @change="Cheese">
+        <el-select v-model="arrayS" @change="Cheese">
           <el-option label="全部" value=""></el-option>
           <el-option label="在线咨询" value="CONSULT"></el-option>
           <el-option label="在线复诊" value="REPEAT_CLINIC"></el-option>

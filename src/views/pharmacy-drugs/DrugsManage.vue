@@ -61,13 +61,7 @@
         >
           <el-button size="small" type="primary">批量上传</el-button>
         </el-upload> -->
-        <el-button
-          type="primary"
-          plain
-          @click="
-            importDialog.visible = true
-            importDialog.sonListS = []
-          "
+        <el-button type="primary" plain @click="handleClickplain"
           >批量导入</el-button
         >
       </template>
@@ -274,7 +268,7 @@ export default {
         })
         // .catch(e => loading && loading.close())
         this.importDialog.visible = false
-        this.importDialog.sonListS = []
+        this.importDialog.fileList = []
       } else {
         this.$message.success('请上传文件')
       }
@@ -321,7 +315,11 @@ export default {
     },
     //批量导入替换上次添加的文件
     hanleChange(file, fileList) {
-      this.importDialog.sonListS = [fileList[fileList.length - 1]]
+      this.importDialog.fileList = [fileList[fileList.length - 1]]
+    },
+    handleClickplain() {
+      this.importDialog.visible = true
+      this.importDialog.fileList = []
     },
     getNewList() {
       this.query = {

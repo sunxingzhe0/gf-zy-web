@@ -117,22 +117,23 @@ export default {
         // roles: ['ORG_WEB_BUSINESS_CONTINUED_PRESCRIPTION_FOR_CHRONIC_DISEASES'],
       },
     },
-    {
-      path: 'patient',
-      component: () => import('@/views/business/patient/List.vue'),
-      meta: {
-        title: '患者管理',
-        keepAlive: true,
-        // roles: ['ORG_WEB_BUSINESS_USER_MANAGEMENT'],
-      },
-    },
+    // {
+    //   path: 'patient',
+    //   component: () => import('@/views/business/patient/List.vue'),
+    //   meta: {
+    //     title: '患者管理',
+    //     keepAlive: true,
+    //     // roles: ['ORG_WEB_BUSINESS_USER_MANAGEMENT'],
+    //   },
+    // },
     // {
     //   path: 'usermanagement',
-    //   component: () => import('@/views/business/Usermanagement/Institutionalusers.vue'),
+    //   component: () =>
+    //     import('@/views/business/Usermanagement/Institutionalusers.vue'),
     //   meta: {
     //     title: '用户管理',
     //     keepAlive: true,
-    //   }
-    // }
+    //   },
+    // },
   ],
 }

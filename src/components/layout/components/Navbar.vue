@@ -282,8 +282,6 @@ export default {
       noticeNumber = await Promise.all(
         noticeNumber.map(item => queryAnyData({ readType: 1, scope: item })),
       )
-      console.log(noticeNumber)
-      // debugger
       noticeNumber = noticeNumber.map(item => item.total)
       this.message = noticeNumber.reduce((_, item) => {
         return (_ += item)

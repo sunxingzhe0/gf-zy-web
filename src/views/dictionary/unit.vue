@@ -146,7 +146,7 @@
 <script>
 import { List, mixin, EditableText } from '@/components'
 import {
-  getUnitList,
+  getUnitList, //单位列表查询
   addUnit,
   sortUnit,
   setStatetUnit,
@@ -186,19 +186,15 @@ export default {
         },
         {
           props: {
-            label: '单位名称',
+            label: '单位类型',
             options: [
               { label: '不限', value: '' },
-              { label: '基本包装单位', value: 1 },
-              { label: '常规包装单位', value: 2 },
-              { label: '剂量单位', value: 3 },
+              { label: '基本包装单位', value: 'BASIC_PACKAGING_UNIT' },
+              { label: '常规包装单位', value: 'CONVENTIONAL_PACKAGING_UNIT' },
+              { label: '剂量单位', value: 'DOSAGE_UNIT' },
             ],
           },
-          keys: [
-            'CONVENTIONAL_PACKAGING_UNIT',
-            'BASIC_PACKAGING_UNIT',
-            'DOSAGE_UNIT',
-          ],
+          keys: ['unitType'],
         },
       ],
       search: {

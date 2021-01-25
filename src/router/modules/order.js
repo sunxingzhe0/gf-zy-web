@@ -15,12 +15,90 @@ export default {
   },
   children: [
     {
+      path: 'allorder',
+      component: RouterView,
+      meta: { title: '药房订单', roles: ['DRUG_STORE_ORDER_ALL_ORDERS'] },
+      redirect: '/order/allorder/orderList',
+      children: [
+        {
+          path: 'orderList',
+          component: () => import('@/views/pharmacy-order/AllOrder.vue'),
+          meta: { activeMenu: '/order/allorder', keepAlive: true },
+          hidden: true,
+        },
+        {
+          path: 'orderdetail',
+          component: () => import('@/views/pharmacy-order/OrderDetail.vue'),
+          meta: { activeMenu: '/order/allorder' },
+          props: true,
+          hidden: true,
+        },
+        {
+          path: '/prescriptionDetails/:id',
+          component: () => import('@/views/prescription/detail'),
+          meta: {
+            title: '已通过处方详情',
+          },
+          hidden: true,
+          props: true,
+        },
+      ],
+    },
+    {
+      path: 'tocarryorder',
+      component: RouterView,
+      meta: {
+        title: '药房待自提',
+        roles: ['DRUG_STORE_ORDER_ORDER_TO_BE_PICKED_UP'],
+      },
+      redirect: '/order/tocarryorder/orderList',
+      children: [
+        {
+          path: 'orderList',
+          component: () => import('@/views/pharmacy-order/ToCarryOrder.vue'),
+          meta: { activeMenu: '/order/tocarryorder', keepAlive: true },
+          hidden: true,
+        },
+        {
+          path: 'orderdetail',
+          component: () => import('@/views/pharmacy-order/OrderDetail.vue'),
+          meta: { activeMenu: '/order/tocarryorder' },
+          props: true,
+          hidden: true,
+        },
+      ],
+    },
+    {
+      path: 'tosendorder',
+      component: RouterView,
+      meta: {
+        title: '药房待发货',
+        roles: ['DRUG_STORE_ORDER_ORDER_TO_BE_PICKED_UP'],
+      },
+      redirect: '/order/tosendorder/orderList',
+      children: [
+        {
+          path: 'orderList',
+          component: () => import('@/views/pharmacy-order/ToSendOrder.vue'),
+          meta: { activeMenu: '/order/tosendorder', keepAlive: true },
+          hidden: true,
+        },
+        {
+          path: 'orderdetail',
+          component: () => import('@/views/pharmacy-order/OrderDetail.vue'),
+          meta: { activeMenu: '/order/tosendorder' },
+          props: true,
+          hidden: true,
+        },
+      ],
+    },
+    {
       path: 'business',
       component: RouterView,
       redirect: '/order/business/list',
       name: 'business',
       meta: {
-        title: '业务订单',
+        title: '机构业务订单',
         roles: ['ORG_WEB_ORDER_BUSINESS_ORDER'],
         // keepAlive: true,
       },
@@ -50,7 +128,7 @@ export default {
       redirect: '/order/prescription/list',
       name: 'prescription',
       meta: {
-        title: '处方管理',
+        title: '机构处方单',
         roles: ['ORG_WEB_ORDER_PRESCRIPTION_MANAGEMENT'],
       },
       children: [
@@ -78,7 +156,10 @@ export default {
       component: RouterView,
       redirect: '/order/prescription-order/list',
       name: 'prescriptionOrder',
-      meta: { title: '处方订单', roles: ['ORG_WEB_ORDER_PRESCRIPTION_ORDER'] },
+      meta: {
+        title: '机构处方订单',
+        roles: ['ORG_WEB_ORDER_PRESCRIPTION_ORDER'],
+      },
       children: [
         {
           path: 'list',
@@ -108,85 +189,6 @@ export default {
           },
           hidden: true,
           props: true,
-        },
-      ],
-    },
-    {
-      path: 'allorder',
-      component: RouterView,
-      meta: { title: '全部订单', roles: ['DRUG_STORE_ORDER_ALL_ORDERS'] },
-      redirect: '/order/allorder/orderList',
-      children: [
-        {
-          path: 'orderList',
-          component: () => import('@/views/pharmacy-order/AllOrder.vue'),
-          meta: { activeMenu: '/order/allorder', keepAlive: true },
-          hidden: true,
-        },
-        {
-          path: 'orderdetail',
-          component: () => import('@/views/pharmacy-order/OrderDetail.vue'),
-          meta: { activeMenu: '/order/allorder' },
-          props: true,
-          hidden: true,
-        },
-        {
-          path: '/prescriptionDetails/:id',
-          component: () => import('@/views/prescription/detail'),
-          meta: {
-            title: '已通过处方详情',
-          },
-          hidden: true,
-          props: true,
-        },
-      ],
-    },
-
-    {
-      path: 'tocarryorder',
-      component: RouterView,
-      meta: {
-        title: '待自提订单',
-        roles: ['DRUG_STORE_ORDER_ORDER_TO_BE_PICKED_UP'],
-      },
-      redirect: '/order/tocarryorder/orderList',
-      children: [
-        {
-          path: 'orderList',
-          component: () => import('@/views/pharmacy-order/ToCarryOrder.vue'),
-          meta: { activeMenu: '/order/tocarryorder', keepAlive: true },
-          hidden: true,
-        },
-        {
-          path: 'orderdetail',
-          component: () => import('@/views/pharmacy-order/OrderDetail.vue'),
-          meta: { activeMenu: '/order/tocarryorder' },
-          props: true,
-          hidden: true,
-        },
-      ],
-    },
-    {
-      path: 'tosendorder',
-      component: RouterView,
-      meta: {
-        title: '待发货订单',
-        roles: ['DRUG_STORE_ORDER_ORDER_TO_BE_PICKED_UP'],
-      },
-      redirect: '/order/tosendorder/orderList',
-      children: [
-        {
-          path: 'orderList',
-          component: () => import('@/views/pharmacy-order/ToSendOrder.vue'),
-          meta: { activeMenu: '/order/tosendorder', keepAlive: true },
-          hidden: true,
-        },
-        {
-          path: 'orderdetail',
-          component: () => import('@/views/pharmacy-order/OrderDetail.vue'),
-          meta: { activeMenu: '/order/tosendorder' },
-          props: true,
-          hidden: true,
         },
       ],
     },

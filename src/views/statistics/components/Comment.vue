@@ -167,7 +167,7 @@ export default {
       ],
       date: [
         formatDate(
-          new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 7),
+          new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 6),
           'yyyyMMdd',
         ),
         formatDate(new Date(), 'yyyyMMdd'),

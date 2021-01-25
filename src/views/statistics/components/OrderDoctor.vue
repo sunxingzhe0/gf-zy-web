@@ -191,7 +191,7 @@ import { formatDate } from '@/utils'
 // import { number } from 'echarts/lib/export'
 
 const T = [
-  { title: '处方人数', type: 'people', prop: 'viewNum' },
+  { title: '浏览人数', type: 'people', prop: 'viewNum' },
   { title: '下单人数', type: 'people', prop: 'ordersUserNum' },
   { title: '订单数', type: 'order', prop: 'orderNum' },
   { title: '有效订单数', type: 'order', prop: 'validNum' },

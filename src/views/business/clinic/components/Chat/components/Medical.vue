@@ -39,7 +39,7 @@
                       type="primary"
                       plain
                       style="margin-left: 80px; float: left; margin-top: -40px;"
-                      @click="diagnosis.visible = true"
+                      @click="editList"
                       >修改</el-button
                     >
                     <div class="dtoList">
@@ -341,6 +341,10 @@ export default {
           label: '现病史',
         },
         {
+          name: 'hisDisease',
+          label: '既往史',
+        },
+        {
           name: 'phyCheck',
           label: '体格检查',
         },
@@ -365,6 +369,7 @@ export default {
       form: {
         mainSuit: '',
         nowDisease: '',
+        hisDisease: '',
         phyCheck: '',
         supCheck: '',
         dtoList: [],
@@ -379,6 +384,7 @@ export default {
           dtoList: 0,
           mainSuit: 0,
           nowDisease: 0,
+          hisDisease: 0,
           phyCheck: 0,
           supCheck: 0,
           dealIdea: 0,
@@ -407,12 +413,12 @@ export default {
         },
         ...this.tabs,
       ])
-      tabs.splice(5, 1)
+      tabs.splice(6, 1)
       return tabs
     },
     saveTemplateTabs() {
       const tabs = Array.from(this.tabs)
-      tabs.splice(4, 1)
+      tabs.splice(5, 1)
       return tabs
     },
   },
@@ -433,9 +439,18 @@ export default {
     },
     'importTemplate.selected': {
       handler(value) {
-        const { dealIdea, mainSuit, nowDisease, phyCheck, supCheck } = value
+        const {
+          dealIdea,
+          mainSuit,
+          nowDisease,
+          hisDisease,
+          phyCheck,
+          supCheck,
+        } = value
         if (
-          [mainSuit, nowDisease, phyCheck, supCheck].every(_ => _ === dealIdea)
+          [mainSuit, nowDisease, hisDisease, phyCheck, supCheck].every(
+            _ => _ === dealIdea,
+          )
         ) {
           this.importTemplate.selected.dtoList = dealIdea
         } else {
@@ -534,14 +549,14 @@ export default {
     diagnosisSave(data) {
       this.diagnosis.visible = false
       console.log(data)
-      /* this.form.dtoList = data
+      this.form.dtoList = data
         .filter(item => item.diagnosisType)
         .map(item => {
           return Object.assign(item, {
             mainDiagnosis: item.indexCode === this.mainDiagnosis ? 1 : 0,
             childDtos: data.filter(ite => ite.parent === item.indexCode),
           })
-        }) */
+        })
     },
     handleMedicalImport() {
       const { list, selected } = this.importTemplate
@@ -601,6 +616,10 @@ export default {
           })
           .finally(() => (this.saveTemplate.btnLoading = false))
       })
+    },
+    editList() {
+      this.getfindDiagnosisInClinic()
+      this.diagnosis.visible = true
     },
   },
   /*   destroyed() {

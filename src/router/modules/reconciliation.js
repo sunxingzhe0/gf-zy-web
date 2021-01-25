@@ -18,7 +18,7 @@ export default {
       path: 'salesData',
       component: () => import('@/views/zy-page/reconciliation/SalesData.vue'),
       name: 'salesData',
-      meta: { title: '费用数据', roles: ['ZY_ORG_ACCOUNT_RECORD_SALE'] },
+      meta: { title: '销售数据', roles: ['ZY_ORG_ACCOUNT_RECORD_SALE'] },
     },
   ],
 }

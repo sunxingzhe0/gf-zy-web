@@ -82,6 +82,7 @@ export function updateTemplateNum(params) {
  * @param {string} [data.tempDesc] - 模板描述
  * @param {string} [data.mainSuit] - 主诉
  * @param {string} [data.nowDisease] - 现病史
+ * @param {string} [data.hisDisease] - 既往史
  * @param {string} [data.phyCheck] - 体格检查
  * @param {string} [data.supCheck] - 辅助检查
  * @param {string} [data.dealIdea] - 处理意见

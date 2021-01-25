@@ -161,7 +161,7 @@ export default {
             props: {
               label: '发布状态',
               options: [
-                { label: '不限', value: '' },
+                { label: '不限' },
                 { label: '已发布', value: 0 },
                 { label: '待发布', value: 1 },
                 { label: '预约发布', value: 2 },
@@ -173,7 +173,7 @@ export default {
             props: {
               label: '科室范围',
               options: [
-                { label: '不限', value: '' },
+                { label: '不限' },
                 ...pre.dept.map(item => ({ label: item.name, value: item.id })),
               ],
             },
@@ -183,7 +183,7 @@ export default {
             props: {
               label: '发布对象',
               options: [
-                { label: '不限', value: '' },
+                { label: '不限' },
                 ...pre.role.map(_ => ({ label: _.name, value: _.id })),
               ],
             },

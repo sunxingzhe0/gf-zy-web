@@ -165,3 +165,12 @@ export function getMedicalTimeGroup(params) {
     params,
   })
 }
+
+//机构端 用户管理
+export function getorgUserList(params) {
+  return request({
+    url: '/api/v1/account/org/userList',
+    method: 'get',
+    params,
+  })
+}

@@ -41,7 +41,6 @@
             </template>
           </el-dropdown>
         </template>
-
         <slot />
       </el-col>
       <el-col
@@ -156,6 +155,10 @@ export default {
       )
       this.$emit('command', command)
     },
+  },
+  //新增
+  addMechanism() {
+    this.$emit('addMechanism', true)
   },
 }
 </script>

@@ -100,23 +100,8 @@
             </el-table-column>
             <el-table-column width="150" label="操作">
               <template slot-scope="scoped">
-                <el-tooltip content="添加子诊断" placement="top" effect="light">
-                  <el-button
-                    v-if="scoped.row.diagnosisType"
-                    type="text"
-                    icon="icon el-icon-circle-plus-outline"
-                    @click="addChild(scoped)"
-                  ></el-button>
-                </el-tooltip>
-                <el-tooltip content="删除诊断" placement="top" effect="light">
-                  <el-button
-                    type="text"
-                    icon="icon el-icon-delete"
-                    @click="del(scoped.$index)"
-                  ></el-button>
-                </el-tooltip>
                 <el-tooltip content="上移" placement="top" effect="light">
-                  <el-button
+                  <!-- <el-button
                     type="text"
                     icon="icon el-icon-sort-up"
                     @click="changeSort(scoped.row, scoped.$index, 'up')"
@@ -128,7 +113,19 @@
                         ? true
                         : false
                     "
-                  ></el-button>
+                  ></el-button> -->
+                  <svg-icon
+                    icon-class="Moveup"
+                    @click="changeSort(scoped.row, scoped.$index, 'up')"
+                    :disabled="
+                      !tableData[scoped.$index - 1]
+                        ? true
+                        : !scoped.row.diagnosisType &&
+                          tableData[scoped.$index - 1].diagnosisType
+                        ? true
+                        : false
+                    "
+                  />
                 </el-tooltip>
                 <el-tooltip
                   content="下移"
@@ -136,7 +133,7 @@
                   effect="light"
                   v-if="scoped.row.diagnosisType"
                 >
-                  <el-button
+                  <!-- <el-button
                     type="text"
                     icon="icon el-icon-sort-down"
                     :disabled="
@@ -147,7 +144,17 @@
                     "
                     @click="changeSort(scoped.row, scoped.$index, 'down')"
                   >
-                  </el-button>
+                  </el-button> -->
+                  <svg-icon
+                    icon-class="Movedown"
+                    :disabled="
+                      scoped.$index + 1 - tableData.length == 0 ||
+                      !tableData
+                        .slice(scoped.$index + 1 - tableData.length)
+                        .some(res => res.diagnosisType)
+                    "
+                    @click="changeSort(scoped.row, scoped.$index, 'down')"
+                  />
                 </el-tooltip>
 
                 <el-tooltip
@@ -156,7 +163,7 @@
                   effect="light"
                   v-else
                 >
-                  <el-button
+                  <!-- <el-button
                     type="text"
                     icon="icon el-icon-sort-down"
                     :disabled="
@@ -167,7 +174,18 @@
                         : false
                     "
                     @click="changeSort(scoped.row, scoped.$index, 'down')"
-                  ></el-button>
+                  ></el-button> -->
+                  <svg-icon
+                    icon-class="Movedown"
+                    :disabled="
+                      !tableData[scoped.$index + 1]
+                        ? true
+                        : tableData[scoped.$index + 1].diagnosisType
+                        ? true
+                        : false
+                    "
+                    @click="changeSort(scoped.row, scoped.$index, 'down')"
+                  />
                 </el-tooltip>
                 <el-tooltip
                   content="子诊断升级"
@@ -175,24 +193,27 @@
                   effect="light"
                   v-if="!scoped.row.diagnosisType"
                 >
-                  <el-button
+                  <!-- <el-button
                     type="text"
                     icon="icon el-icon-top"
                     @click="uplevel(scoped.row, scoped.$index)"
+                  ></el-button> -->
+                  <svg-icon
+                    icon-class="shenji"
+                    @click="uplevel(scoped.row, scoped.$index)"
+                  />
+                </el-tooltip>
+
+                <!-- 添加子诊断 -->
+                <el-tooltip content="添加子诊断" placement="top" effect="light">
+                  <el-button
+                    v-if="scoped.row.diagnosisType"
+                    type="text"
+                    icon="icon el-icon-circle-plus-outline"
+                    @click="addChild(scoped)"
                   ></el-button>
                 </el-tooltip>
-                <!-- <el-button
-                v-if="
-                  scoped.row.diagnosisType &&
-                  scoped.row.childDtos.length == 0 &&
-                  tableData.filter(item => {
-                    return item.diagnosisType && childDtos.length == 0
-                  }).length > 1
-                "
-                type="text"
-                icon="icon el-icon-rank"
-                @click="uplevel(scoped.row, scoped.$index)"
-              ></el-button> -->
+                <!-- 移动诊断 -->
                 <div
                   style="position: relative; display: inline-block;"
                   v-if="
@@ -227,6 +248,27 @@
                     ></el-cascader>
                   </div>
                 </div>
+                <!-- 删除诊断 -->
+                <el-tooltip content="删除诊断" placement="top" effect="light">
+                  <el-button
+                    type="text"
+                    icon="icon el-icon-delete"
+                    @click="del(scoped.$index)"
+                    style="color: red;"
+                  ></el-button>
+                </el-tooltip>
+                <!-- <el-button
+                v-if="
+                  scoped.row.diagnosisType &&
+                  scoped.row.childDtos.length == 0 &&
+                  tableData.filter(item => {
+                    return item.diagnosisType && childDtos.length == 0
+                  }).length > 1
+                "
+                type="text"
+                icon="icon el-icon-rank"
+                @click="uplevel(scoped.row, scoped.$index)"
+              ></el-button> -->
               </template>
             </el-table-column>
           </el-table>
@@ -754,5 +796,23 @@ export default {
   position: absolute;
   bottom: 0;
   width: 100%;
+  .el-button {
+    margin-right: 7px;
+  }
+}
+.svg-icon {
+  color: #0ab2c1;
+  font-size: 16px;
+  margin: 0 5px;
+}
+.el-button--text {
+  padding-left: 4px;
+}
+.el-button + .el-button {
+  padding-left: 10px;
+  margin-left: 0px;
+}
+.el-table td div {
+  padding-left: 6px;
 }
 </style>

@@ -10,6 +10,7 @@ export default {
   alwaysShow: true,
   meta: {
     title: '消息',
+    isroles: true,
     icon: 'navbar-message',
     roles: ['DRUG_DOC_NEWS'],
   },
@@ -19,7 +20,11 @@ export default {
       component: RouterView,
       name: 'systemMsg',
       redirect: '/message/systemMsg/list',
-      meta: { title: '系统消息', roles: ['DRUG_DOC_NEWS_SYSTEM_MESSAGE'] },
+      meta: {
+        title: '系统消息',
+        isroles: true,
+        roles: ['DRUG_DOC_NEWS_SYSTEM_MESSAGE'],
+      },
       children: [
         {
           path: 'list',
@@ -44,7 +49,11 @@ export default {
       component: RouterView,
       redirect: '/message/notice/list',
       name: 'notice',
-      meta: { title: '公告通知', roles: ['DRUG_DOC_NEWS_ANNOUNCEMENT_NOTICE'] },
+      meta: {
+        title: '公告通知',
+        isroles: true,
+        roles: ['DRUG_DOC_NEWS_ANNOUNCEMENT_NOTICE'],
+      },
       children: [
         {
           path: 'list',

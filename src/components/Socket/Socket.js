@@ -278,7 +278,6 @@ Socket.prototype.sendMessage = function (message) {
     },
   })
 
-  console.log(mergedMessage)
   const buffer = this.IMessage.encode(
     this.IMessage.create(mergedMessage),
   ).finish()

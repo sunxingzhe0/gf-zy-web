@@ -17,8 +17,6 @@ export default function permissionNum(value) {
         }
       })
     })
-    console.log(value, hasPermission.length)
-
     return hasPermission.length
   } else {
     console.error(`need roles! Like v-permission="['admin','editor']"`)

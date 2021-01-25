@@ -15,12 +15,6 @@ export default {
   },
   children: [
     {
-      path: 'rejectReasons',
-      component: () => import('@/views/template/rejectReasons/list'),
-      name: 'rejectReasons',
-      meta: { title: '驳回原因', roles: ['DRUG_DOC'] },
-    },
-    {
       path: 'common-words',
       component: () => import('@/views/template/CommonWords.vue'),
       meta: { title: '常用语模板', roles: ['DOC_WEB_TEMPLATE_IDIOM_TEMPLATE'] },
@@ -41,13 +35,19 @@ export default {
         roles: ['DOC_WEB_TEMPLATE_MEDICAL_RECORD_TEMPLATE'],
       },
     },
-    {
+    /*   {
       path: 'diagnosis',
       component: () => import('@/views/template/Diagnosis.vue'),
       meta: {
         title: '诊断模板',
         roles: ['DOC_WEB_TEMPLATE_MEDICAL_RECORD_TEMPLATE'],
       },
+    }, */
+    {
+      path: 'rejectReasons',
+      component: () => import('@/views/template/rejectReasons/list'),
+      name: 'rejectReasons',
+      meta: { title: '驳回原因', roles: ['DRUG_DOC'] },
     },
   ],
 }
