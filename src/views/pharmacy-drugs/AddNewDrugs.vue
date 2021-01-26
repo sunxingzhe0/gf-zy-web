@@ -1,6 +1,6 @@
 <template>
   <section class="view__card">
-    <div class="flex-start-start">
+    <div style="position: relatiev; display: flex;">
       <!-- 左侧菜单 -->
       <div class="leftMenu">
         <el-tabs :tab-position="tabPosition" @tab-click="handleLeftList">
@@ -1360,6 +1360,7 @@ export default {
   overflow-x: hidden;
 }
 .leftMenu {
+  float: left;
   width: 124px;
   // height: 1200px;
 }

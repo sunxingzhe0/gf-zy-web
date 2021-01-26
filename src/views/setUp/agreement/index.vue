@@ -1,7 +1,45 @@
 <template>
-  <div class="accountWrap view__card">
-    <div style="width: 210px; position: absolute;">
-      <el-tabs v-model="active" tab-position="left" :before-leave="beforeLeave">
+  <div
+    class="accountWrap view__card"
+    :style="
+      checkPermissionNum([
+        'ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT',
+        'ZY_ORG_SETTING_XUZHI_MANAGEMENT',
+      ]) > 1
+        ? 'padding-top:30px'
+        : ''
+    "
+  >
+    <div
+      :style="
+        checkPermissionNum([
+          'ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT',
+          'ZY_ORG_SETTING_XUZHI_MANAGEMENT',
+        ]) > 1
+          ? 'width: 210px; position: absolute;'
+          : ''
+      "
+    >
+      <el-tabs
+        v-model="active"
+        :type="
+          checkPermissionNum([
+            'ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT',
+            'ZY_ORG_SETTING_XUZHI_MANAGEMENT',
+          ]) > 1
+            ? ''
+            : 'border-card'
+        "
+        :tab-position="
+          checkPermissionNum([
+            'ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT',
+            'ZY_ORG_SETTING_XUZHI_MANAGEMENT',
+          ]) > 1
+            ? 'left'
+            : 'top'
+        "
+        :before-leave="beforeLeave"
+      >
         <el-tab-pane
           v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
           label="互联网医院服务协议"
@@ -98,12 +136,15 @@ import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn'
 import { getAgrList, addAgreement, editArg } from '@/api/setup'
 import { editTjIns, getTjIns } from '@/api/zyapi/index'
 import checkPermission from '@/utils/permission'
+import checkPermissionNum from '@/utils/permissionNum'
 import MyUploadAdapter from '@/utils/MyUploadAdapter.js'
 export default {
   data() {
     return {
       editor: ClassicEditor,
-      active: '1',
+      active: checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])
+        ? '4'
+        : 'zy_0',
       form: {
         title: '',
         content: '',
@@ -118,6 +159,7 @@ export default {
   },
   methods: {
     checkPermission,
+    checkPermissionNum,
     // 查看协议
     async showAgr() {
       console.log(this.active)
@@ -241,7 +283,6 @@ export default {
 <style lang="scss" scoped>
 .accountWrap {
   padding: 0;
-  padding-top: 30px;
   position: relative;
 
   .account_main {

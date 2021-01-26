@@ -10,13 +10,13 @@ export default {
   meta: {
     title: '机构',
     icon: 'sidebar-org',
-    // roles: ['DOC_WEB_PATIENT'],
+    roles: ['PLATFORM'],
   },
   children: [
     {
       path: 'mechanismList',
       component: () => import('@/views/mechanism/mechanismList.vue'),
-      meta: { title: '机构管理' /* roles: ['DOC_WEB_PATIENT'] */ },
+      meta: { title: '机构管理' /* roles: ['PLATFORM'] */ },
     },
   ],
 }

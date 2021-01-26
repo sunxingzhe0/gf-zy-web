@@ -174,3 +174,19 @@ export function getorgUserList(params) {
     params,
   })
 }
+
+/**
+ * 单据操作日志
+ * @param {object} params
+ * @param {string} params.businessRel - 单据ID
+ * @param {number} params.currentNum - 当前页码
+ * @param {number} params.pageSize - 每页数量
+ * @returns {Promise<ListBase & { list: object[] }>}
+ */
+export function loggerBillData(params) {
+  return request({
+    url: '/api/v1/logger/loggerBillData',
+    method: 'get',
+    params,
+  })
+}

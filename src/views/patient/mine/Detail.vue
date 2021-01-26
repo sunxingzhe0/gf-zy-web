@@ -1,12 +1,12 @@
 <template>
   <section class="view__p-mine-detail">
     <header>
-      <h3>谢晓飞</h3>
+      <h3>{{ patientInfo.name }}</h3>
 
-      <el-row>
-        <el-col v-for="_ in 6" :key="_" :span="8">
-          <span>就诊卡</span>
-          E958422555
+      <el-row v-if="patientInfo">
+        <el-col v-for="val in enums" :key="val.value" :span="8">
+          <span>{{ val.lable }}：</span>
+          {{ patientInfo[val.value] }}
         </el-col>
       </el-row>
     </header>
@@ -37,7 +37,7 @@
         <ul class="card-wrapper clinic">
           <li
             v-for="{
-              id,
+              clinicId,
               title,
               unread,
               name,
@@ -46,7 +46,7 @@
               text,
               state,
             } in clinic.list"
-            :key="id"
+            :key="clinicId"
           >
             <p>
               <strong>{{ name }}</strong>
@@ -58,7 +58,7 @@
             <p class="text-overflow">{{ text }}</p>
             <router-link
               class="el-button el-button--text el-button--mini"
-              :to="`/business/clinic?id=${id}`"
+              :to="`/business/clinic?id=${clinicId}`"
             >
               进入
             </router-link>
@@ -71,13 +71,17 @@
           </li>
         </ul>
 
-        <TableFooterTool v-model="clinic.query" />
+        <TableFooterTool
+          v-model="clinic.query"
+          @change="changePage"
+          :total="clinic.list.length"
+        />
       </el-tab-pane>
       <el-tab-pane label="就诊记录" name="treat" lazy>
         <ul class="card-wrapper treat">
           <li
             v-for="{
-              id,
+              medicalId,
               datetime,
               name,
               tag,
@@ -85,7 +89,7 @@
               doctor,
               position,
             } in treat.list"
-            :key="id"
+            :key="medicalId"
             :data-tag="tag"
           >
             <p>门诊记录 {{ datetime }}</p>
@@ -97,7 +101,11 @@
           </li>
         </ul>
 
-        <TableFooterTool v-model="treat.query" />
+        <TableFooterTool
+          v-model="treat.query"
+          @change="changePageHis"
+          :total="treat.list.length"
+        />
       </el-tab-pane>
       <el-tab-pane label="操作日志" name="log" lazy>
         <List
@@ -113,9 +121,16 @@
 
 <script>
 import { List, mixin, TableFooterTool } from '@/components'
-import { formatDate, randomString } from '@/utils'
-import { fetchList } from '@/api/list'
-
+// import { formatDate, randomString } from '@/utils'
+import {
+  loggerBillData,
+  patientInfo,
+  orderList,
+  clinicRoomList,
+  medicalList,
+} from '@/api/list'
+//类型枚举
+import types from '../enumsList'
 export default {
   name: 'Detail',
   props: {
@@ -127,66 +142,62 @@ export default {
   },
   mixins: [
     mixin([
-      { fetchListFunction: fetchList, prop: 'service' },
-      { fetchListFunction: fetchList, prop: 'log' },
+      { fetchListFunction: orderList, prop: 'service' },
+      { fetchListFunction: loggerBillData, prop: 'log' },
     ]),
   ],
   data() {
     return {
+      //详情枚举项
+      enums: [
+        { lable: '姓名', value: 'name' },
+        { lable: '就诊卡号', value: 'patientCard' },
+        { lable: '性别', value: 'sex' },
+        { lable: '出生日期', value: 'birthday' },
+        { lable: '身份证号', value: 'idCard' },
+        { lable: '手机号', value: 'phone' },
+      ],
+      //患者详情信息
+      patientInfo: {},
+      //默认选中项
       activeName: 'service',
-
+      //服务订单参数
       service: {
         query: {
           pageSize: 10,
           dateType: 0,
           searchType: 0,
+          sourceType: 0,
         },
         columns: {
           createTime: {
             minWidth: 160,
           },
+          index: {
+            hidden: true,
+          },
         },
       },
-
+      //诊室记录参数
       clinic: {
-        list: Array.from({ length: 12 }).map((_, index) => ({
-          id: randomString(),
-          title: '在线咨询',
-          unread: 4,
-          name: '刘晓庆',
-          type: index % 2 ? '图文' : '视频',
-          datetime: formatDate(new Date(), 'yyyy-MM-dd hh:mm'),
-          text:
-            'Lorem ipsum dolor sit amet consectetur adipisicing elit. Impedit modi quasi cum hic doloribus vero, nobis laudantium ut doloremque incidunt cumque aliquam eos at quia! Ad blanditiis voluptate ex labore.',
-          state: index % 3 ? '接诊中' : '已结束',
-        })),
+        list: [],
         query: {
           pageSize: 10,
           currentNum: 1,
         },
       },
-
+      //就诊记录参数
       treat: {
-        list: Array.from({ length: 12 }).map(() => ({
-          id: randomString(),
-          datetime: formatDate(new Date(), 'yyyy-MM-dd hh:mm'),
-          name: '刘力菲',
-          tag: '互联网',
-          dept: '皮肤科',
-          doctor: '李德旗',
-          position: '主治医师',
-        })),
+        list: [],
         query: {
           pageSize: 10,
           currentNum: 1,
         },
       },
-
+      //操作日志参数
       log: {
         query: {
-          pageSize: 10,
-          dateType: 0,
-          searchType: 0,
+          businessRel: this.id,
         },
         columns: {
           createTime: {
@@ -196,7 +207,13 @@ export default {
       },
     }
   },
+  created() {
+    this.getPatientInfo()
+    this.clinicRoomList()
+    this.medicalList()
+  },
   methods: {
+    //切换菜单
     handleTabClick({ name, $slots }) {
       if (['clinic', 'treat'].includes(name)) return
 
@@ -208,6 +225,75 @@ export default {
       }
 
       this.table.tableData.list.length || this.$_fetchTableData()
+    },
+    //获取患者详情信息
+    async getPatientInfo() {
+      const res = await patientInfo({ memberId: this.id })
+      this.patientInfo = res
+    },
+    //获取诊室记录列表
+    async clinicRoomList() {
+      const res = await clinicRoomList({
+        memberId: this.id,
+        ...this.clinic.query,
+      })
+      //数据处理
+      const { orderType, wayType, status } = types
+      this.clinic = {
+        list: res.list.map(_ => ({
+          clinicId: _.clinicId,
+          title: orderType[_.orderType],
+          unread: 4,
+          name: _.name,
+          type: wayType[_.wayType],
+          datetime: _.createTime,
+          text: _.illnessDesc,
+          state: status[_.status],
+        })),
+        query: {
+          pageSize: 10,
+          currentNum: 1,
+        },
+      }
+      console.log(this.clinic)
+    },
+    //获取就诊记录列表
+    async medicalList() {
+      const res = await medicalList({
+        memberId: this.id,
+        ...this.treat.query,
+      })
+      console.log(res, '99-------')
+      const { type } = types
+      this.treat = {
+        list: res.list.map(_ => ({
+          medicalId: _.medicalId,
+          datetime: _.visitDate,
+          name: _.name,
+          tag: type[_.type],
+          dept: _.deptName,
+          doctor: _.doctorName,
+          position: _.titleName,
+        })),
+        query: {
+          pageSize: 10,
+          currentNum: 1,
+        },
+      }
+      console.log(this.treat)
+    },
+    //诊室记录列表页码变化
+    changePage(page) {
+      this.clinic.query = {
+        ...page,
+      }
+      this.clinicRoomList()
+    },
+    changePageHis(page) {
+      this.treat.query = {
+        ...page,
+      }
+      this.medicalList()
     },
   },
 }
@@ -282,7 +368,7 @@ export default {
         font-size: 24px;
         writing-mode: vertical-rl;
 
-        &::before {
+        /*  &::before {
           position: absolute;
           top: 38%;
           right: -10px;
@@ -295,7 +381,7 @@ export default {
           writing-mode: lr;
           font-size: 12px;
           content: attr(data-unread);
-        }
+        } */
       }
 
       .append {
@@ -359,6 +445,9 @@ export default {
         }
       }
     }
+  }
+  .clinic__tabs {
+    width: 100%;
   }
 }
 </style>

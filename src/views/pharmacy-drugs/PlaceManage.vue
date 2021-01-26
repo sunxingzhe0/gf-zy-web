@@ -323,6 +323,7 @@ export default {
         }).then(() => {
           loading.close()
           this.$message.success('操作成功!')
+          this.$_fetchTableData()
         })
         // .catch(e => loading && loading.close())
         this.importDialog.visible = false

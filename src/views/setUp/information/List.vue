@@ -192,7 +192,7 @@ export default {
         // 单个删除
         ids = id
       }
-      this.$confirm('确定删除选中的咨询吗？', '提示', {
+      this.$confirm('确定删除选中的资讯吗？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',

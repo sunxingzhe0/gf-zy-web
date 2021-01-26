@@ -82,6 +82,7 @@ export default {
         pageSize: 10,
         dateType: 0,
         searchType: 0,
+        sourceType: 0,
       },
 
       dialog: {
@@ -145,6 +146,12 @@ export default {
     },
     columns() {
       return {
+        lastOrderType: {
+          minWidth: 140,
+        },
+        acceptsTime: {
+          minWidth: 140,
+        },
         createTime: {
           minWidth: 160,
         },
@@ -152,8 +159,9 @@ export default {
           prop: 'slot_gender',
         },
         index: {
-          prop: 'slot_index',
-          minWidth: 160,
+          hidden: true,
+          /* prop: 'slot_index',
+          minWidth: 160, */
         },
       }
     },

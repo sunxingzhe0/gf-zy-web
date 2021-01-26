@@ -111,7 +111,6 @@
                 <el-checkbox-group v-model="checkList" class="flex-between">
                   <el-checkbox
                     v-for="(item, index) in weekList"
-                    @change="handleChangeA($event)"
                     :label="item.value"
                     :key="index"
                     >{{ item.lable }}</el-checkbox
@@ -432,11 +431,6 @@ export default {
       this.workTimeList = res.workTime
       this.docConfigId = res.configId
     },
-    // 勾选事件
-    handleChangeA(e) {
-      console.log(e)
-      console.log(this.checkList, '*****')
-    },
     // 保存
     async handleSave() {
       let arr = []
@@ -464,7 +458,7 @@ export default {
           level: this.radio,
           schedualType: 0,
         })
-        this.showInfoList()
+        this.getDocSechedual()
         this.$message.success('保存成功')
       } else {
         console.log(this.staff, '***2*')
@@ -478,7 +472,7 @@ export default {
             workDays: work,
             schedualType: 1,
           })
-          this.getDocSechedual(this.staff)
+          this.getDocSechedual(this.staff, this.selectDoctor)
           this.$message.success('保存成功')
         } else {
           this.$message.warning('请先选择一个医生')

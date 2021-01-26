@@ -29,6 +29,7 @@
               :filterable="item.filterable"
               v-model="scope.row[item.props]"
               :placeholder="item.placeholder"
+              :key="scope.row.type + item.props"
               :remote-method="item['remote-method']"
               collapse-tags
               @change="chanegHandler($event, item.props)"
@@ -566,6 +567,7 @@ export default {
       if (options) {
         switch (key) {
           case 'itemName':
+            delete params.itemName
             delete params.methodName
             break
           case 'methodName':
@@ -573,8 +575,10 @@ export default {
           case 'categoryName':
             delete params.itemName
             delete params.methodName
+            delete params.categoryName
             break
         }
+        console.log(key, params)
       }
       const res = await business.disposeChooseList({
         ...params,

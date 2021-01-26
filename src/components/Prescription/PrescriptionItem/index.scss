@@ -128,7 +128,7 @@
     line-break: anywhere;
     & ::v-deep {
       .el-tooltip {
-        max-width: 100%;
+        max-width: 90%;
         > span {
           display: block;
           overflow: hidden;
@@ -150,6 +150,7 @@
 }
 .prescription-table-header {
   display: flex;
+  align-items: center;
   .column-item {
     color: #666666;
     font-weight: bold;
@@ -175,17 +176,17 @@
       height: 50px;
       border: 2px solid $--color-primary;
       border-right: none;
-      left: 7.5%;
+      left: 2%;
 
       bottom: 23px;
       z-index: 1;
     }
     &.checkbox::before {
-      left: 10.2%;
+      left: 5.8%;
     }
   }
   .column-item {
-    margin: 0 3px;
+    // margin: 0 3px;
     font-weight: 500;
     color: #333333;
     display: flex;

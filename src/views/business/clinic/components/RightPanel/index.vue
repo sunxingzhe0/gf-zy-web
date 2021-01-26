@@ -177,7 +177,7 @@
             }}
             <!-- <span class="internet">e</span> -->
             <span class="internet" v-if="item.type == 'outer'">{{
-              item.type == 'outer' ? e : ''
+              item.type == 'outer' ? 'e' : ''
             }}</span>
           </span>
 

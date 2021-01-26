@@ -315,6 +315,9 @@ export default {
 .el-input {
   width: 90%;
 }
+.el-cascader {
+  width: 90%;
+}
 .uploadImg {
   display: flex;
   .upload {

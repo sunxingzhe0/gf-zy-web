@@ -46,7 +46,7 @@
       <template v-slot:fixed="{ row }">
         <router-link
           class="el-button el-button--text el-button--mini"
-          :to="`detail/${row.orderId}`"
+          :to="`detail/${row.memberId}`"
         >
           查看
         </router-link>
@@ -100,7 +100,7 @@
 </template>
 
 <script>
-import { List, mixin, EditableText } from '@/components'
+import { List, mixin /* EditableText */ } from '@/components'
 import { fetchList } from '@/api/list'
 import { invalidFieldSetFocus /* param */ } from '@/utils'
 // import { createOrUpdate } from 'echarts/lib/util/throttle'
@@ -109,7 +109,7 @@ export default {
   name: 'TableList',
   components: {
     List,
-    EditableText,
+    // EditableText,
   },
   mixins: [
     mixin({
@@ -123,6 +123,7 @@ export default {
         pageSize: 10,
         dateType: 0,
         searchType: 0,
+        sourceType: 0,
       },
 
       dialog: {
@@ -192,6 +193,12 @@ export default {
     },
     columns() {
       return {
+        lastOrderType: {
+          minWidth: 140,
+        },
+        acceptsTime: {
+          minWidth: 140,
+        },
         createTime: {
           minWidth: 160,
         },
@@ -202,8 +209,9 @@ export default {
           prop: 'slot_nurseId',
         },
         index: {
-          prop: 'slot_index',
-          minWidth: 160,
+          hidden: true,
+          /* prop: 'slot_index',
+          minWidth: 160, */
         },
         fixed: {
           minWidth: 100,
@@ -260,7 +268,7 @@ export default {
           break
       }
     },
-    async resolveSortChange(index, { id }) {
+    /*     async resolveSortChange(index, { id }) {
       console.log(index, id)
       this.$message({
         type: 'success',
@@ -269,7 +277,7 @@ export default {
       })
 
       this.$_fetchTableData()
-    },
+    }, */
 
     handlePushBtnClick({ name }) {
       this.dialog.user = name

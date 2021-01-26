@@ -659,7 +659,7 @@ export default {
       //   })
     },
     //机构批量导入
-    preservation() {
+    async preservation() {
       if (this.fileData) {
         const loading = this.$loading({
           lock: true,
@@ -667,11 +667,16 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
         })
-        batchImport(this.fileData).then(() => {
-          loading.close()
-          this.$message.success('操作成功!')
-        })
-        // .catch(e => loading && loading.close())
+        batchImport(this.fileData)
+          .then(() => {
+            this.$message.success('操作成功!')
+            this.$_fetchTableData()
+          })
+          .finally(() => {
+            setTimeout(() => {
+              loading.close()
+            }, 500)
+          })
         this.importDialog.visible = false
         this.importDialog.sonListS = []
       } else {
