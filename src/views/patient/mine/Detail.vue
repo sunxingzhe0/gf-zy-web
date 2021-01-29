@@ -23,6 +23,16 @@
           :columns="basicInfo.columns"
           :tableData="basicInfo.tableData"
         >
+          <template v-slot:slot_userName="{ row }">
+            <el-image :src="FILE_URL(row.avatar)">
+              <img
+                slot="error"
+                class="image-slot"
+                src="@/assets/headerImg.png"
+              />
+            </el-image>
+            <span>{{ row.userName }}</span>
+          </template>
         </List>
       </el-tab-pane>
       <el-tab-pane label="服务订单" name="service" lazy>
@@ -106,7 +116,11 @@
             <p>{{ name }}</p>
             <p>
               {{ dept }} {{ doctor }} {{ position }}
-              <el-button type="text">申请查看</el-button>
+              <el-button
+                type="text"
+                @click="goRecordInfo('50D785D4EB5547CFAF36FEBF87146354')"
+                >申请查看</el-button
+              >
             </p>
           </li>
         </ul>
@@ -130,6 +144,14 @@
 </template>
 
 <script>
+/**
+ * @author xingzhesun
+ * @name   Detail
+ * @desc   患者详情
+ * @props  id          string       memberId
+ *         patientId   string       患者id
+ * @emit   none
+ */
 import { List, mixin, TableFooterTool } from '@/components'
 // import { formatDate, randomString } from '@/utils'
 import {
@@ -186,6 +208,11 @@ export default {
           },
           index: {
             hidden: true,
+          },
+          //头像
+          userName: {
+            prop: 'slot_userName',
+            minWidth: 90,
           },
         },
       },
@@ -329,7 +356,7 @@ export default {
           text: _.illnessDesc,
           state: status[_.status],
           sessionId: _.sessionId,
-          userId:_.userId
+          userId: _.userId,
         })),
         query: {
           pageSize: 10,
@@ -347,7 +374,7 @@ export default {
       console.log(res, '99-------')
       const { type } = types
       this.treat = {
-        list: res.list.map(_ => ({
+        list: /* res.list */ [1, 2, 3].map(_ => ({
           medicalId: _.medicalId,
           datetime: _.visitDate,
           name: _.name,
@@ -376,6 +403,16 @@ export default {
       }
       this.medicalList()
     },
+    //查看就诊记录详情
+    goRecordInfo(parameter) {
+      console.log(parameter, '入参-----')
+      this.$router.push({
+        name: 'recordInfo',
+        params: {
+          medicalId: parameter,
+        },
+      })
+    },
   },
 }
 </script>
@@ -383,6 +420,16 @@ export default {
 <style lang="scss">
 @import '@/styles/_variables.scss';
 @import '@/styles/_modules-detail.scss';
+.el-tooltip {
+  display: flex;
+  align-items: center;
+}
+.el-image {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  margin-right: 5px;
+}
 
 .view__p-mine-detail {
   > * + * {

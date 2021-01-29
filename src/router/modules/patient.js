@@ -49,6 +49,16 @@ export default {
             activeMenu: '/patient/mine',
           },
         },
+        {
+          path: 'recordInfo',
+          name:'recordInfo',
+          component: () => import('@/views/patient/mine/recordInfo.vue'),
+          hidden: true,
+          meta: {
+            title: '就诊记录详情',
+            activeMenu: '/patient/mine',
+          },
+        },
       ],
     },
     {
