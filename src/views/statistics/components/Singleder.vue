@@ -134,7 +134,7 @@
     <el-row class="view__content">
       <el-col :md="16">
         <span>业务类型</span>
-        <el-select placeholder="全部" v-model="arrayS" @change="getListS">
+        <el-select placeholder="全部" v-model="arrayS" @change="chartTop">
           <el-option label="全部" value=""></el-option>
           <el-option label="在线咨询" value="CONSULT"></el-option>
           <el-option label="在线复诊" value="REPEAT_CLINIC"></el-option>
@@ -143,7 +143,7 @@
       </el-col>
 
       <el-col :md="4" class="is-right">
-        <el-radio-group v-model="type" @change="getListS">
+        <el-radio-group v-model="type" @change="chartTop">
           <el-radio-button
             v-for="(_, index) in ['订单数', '订单金额']"
             :key="_"
@@ -163,7 +163,7 @@
         >
           <el-table-column width="500" align="center">
             <template slot="header" slot-scope="{}">
-              <el-select size="mini" v-model="department" @change="getListS">
+              <el-select size="mini" v-model="department" @change="chartTop">
                 <el-option
                   v-for="item in branch"
                   :key="item.id"
@@ -336,7 +336,7 @@ export default {
     this.getList(this.typ)
     this.Cheese()
     this.roomListbtn() //科室
-    this.getListS()
+    this.chartTop() //统计图TOP
   },
   watch: {
     date() {
@@ -354,8 +354,11 @@ export default {
     ...mapState('user', ['dept']),
   },
   methods: {
+    //点击科室调用订单金额数据
     hadleChange() {
       this.roomListbtn() //科室
+      this.getList()
+      this.chartTop() //订单统计图TOP
     },
     hadnleSort({ order }) {
       //高低排序
@@ -366,7 +369,7 @@ export default {
       } else {
         this.flashback = null
       }
-      this.getListS()
+      this.chartTop()
     },
     //药房端订单统计 订单金额数据
     async getList() {
@@ -375,6 +378,7 @@ export default {
         endTime: this.date[1],
         bizType: this.lsitB, //业务类型
         pharmacyId: this.$store.state.user.store.id, //药房ID
+        deptId: this.depchLisb, //科室id
         type: 1,
       })
       this.datas = this.datas.map(item =>
@@ -387,7 +391,7 @@ export default {
     },
 
     //药房端订单统计 订单和金额TOP5
-    async getListS() {
+    async chartTop() {
       let res = await getStatisticS({
         pharmacyId: this.$store.state.user.store.id, //药房ID
         startTime: this.date[0], //开始时间
@@ -452,7 +456,7 @@ export default {
         return false
       })
       this.getList()
-      this.getListS()
+      this.chartTop()
       this.Cheese()
     },
     changeDate(days) {
@@ -478,7 +482,7 @@ export default {
           break
       }
       this.getList()
-      this.getListS()
+      this.chartTop()
       this.Cheese()
     },
 

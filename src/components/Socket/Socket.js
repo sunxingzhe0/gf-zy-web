@@ -53,7 +53,8 @@ async function handleSync() {
     )
 
     if (SYNC_MESSAGE_INDEX > -1) {
-      this.props.sequence = await userImSequence({ userId })
+      const sequence = await userImSequence({ userId })
+      store.dispatch('im/updateSequence', sequence)
       getLastMessage(
         syncData[SYNC_MESSAGE_INDEX].body.sessionId.substr(1),
         this,
@@ -79,18 +80,17 @@ async function getLastMessage(sessionId, _) {
 }
 
 function updateProps() {
-  this.props = {
-    ...this.props,
+  store.dispatch('im/setMessageTicket', {
     ticket: this.receivedMessage.ticket,
     sequence:
       this.receivedMessage.status?.sequence > -1
         ? this.receivedMessage.status.sequence
-        : this.props.sequence,
+        : store.state.im.messageTicket.sequence,
     msgId:
       this.receivedMessage.status?.msgId > -1
         ? this.receivedMessage.status.msgId
-        : this.props.msgId,
-  }
+        : store.state.im.messageTicket.msgId,
+  })
 }
 
 /**
@@ -108,7 +108,7 @@ function sendHeartbeat() {
 
     this.sendMessage({
       RequestType: 3,
-      ticket: this.props.ticket,
+      ticket: store.state.im.messageTicket.ticket,
     })
   }, this.interval)
 }
@@ -132,7 +132,6 @@ function Socket(url = process.env.VUE_APP_WSS_URL) {
 
   // IM property
   this.receivedMessage = null
-  this.props = messageTicket
 
   // handlers
   this.handlers = {}
@@ -177,7 +176,7 @@ Socket.prototype.connect = function (url = this.url) {
   this.socket.addEventListener('close', event => {
     console.log('WebSocket is closed now.', event)
 
-    this.props = messageTicket
+    store.dispatch('im/setMessageTicket', messageTicket)
     this.reconnect()
   })
 }
@@ -248,7 +247,7 @@ Socket.prototype.handleMessage = async function () {
       /**
        * 处理消息回执
        */
-      this.props.sequence = message.status.sequence
+      store.dispatch('im/updateSequence', message.status.sequence)
 
       break
   }
@@ -261,13 +260,14 @@ Socket.prototype.handleMessage = async function () {
 Socket.prototype.sendMessage = function (message) {
   if (this.getSocketState() !== 1) return
 
+  const { ticket, msgId, sequence } = store.state.im.messageTicket
   const mergedMessage = merge(message, {
-    ticket: this.props.ticket,
+    ticket,
     info: {
       from: store.state.user.userId,
       fromNickName: store.state.user.name,
-      msgId: this.props.msgId,
-      sequence: this.props.sequence,
+      msgId,
+      sequence,
       chatType: 2,
       clientTime: new Date().getTime(),
       conferenceId: `id_${+new Date()}`,

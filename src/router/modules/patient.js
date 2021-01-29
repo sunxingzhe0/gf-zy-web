@@ -12,7 +12,7 @@ export default {
     title: '用户',
     icon: 'sidebar-patient',
     roles: [
-      // 'DOC_WEB_PATIENT',
+      'DOC_WEB_PATIENT',
       'ZY_ORG_PATIENT',
       'ORG_WEB_USER_MENU',
     ],
@@ -34,11 +34,20 @@ export default {
           },
         },
         {
-          path: 'detail/:id',
+          path: 'detail/:id&:patientId',
           component: () => import('@/views/patient/mine/Detail.vue'),
           props: true,
           hidden: true,
-          meta: { meta: '患者详情页', activeMenu: '/patient/mine' },
+          meta: { title: '患者详情', activeMenu: '/patient/mine' },
+        },
+        {
+          path: 'roominfo/:sessionId&:clinicId&:userId',
+          component: () => import('@/views/patient/mine/roominfo.vue'),
+          hidden: true,
+          meta: {
+            title: '诊室记录详情',
+            activeMenu: '/patient/mine',
+          },
         },
       ],
     },
@@ -62,11 +71,11 @@ export default {
       component: () => import('@/views/patient/mine/Institutionalusers.vue'),
       meta: { title: '用户管理', roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT'] },
     },
-       {
+ /*       {
       path: 'blacklist',
       name: 'blacklist',
       component: () => import('@/views/zy-page/patient/Blacklist.vue'),
       meta: { title: '黑名单管理', roles: ['ZY_ORG_PATIENT_BLACK'] },
-    },
+    }, */
   ],
 }

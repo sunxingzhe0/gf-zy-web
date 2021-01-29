@@ -65,6 +65,9 @@ message.success = function (msg) {
 Object.defineProperties(Vue.prototype, {
   FILE_URL: {
     value: function (fileId) {
+      if (!fileId) {
+        return
+      }
       return (
         process.env.VUE_APP_REMOTE_URL +
         'mi' +

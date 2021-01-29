@@ -101,9 +101,8 @@
             <el-table-column width="150" label="操作">
               <template slot-scope="scoped">
                 <el-tooltip content="上移" placement="top" effect="light">
-                  <!-- <el-button
+                  <el-button
                     type="text"
-                    icon="icon el-icon-sort-up"
                     @click="changeSort(scoped.row, scoped.$index, 'up')"
                     :disabled="
                       !tableData[scoped.$index - 1]
@@ -113,19 +112,8 @@
                         ? true
                         : false
                     "
-                  ></el-button> -->
-                  <svg-icon
-                    icon-class="Moveup"
-                    @click="changeSort(scoped.row, scoped.$index, 'up')"
-                    :disabled="
-                      !tableData[scoped.$index - 1]
-                        ? true
-                        : !scoped.row.diagnosisType &&
-                          tableData[scoped.$index - 1].diagnosisType
-                        ? true
-                        : false
-                    "
-                  />
+                    ><svg-icon icon-class="Moveup"
+                  /></el-button>
                 </el-tooltip>
                 <el-tooltip
                   content="下移"
@@ -133,9 +121,8 @@
                   effect="light"
                   v-if="scoped.row.diagnosisType"
                 >
-                  <!-- <el-button
+                  <el-button
                     type="text"
-                    icon="icon el-icon-sort-down"
                     :disabled="
                       scoped.$index + 1 - tableData.length == 0 ||
                       !tableData
@@ -144,17 +131,8 @@
                     "
                     @click="changeSort(scoped.row, scoped.$index, 'down')"
                   >
-                  </el-button> -->
-                  <svg-icon
-                    icon-class="Movedown"
-                    :disabled="
-                      scoped.$index + 1 - tableData.length == 0 ||
-                      !tableData
-                        .slice(scoped.$index + 1 - tableData.length)
-                        .some(res => res.diagnosisType)
-                    "
-                    @click="changeSort(scoped.row, scoped.$index, 'down')"
-                  />
+                    <svg-icon icon-class="Movedown" />
+                  </el-button>
                 </el-tooltip>
 
                 <el-tooltip
@@ -163,9 +141,8 @@
                   effect="light"
                   v-else
                 >
-                  <!-- <el-button
+                  <el-button
                     type="text"
-                    icon="icon el-icon-sort-down"
                     :disabled="
                       !tableData[scoped.$index + 1]
                         ? true
@@ -174,18 +151,8 @@
                         : false
                     "
                     @click="changeSort(scoped.row, scoped.$index, 'down')"
-                  ></el-button> -->
-                  <svg-icon
-                    icon-class="Movedown"
-                    :disabled="
-                      !tableData[scoped.$index + 1]
-                        ? true
-                        : tableData[scoped.$index + 1].diagnosisType
-                        ? true
-                        : false
-                    "
-                    @click="changeSort(scoped.row, scoped.$index, 'down')"
-                  />
+                    ><svg-icon icon-class="Movedown"
+                  /></el-button>
                 </el-tooltip>
                 <el-tooltip
                   content="子诊断升级"
@@ -193,15 +160,12 @@
                   effect="light"
                   v-if="!scoped.row.diagnosisType"
                 >
-                  <!-- <el-button
+                  <el-button
                     type="text"
-                    icon="icon el-icon-top"
                     @click="uplevel(scoped.row, scoped.$index)"
-                  ></el-button> -->
-                  <svg-icon
-                    icon-class="shenji"
-                    @click="uplevel(scoped.row, scoped.$index)"
-                  />
+                  >
+                    <svg-icon icon-class="shenji"
+                  /></el-button>
                 </el-tooltip>
 
                 <!-- 添加子诊断 -->
@@ -214,40 +178,43 @@
                   ></el-button>
                 </el-tooltip>
                 <!-- 移动诊断 -->
-                <div
-                  style="position: relative; display: inline-block;"
-                  v-if="
-                    mainDiagnosis != scoped.row.indexCode &&
-                    scoped.row.diagnosisType &&
-                    isChild(scoped.row.indexCode)
-                  "
-                >
-                  <el-tooltip content="移动诊断" placement="top" effect="light">
-                    <el-button type="text" icon="icon el-icon-rank"></el-button>
-                  </el-tooltip>
+                <el-tooltip content="移动诊断" placement="top" effect="light">
                   <div
-                    style="
-                      opacity: 0;
-                      position: absolute;
-                      top: 0;
-                      right: 0;
-                      width: 20px;
-                      overflow: hidden;
+                    style="position: relative; display: inline-block;"
+                    v-if="
+                      mainDiagnosis != scoped.row.indexCode &&
+                      scoped.row.diagnosisType &&
+                      isChild(scoped.row.indexCode)
                     "
                   >
-                    <el-cascader
-                      @visible-change="moveFocus($event, scoped.row.indexCode)"
-                      v-model="scoped.row.move"
-                      size="mini"
-                      style="position: relative; left: -30px;"
-                      :props="{ value: 'indexCode', children: 'childDtos' }"
-                      :options="moveData"
-                      @change="
-                        moveChange($event, scoped.row.indexCode, scoped.row)
+                    <el-button type="text" icon="icon el-icon-rank"></el-button>
+
+                    <div
+                      style="
+                        opacity: 0;
+                        position: absolute;
+                        top: 0;
+                        left: -10px;
+                        width: 25px;
+                        overflow: hidden;
                       "
-                    ></el-cascader>
+                    >
+                      <el-cascader
+                        @visible-change="
+                          moveFocus($event, scoped.row.indexCode)
+                        "
+                        v-model="scoped.row.move"
+                        size="mini"
+                        style="position: relative; left: -30px;"
+                        :props="{ value: 'indexCode', children: 'childDtos' }"
+                        :options="moveData"
+                        @change="
+                          moveChange($event, scoped.row.indexCode, scoped.row)
+                        "
+                      ></el-cascader>
+                    </div>
                   </div>
-                </div>
+                </el-tooltip>
                 <!-- 删除诊断 -->
                 <el-tooltip content="删除诊断" placement="top" effect="light">
                   <el-button
@@ -379,6 +346,27 @@ export default {
     },
   },
   methods: {
+    // computedDisabled(index, type) {
+    // if (!tableData[scoped.$index - 1]) {
+    //   return true
+    // } else {
+    //   if (
+    //     !scoped.row.diagnosisType &&
+    //     tableData[scoped.$index - 1].diagnosisType
+    //   ) {
+    //     return true
+    //   } else {
+    //     return false
+    //   }
+    // }
+    //   if (type === 'moveUp') {
+    //     if (index === 0) {
+    //       return true
+    //     } else {
+    //     }
+    //   } else if (type === 'moveDown') {
+    //   }
+    // },
     // 获取数据源并分出一级二级
     getAllClassify() {
       console.log(this.tableData)
@@ -405,6 +393,7 @@ export default {
       }, 30)
 
       this.moveData = data
+      console.log(this.moveData)
     },
     // 判断元素是否有子元素
     isChild(indexCode) {
@@ -530,6 +519,7 @@ export default {
     },
     //排序更改
     changeSort(scoped, index, type) {
+      console.log(1111)
       if (scoped.diagnosisType) {
         //主
         let data = this.tableData
@@ -582,15 +572,31 @@ export default {
     },
     //子诊断升级
     uplevel(scoped, index) {
-      // console.log(scoped, index)
-      let item = this.tableData[index]
-      Object.assign(item, {
+      let childLength = null
+      this.tableData.forEach((item, t) => {
+        if (scoped.parent == item.parent && item.parent !== false) {
+          console.log(t)
+          childLength = t
+        }
+      })
+      console.log(childLength)
+      let item = {
+        ...this.tableData[index],
         diagnosisType: this.types[0].value,
         childDtos: [],
         parent: false,
         mainDiagnosis: 0,
-      })
-      this.tableData.splice(index, 1, item)
+      }
+      // Object.assign(item, {
+      //   diagnosisType: this.types[0].value,
+      //   childDtos: [],
+      //   parent: false,
+      //   mainDiagnosis: 0,
+      // })
+      console.log(item)
+      this.tableData.splice(childLength + 1, 0, item) //index:元素需要放置的位置索引，从0开始
+      this.tableData.splice(index, 1) //移除原来位置上的该元素
+      // // this.tableData.splice(index, 1, item)
       this.getAllClassify()
     },
     add() {
@@ -801,18 +807,18 @@ export default {
   }
 }
 .svg-icon {
-  color: #0ab2c1;
+  // color: #0ab2c1;
   font-size: 16px;
-  margin: 0 5px;
+  // margin: 0 5px;
 }
-.el-button--text {
-  padding-left: 4px;
-}
-.el-button + .el-button {
-  padding-left: 10px;
-  margin-left: 0px;
-}
+// .el-button--text {
+//   padding-left: 4px;
+// }
+// .el-button + .el-button {
+//   padding-left: 10px;
+//   margin-left: 0px;
+// }
 .el-table td div {
-  padding-left: 6px;
+  margin: 0 10px;
 }
 </style>

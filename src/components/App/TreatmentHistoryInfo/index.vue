@@ -4,12 +4,27 @@
     <PatinetInfo :orderInfo="orderInfo"></PatinetInfo>
     <div class="app-info">
       <BlockTitle>医嘱记录</BlockTitle>
+      <div class="rpTitle">处方单</div>
       <template v-for="(item, index) in rpList">
-        <PrescriptionItem
-          :key="index"
-          scene="detail"
-          :prescription="item"
-        ></PrescriptionItem>
+        <div :key="index" class="rpWrap">
+          <div class="rpList">
+            <div>处方号：{{ item.id }}</div>
+            <div class="flex-between">
+              <span>数量：{{ item.drugNumber }}</span>
+              <span
+                >医生：{{ item.auditName }} {{ item.auditTitle || '' }}</span
+              >
+              <span>审方时间：{{ item.auditTime }}</span>
+              <span>西药：￥{{ item.westFee }}</span>
+              <span>中成药：￥{{ item.chPatentFee }}</span>
+              <span class="price">合计：￥{{ item.rpFee }}</span>
+            </div>
+          </div>
+          <PrescriptionItem
+            scene="detail"
+            :prescription="item"
+          ></PrescriptionItem>
+        </div>
       </template>
     </div>
     <ExamReport :examInfoList="treatmentInfo.examInfoList"></ExamReport>
@@ -73,11 +88,13 @@ export default {
       }))
     },
   },
+
   methods: {
     async getTreatmentHistoryInfo() {
       if (!this.medicalId) return
       const res = await hisRecord({ medicalId: this.medicalId })
       this.treatmentInfo = res || {}
+      console.log(this.treatmentInfo, '00000')
       this.orderInfo = {
         patient: {
           age: res.patientAge,
@@ -103,3 +120,30 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+@import '@/styles/_variables.scss';
+.rpTitle {
+  color: #666;
+  margin: 20px 0;
+}
+.rpWrap {
+  padding: 15px;
+  border: 1px solid #e6e6e6;
+  ::v-deep.prescription-item-footer {
+    display: none;
+  }
+}
+.rpList {
+  font-size: 16px;
+  color: #333;
+
+  span {
+    font-size: 14px;
+    color: #666;
+    margin-top: 10px;
+    &.price {
+      color: $--color-primary;
+    }
+  }
+}
+</style>

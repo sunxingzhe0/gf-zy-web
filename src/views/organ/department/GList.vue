@@ -109,28 +109,45 @@
     >
       <el-form ref="deptForm" :model="form" :rules="rules" label-width="100px">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item label="上级科室">
-              <div>{{ form.id || '-' }}</div>
+              <el-select v-model="form.name">
+                <el-option
+                  v-for="item in options"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+              <!-- <div>{{ form.name || '-' }}</div> -->
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item label="所属院区" required>
-              <div>{{ form.orgName }}</div>
+              <el-select v-model="form.orgName">
+                <el-option
+                  v-for="item in options"
+                  :key="item.id"
+                  :label="item.orgName"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+              <!-- <div>{{ form.orgName }}</div> -->
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item v-if="form.id" label="科室编码">
               <div>{{ form.id }}</div>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item label="科室名称" required>
-              <div>{{ form.name }}</div>
+              <el-input v-model="form.name"></el-input>
+              <!-- <div>{{ form.name }}</div> -->
             </el-form-item>
           </el-col>
 
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item label="分类图片" prop="pics">
               <el-upload
                 class="avatar-uploader"
@@ -151,33 +168,37 @@
               建议尺寸：640 x 640 像素
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item label="科室预约须知">
               <el-input
                 type="textarea"
                 placeholder="请输入"
                 v-model="form.notice"
+                maxlength="200"
+                show-word-limit
                 :autosize="{ minRows: 2, maxRows: 2 }"
               ></el-input>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item label="科室简介">
               <el-input
                 v-model="form.intro"
                 type="textarea"
                 placeholder="请输入"
+                maxlength="200"
+                show-word-limit
                 :autosize="{ minRows: 2, maxRows: 2 }"
               />
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item label="是否推荐" required>
               <el-radio v-model="form.recommend" :label="true">是</el-radio>
               <el-radio v-model="form.recommend" :label="false">否</el-radio>
             </el-form-item>
           </el-col>
-          <el-col :span="12">
+          <el-col :span="16">
             <el-form-item label="状态" required>
               <el-radio v-model="form.state" :label="true">启用</el-radio>
               <el-radio v-model="form.state" :label="false">停用</el-radio>
@@ -419,6 +440,12 @@ export default {
           id: {
             minWidth: 150,
           },
+          orgName: {
+            hidden: true,
+          },
+          faDeptName: {
+            hidden: true,
+          },
         },
       },
       importDialog: {
@@ -465,6 +492,7 @@ export default {
         tree: false,
         type: 'WEB', //区分web和h5返回方式有更改
       })
+      console.log(res, '*****111')
       this.options = res
       let obj_ = {
         id: '',
@@ -680,5 +708,11 @@ export default {
 .el-icon-bottom {
   font-size: 20px;
   cursor: pointer;
+}
+.el-select > .el-input {
+  width: 450px;
+}
+.el-form-item {
+  margin-bottom: 16px;
 }
 </style>

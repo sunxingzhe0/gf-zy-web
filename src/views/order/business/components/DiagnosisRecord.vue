@@ -13,6 +13,7 @@
           end-placeholder="结束日期"
           align="right"
           style="margin-right: 10px;"
+          :default-time="['00:00:00', '23:59:59']"
         >
         </el-date-picker>
         <el-button

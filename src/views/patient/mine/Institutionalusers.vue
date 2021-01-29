@@ -29,8 +29,8 @@ export default {
     return {
       query: {
         pageSize: 0,
-        timeType: 0,
-        searchType: 0,
+        timeType: 1,
+        searchType: 1,
       },
     }
   },
@@ -40,7 +40,7 @@ export default {
         date: {
           props: {
             options: [
-              { label: '登录时间', value: 0 },
+              // { label: '登录时间', value: 0 },
               { label: '第一次登录时间', value: 1 },
               { label: '最近一次登录时间', value: 2 },
             ],

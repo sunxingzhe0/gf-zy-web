@@ -13,6 +13,7 @@
           style="margin-right: 10px;"
           value-format="yyyyMMddHHmmss"
           :picker-options="pickerOptions"
+          :default-time="['00:00:00', '23:59:59']"
         >
         </el-date-picker>
         <el-button

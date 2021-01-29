@@ -284,7 +284,7 @@
             ></Diagnosis>
           </el-tab-pane>
           <el-tab-pane
-            v-show="bizInfo.bizType != 'CONSULT'"
+            v-if="bizInfo.bizType != 'CONSULT'"
             name="medicalRecord"
             lazy
           >

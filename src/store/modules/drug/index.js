@@ -1,4 +1,4 @@
-/* 
+/*
   interface Emums {
     id: number,
     name: string,
@@ -37,7 +37,15 @@ export default {
     drugTreatments: [], // 药品使用疗程 Array<>
   },
   actions: {
-    init({ dispatch }) {
+    init({ rootState, dispatch }) {
+      //平台端不请求下面几个接口
+      console.log(arguments)
+      if (
+        rootState.user.identityType &&
+        rootState.user.identityType === 'PLATFORM'
+      ) {
+        return
+      }
       dispatch('getDrugWays')
       dispatch('getDrugTypes')
       dispatch('getDrugTreatments')

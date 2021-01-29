@@ -38,7 +38,7 @@ import moment from 'moment'
 import { List, mixin } from '@/components'
 import { noTypes } from '@/api/zyapi/payment'
 import { orderGhData, exportOrderGhData } from '@/api/zyapi/statistics'
-import { deptChooseList } from '@/api/zyapi/index'
+import { deptChooseList } from '@/api/index'
 const pre = {
   dept: [],
   noType: [],
@@ -56,8 +56,9 @@ export default {
         timeType: 0,
         ghType: 1,
         currentNum: 1,
-        endTime: moment().format('YYYYMMDD') + '235959',
+        time: moment().format('YYYYMMDD') + '000000',
         startTime: moment().format('YYYYMMDD') + '000000',
+        endTime: moment().format('YYYYMMDD') + '000000',
       },
     }
   },
@@ -67,7 +68,10 @@ export default {
       deep: true, //深度监听设置为 true
       handler: function (newV) {
         console.log(newV)
-        this.query.endTime = newV.startTime
+        this.query.time = newV.time || moment().format('YYYYMMDD') + '000000'
+        this.query.startTime =
+          newV.time || moment().format('YYYYMMDD') + '000000'
+        this.query.endTime = newV.time || moment().format('YYYYMMDD') + '000000'
       },
     },
   },
@@ -82,17 +86,17 @@ export default {
             },
             data: {
               attrs: {
-                type: 'datetimerange',
+                type: 'datetime',
                 valueFormat: 'yyyyMMddHHmmss',
                 size: 'small',
                 placeholder: '选择挂号日期',
-                defaultTime: ['00:00:00', '23:59:59'],
+                defaultTime: '00:00:00',
               },
               on: {
                 change: this.timeChange,
               },
             },
-            keys: ['startTime', 'endTime'],
+            keys: 'time',
           },
           {
             props: {
@@ -113,7 +117,13 @@ export default {
             props: {
               label: '就诊类型',
               is: 'el-select',
-              options: [{ label: '不限', value: '' }],
+              options: [
+                { label: '不限', value: '' },
+                ...pre.noType.map(_ => ({
+                  label: _.name,
+                  value: _.id,
+                })),
+              ],
             },
             keys: 'patientType',
           },
@@ -129,15 +139,6 @@ export default {
           hidden: true,
         },
         index: {
-          hidden: true,
-        },
-        docName: {
-          hidden: true,
-        },
-        titleName: {
-          hidden: true,
-        },
-        hospital: {
           hidden: true,
         },
         deptName: {

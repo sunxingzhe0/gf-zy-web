@@ -20,6 +20,7 @@ export default {
       component: RouterView,
       redirect: '/drugs/drugsmanage/list',
       meta: { title: '药品管理', roles: ['DRUG_STORE_DRUGS_DRUG_MANAGEMENT'] },
+
       children: [
         {
           path: 'list',
@@ -36,6 +37,7 @@ export default {
           component: () => import('@/views/pharmacy-drugs/AddNewDrugs.vue'),
           hidden: true,
           meta: {
+            title: '新增药品',
             // roles: ['DRUG_STORE_DRUGS_ORIGIN_MANAGEMENT'],
             activeMenu: '/drugs/AddNewDrugs',
           },
@@ -47,7 +49,7 @@ export default {
       component: () => import('@/views/pharmacy-drugs/PlaceManage.vue'),
       meta: {
         title: '产地管理',
-        roles: ['DRUG_STORE_DRUGS_ORIGIN_MANAGEMENT'],
+        // roles: ['DRUG_STORE_DRUGS_ORIGIN_MANAGEMENT'],
       },
     },
     // {

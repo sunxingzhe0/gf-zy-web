@@ -31,3 +31,36 @@ export function mechanismList(params) {
     params,
   })
 }
+
+/**
+ * 3.更改机构状态
+ * @param {string} id //	机构id
+ * @param {boolean} id //	机构状态 启用 /禁用 默认启用
+ */
+export function changeState(data) {
+  return request({
+    url: '/api/v1/platform/changeState',
+    method: 'post',
+    data,
+  })
+}
+/**
+  4.获取机构详情
+*/
+export function getInfo(params) {
+  return request({
+    url: '/api/v1/platform/get',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 5.修改机构信息
+ */
+export function editInfo(data) {
+  return request({
+    url: '/api/v1/platform/edit',
+    method: 'post',
+    data,
+  })
+}

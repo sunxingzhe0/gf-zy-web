@@ -56,6 +56,7 @@ export default {
             options: [
               { label: '创建时间', value: 0 },
               { label: '支付时间', value: 1 },
+              { label: '预约时间', value: 2 },
             ],
           },
           keys: ['timeType', 'startTime', 'endTime'],
@@ -63,7 +64,7 @@ export default {
         search: {
           props: {
             options: [
-              { label: '单据号', value: 0 },
+              { label: '订单号', value: 0 },
               { label: '套餐名', value: 1 },
               { label: '体检人', value: 2 },
               { label: '就诊卡号', value: 3 },

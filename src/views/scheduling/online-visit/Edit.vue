@@ -458,7 +458,7 @@ export default {
           level: this.radio,
           schedualType: 0,
         })
-        this.getDocSechedual()
+        this.showInfoList()
         this.$message.success('保存成功')
       } else {
         console.log(this.staff, '***2*')

@@ -31,7 +31,13 @@
                   :label="t.label"
                   :id="item"
                   :prop="item"
-                  :rules="[{ required: true, message: '内容不能为空' }]"
+                  :rules="[
+                    {
+                      required: true,
+                      message: '内容不能为空',
+                      trigger: 'blur',
+                    },
+                  ]"
                 >
                   <div v-if="t.name === 'dtoList'">
                     <el-button
@@ -461,6 +467,7 @@ export default {
     },
   },
   created() {
+    console.log(123, '===1111111===')
     if (this.orderId) {
       this.getDiseaseInClinic()
     }

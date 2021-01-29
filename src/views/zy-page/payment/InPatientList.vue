@@ -68,7 +68,7 @@ export default {
         search: {
           props: {
             options: [
-              { label: '单据号', value: 0 },
+              { label: '订单号', value: 0 },
               { label: '患者姓名', value: 1 },
               { label: '就诊卡号', value: 2 },
             ],

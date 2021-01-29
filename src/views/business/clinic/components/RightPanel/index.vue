@@ -71,7 +71,7 @@
         <div class="is-center">
           总就诊次：
           <span :style="{ color: variables.danger }">
-            {{ seeDoctor.list.length }}
+            {{ seeDoctor.total }}
           </span>
           次
         </div>
@@ -216,8 +216,10 @@
         @infinite="infiniteHandler"
       >
         <template #no-results>
-          <Empty tips="暂无数据" />
+          <Empty v-if="!seeDoctor.total" tips="暂无数据" />
+          <span v-else></span>
         </template>
+
         <span slot="no-more"></span>
       </infinite-loading>
     </div>
@@ -265,6 +267,7 @@ export default {
         currentNum: 1,
         pageSize: 10,
         list: [],
+        total: '',
       },
 
       show: localStorage.getItem('r_panel_show') === 'false' ? false : true,
@@ -310,11 +313,13 @@ export default {
       deep: true,
     },
     type: function () {
+      this.cleanSearch()
       this.cleanInfiniteLoad()
       this.distance = 100
       this.identifier++
     },
     orderId: function () {
+      this.cleanSearch()
       this.cleanInfiniteLoad()
       this.distance = 100
       this.identifier++
@@ -332,17 +337,16 @@ export default {
       if (index !== -1) this.$set(this.seeDoctor.list[index], 'open', true)
     },
     async infiniteHandler($state) {
-      const { data } = await webarchiveList({
+      const res = await webarchiveList({
         currentNum: this.seeDoctor.currentNum++,
         pageSize: this.seeDoctor.pageSize,
         memberIds: this.memberId,
         status: true,
         ...this.seeDoctor.query,
       })
-
-      this.seeDoctor.list.push(...data)
-
-      if (data && data.length) {
+      this.seeDoctor.total = res.total
+      this.seeDoctor.list.push(...res.data)
+      if (res.data && res.data.length === this.seeDoctor.pageSize) {
         $state.loaded()
       } else {
         $state.complete()
@@ -353,6 +357,15 @@ export default {
       this.patient = {}
 
       this.cleanInfiniteLoad()
+    },
+    cleanSearch() {
+      this.seeDoctor.date = ''
+      this.seeDoctor.query = {
+        startDate: '',
+        endDate: '',
+        hospital: '',
+        medicalType: '',
+      }
     },
     cleanInfiniteLoad() {
       this.distance = Infinity

@@ -344,10 +344,15 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
         })
-        orgDrugImportUnitExcel(this.fileData).then(() => {
-          loading.close()
-          this.$message.success('操作成功!')
-        })
+        orgDrugImportUnitExcel(this.fileData)
+          .then(() => {
+            this.$message.success('操作成功!')
+          })
+          .finally(() => {
+            setTimeout(() => {
+              loading.close()
+            }, 1000)
+          })
         // .catch(e => loading && loading.close())
         this.importDialog.visible = false
         this.importDialog.sonListS = []

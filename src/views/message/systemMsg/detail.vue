@@ -45,7 +45,7 @@ export default {
     goTo() {
       // console.log(this.notice.split('_'), '***/*')
       const [clientType, msgType] = this.notice.split('_')
-      // console.log(clientType, '****', msgType)
+      console.log(clientType, '****', msgType)
       if (clientType == 'DOCTOR') {
         if (msgType == 10) {
           this.$router.push('/business/clinic?active=REPEAT_CLINIC')
@@ -53,30 +53,28 @@ export default {
           this.$router.push('/business/clinic')
         }
       } else if (
-        clientType == 'YS' ||
-        msgType == '02' ||
-        msgType == '01' ||
-        msgType == '03' ||
-        msgType == '04' ||
-        msgType == '05'
+        clientType == 'YS' &&
+        (msgType == '02' ||
+          msgType == '01' ||
+          msgType == '03' ||
+          msgType == '04' ||
+          msgType == '05')
       ) {
-        this.$router.push('/prescription/pending/list')
+        this.$router.push('/prescription/pending/detail')
       } else if (clientType == 'YF') {
         if (msgType == '01') {
+          this.$router.push(`/order/allorder/orderdetail?id=` + this.bizId)
+        } else if (msgType == '02' || msgType == '03') {
           // this.$router.push('/order/prescription-order/list')
-        } else if (clientType == 'YF' || msgType == '02' || msgType == '03') {
-          // this.$router.push('/order/prescription-order/list')
-        } else if (clientType == 'YF' || msgType == '05' || msgType == '04') {
-          console.log(1111)
-          // this.$router.push(`/order/tosendorder/orderdetail?id=` + this.bizId)
-          this.$router.push(`/order/tosendorder/orderdetail`)
-        } else if (clientType == 'YF' || msgType == '06' || msgType == '07') {
+        } else if (msgType == '05' || msgType == '04') {
+          this.$router.push(`/order/tocarryorder/orderdetail?id=` + this.bizId)
+        } else if (msgType == '06' || msgType == '07') {
           // this.$router.push('/order/prescription-order/list')
         }
-      } else if (clientType == 'ORG' || msgType == '01' || msgType == '02') {
+      } else if (clientType == 'ORG' && (msgType == '01' || msgType == '02')) {
         this.$router.push('/jurisdiction/account/list')
       }
-      if (clientType == 'ALL' || msgType == '06') {
+      if (clientType == 'ALL' && msgType == '06') {
         this.$router.push('/set-up/account')
       }
     },

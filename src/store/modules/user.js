@@ -115,6 +115,10 @@ const mutations = {
   SET_ACCOUNT: (state, account) => {
     state.account = account
   },
+  SET_IDENT: (state, identityType) => {
+    state.identityType = identityType
+  },
+
   SET_PHONE: (state, phone) => {
     state.phone = phone
   },
@@ -227,6 +231,7 @@ const actions = {
           commit('SET_TITLE', data.titleName)
           commit('SET_TITLE_ID', data.titleId)
           commit('SET_ACCOUNT', data.account)
+          commit('SET_IDENT', data.identityType)
           commit('SET_PHONE', data.phone)
           commit('SET_ROLENAME', data.roleName)
           commit('SET_ROLELIST', data.roleList)

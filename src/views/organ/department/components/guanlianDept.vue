@@ -98,6 +98,12 @@ export default {
         createTime: {
           minWidth: 140,
         },
+        faDeptNam: {
+          hidden: true,
+        },
+        level: {
+          hidden: true,
+        },
       },
     }
   },

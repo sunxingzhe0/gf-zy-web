@@ -7,6 +7,7 @@ export default {
   component: Layout,
   redirect: '/shift/scheduling',
   name: 'ShiftModules',
+  alwaysShow: true,
   meta: {
     title: '排班',
     icon: 'sidebar-shift',

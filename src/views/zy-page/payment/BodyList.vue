@@ -56,6 +56,7 @@ export default {
             options: [
               { label: '创建时间', value: 0 },
               { label: '支付时间', value: 1 },
+              // { label: '预约时间', value: 2 },
             ],
           },
           keys: ['timeType', 'startTime', 'endTime'],
@@ -106,7 +107,7 @@ export default {
           },
           {
             props: {
-              label: '支付方式',
+              label: '单据状态',
               options: [
                 { label: '不限', value: '' },
                 { label: '已退费', value: 0 },
@@ -128,6 +129,12 @@ export default {
         },
         index: {
           hidden: true,
+        },
+        regDate: {
+          minWidth: 160,
+        },
+        orderNo: {
+          minWidth: 100,
         },
         fixed: {
           minWidth: 60,

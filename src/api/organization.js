@@ -261,6 +261,15 @@ export function batchImport(data) {
     data,
   })
 }
+//机构端批量导入互联网科室
+export function deptOuterImportExcel(data) {
+  return request({
+    url: '/api/v1/deptOuter/importExcel',
+    method: 'post',
+    timeout: '',
+    data,
+  })
+}
 
 //机构端批量导入药房管理
 export function pharmacyManagement(data) {

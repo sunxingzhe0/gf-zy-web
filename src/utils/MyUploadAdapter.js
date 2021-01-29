@@ -16,6 +16,9 @@ class MyUploadAdapter {
     // 后台返回数据：
     // {"code":0,"msg":"success","data":{"url":"/upload/struts2.jpeg"}}
     // 方法返回数据格式： {default: "url"}
+    if (!id) {
+      return
+    }
     return {
       default:
         process.env.VUE_APP_REMOTE_URL +

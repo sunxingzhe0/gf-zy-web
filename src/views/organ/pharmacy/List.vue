@@ -572,10 +572,16 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
         })
-        pharmacyManagement(this.fileData).then(() => {
-          loading.close()
-          this.$message.success('操作成功!')
-        })
+        pharmacyManagement(this.fileData)
+          .then(() => {
+            this.$message.success('操作成功!')
+            this.$_fetchTableData()
+          })
+          .finally(() => {
+            setTimeout(() => {
+              loading.close()
+            }, 1000)
+          })
         this.importDialog.visible = false
         this.importDialog.sonListS = []
       } else {

@@ -275,6 +275,9 @@ export default {
         createDate: {
           minWidth: 180,
         },
+        regularUnitText: {
+          minWidth: 100,
+        },
         //是否拆零
         split: {
           formatter(row) {
@@ -678,10 +681,16 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
         })
-        importDrugExcel(this.fileData).then(() => {
-          loading.close()
-          this.$message.success('操作成功!')
-        })
+        importDrugExcel(this.fileData)
+          .then(() => {
+            this.$message.success('操作成功!')
+            this.$_fetchTableData()
+          })
+          .finally(() => {
+            setTimeout(() => {
+              loading.close()
+            }, 1000)
+          })
         this.importDialog.visible = false
         this.importDialog.sonListS = []
       } else {

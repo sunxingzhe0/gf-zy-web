@@ -28,7 +28,7 @@
                   ref="name"
                   placeholder="请输入"
                   v-model="form.name"
-                  :disabled="form.orgDrug"
+                  :disabled="id ? true : false"
                 ></el-input>
               </el-form-item>
             </el-col>
@@ -318,11 +318,7 @@
             </el-col>
 
             <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
-              <el-form-item
-                label="默认包装单位"
-                data-text="默认单位"
-                prop="unit"
-              >
+              <el-form-item label="默认单位" data-text="默认单位" prop="unit">
                 <el-select
                   ref="unit"
                   v-model="form.unit"
@@ -571,7 +567,7 @@
               </el-form-item>
             </el-col>
 
-            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+            <el-col :xs="24" :sm="12" :md="10" :lg="6" :xl="6">
               <el-form-item label="状态" prop="status" ref="status">
                 <!-- <el-radio-group v-model="form.status"> -->
                 <el-radio v-model="form.status" :label="false">启用</el-radio>
@@ -580,16 +576,16 @@
               </el-form-item>
             </el-col>
 
-            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+            <el-col :xs="24" :sm="12" :md="10" :lg="6" :xl="6">
               <el-form-item label="属性" prop="attr" ref="attr">
                 <el-radio-group v-model="form.attr">
-                  <el-radio :label="true">普通</el-radio>
-                  <el-radio :label="false">特殊</el-radio>
+                  <el-radio :label="false">普通</el-radio>
+                  <el-radio :label="true">特殊</el-radio>
                 </el-radio-group>
               </el-form-item>
             </el-col>
 
-            <el-col :xs="24" :sm="12" :md="8" :lg="6" :xl="6">
+            <el-col :xs="24" :sm="12" :md="10" :lg="6" :xl="6">
               <el-form-item label="排序" prop="seq">
                 <el-input
                   ref="seq"
@@ -889,7 +885,7 @@ export default {
           key: 'ways',
         },
         {
-          title: '默认包装单位',
+          title: '默认单位',
           type: 2,
           necessary: true,
           key: 'unit',
@@ -1065,7 +1061,9 @@ export default {
           })
           // this.optionB.push({ unitName: val, id: this.typeId })
           this.$nextTick(() => {
-            this.form.dosageUnit = this.typeId
+            this.form.dosageUnit = this.optionB.filter(item => {
+              return item.unitName == val
+            })[0].id
           })
         } else if (type == 'CONVENTIONAL_PACKAGING_UNIT') {
           console.log(222222)
@@ -1092,7 +1090,9 @@ export default {
           })
           // this.optionA.push({ unitName: val, id: this.typeId })
           this.$nextTick(() => {
-            this.form.basicUnit = this.typeId
+            this.form.basicUnit = this.optionA.filter(item => {
+              return item.unitName == val
+            })[0].id
           })
         }
       }
@@ -1147,20 +1147,30 @@ export default {
     isAdd() {
       this.$router.go(-1) //返回到药品管理页面
     },
-    //包装单位类型
+    //包装单位类型 查询机构端的单位
     async add() {
       let res = await listUnit({
-        mechanismId: this.$store.state.user.store.id,
-        // pageSize: 999,
+        // mechanismId: this.$store.state.user.store.id,
+        pageSize: 999,
       })
+      console.log(res, '8888')
+
+      // regularUnit: 'CONVENTIONAL_PACKAGING_UNIT', //常规包装单位
       this.optionU = res.filter(val => {
-        return val.typeList.indexOf('CONVENTIONAL_PACKAGING_UNIT') > -1
+        console.log(val.typeList, '1111')
+        let typeNull = val.typeList ? val.typeList : []
+        return typeNull.indexOf('CONVENTIONAL_PACKAGING_UNIT') > -1
       })
+      console.log(this.optionU, '*****')
+      // // basicUnit: 'BASIC_PACKAGING_UNIT',  // 基本包装单位
       this.optionA = res.filter(val => {
-        return val.typeList.indexOf('BASIC_PACKAGING_UNIT') > -1
+        let typeNull = val.typeList ? val.typeList : []
+        return typeNull.indexOf('BASIC_PACKAGING_UNIT') > -1
       })
+      //  dosageUnit: 'DOSAGE_UNIT', //剂量单位
       this.optionB = res.filter(val => {
-        return val.typeList.indexOf('DOSAGE_UNIT') > -1
+        let typeNull = val.typeList ? val.typeList : []
+        return typeNull.indexOf('DOSAGE_UNIT') > -1
       })
       //全部单位保存下来
       this.typecodeList = res
@@ -1238,6 +1248,8 @@ export default {
     async newPlace() {
       let res = await PlaceOrigin({
         mechanismId: this.$store.state.user.store.id,
+        pageSize: 9999,
+        status: false, //状态启用的
       })
       this.newPacl = res.list
     },

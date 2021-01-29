@@ -95,7 +95,13 @@ export default {
             props: {
               label: '就诊类型',
               is: 'el-select',
-              options: [{ label: '不限', value: '' }],
+              options: [
+                { label: '不限', value: '' },
+                ...pre.noType.map(_ => ({
+                  label: _.name,
+                  value: _.id,
+                })),
+              ],
             },
             keys: 'patientType',
           },
@@ -112,15 +118,6 @@ export default {
         },
         index: {
           hidden: true,
-        },
-        docName: {
-          hidden: false,
-        },
-        titleName: {
-          hidden: false,
-        },
-        hospital: {
-          hidden: false,
         },
         deptName: {
           minWidth: 100,

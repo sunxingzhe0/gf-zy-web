@@ -17,6 +17,14 @@
       type="border-card"
       @tab-click="handleTabClick"
     >
+      <el-tab-pane label="基本资料" name="basicInfo">
+        <List
+          v-model="basicInfo.query"
+          :columns="basicInfo.columns"
+          :tableData="basicInfo.tableData"
+        >
+        </List>
+      </el-tab-pane>
       <el-tab-pane label="服务订单" name="service" lazy>
         <List
           v-model="service.query"
@@ -26,7 +34,7 @@
           <template v-slot:fixed="{ row }">
             <router-link
               class="el-button el-button--text el-button--mini"
-              :to="`/business/order/detail/${row.id}`"
+              :to="`/business/order/detail/${row.orderId}`"
             >
               查看
             </router-link>
@@ -45,6 +53,8 @@
               datetime,
               text,
               state,
+              sessionId,
+              userId,
             } in clinic.list"
             :key="clinicId"
           >
@@ -58,9 +68,9 @@
             <p class="text-overflow">{{ text }}</p>
             <router-link
               class="el-button el-button--text el-button--mini"
-              :to="`/business/clinic?id=${clinicId}`"
+              :to="`/patient/mine/roominfo/${sessionId}&${clinicId}&${userId}`"
             >
-              进入
+              查看
             </router-link>
             <div class="prepend" :data-unread="unread < 100 ? unread : '99+'">
               {{ title }}
@@ -128,6 +138,7 @@ import {
   orderList,
   clinicRoomList,
   medicalList,
+  informationList,
 } from '@/api/list'
 //类型枚举
 import types from '../enumsList'
@@ -135,6 +146,7 @@ export default {
   name: 'Detail',
   props: {
     id: String,
+    patientId: String,
   },
   components: {
     List,
@@ -142,6 +154,7 @@ export default {
   },
   mixins: [
     mixin([
+      { fetchListFunction: informationList, prop: 'basicInfo' },
       { fetchListFunction: orderList, prop: 'service' },
       { fetchListFunction: loggerBillData, prop: 'log' },
     ]),
@@ -160,14 +173,12 @@ export default {
       //患者详情信息
       patientInfo: {},
       //默认选中项
-      activeName: 'service',
-      //服务订单参数
-      service: {
+      activeName: 'basicInfo',
+      //基本资料参数
+      basicInfo: {
         query: {
           pageSize: 10,
-          dateType: 0,
-          searchType: 0,
-          sourceType: 0,
+          patientId: this.patientId, //患者进本信息id
         },
         columns: {
           createTime: {
@@ -175,6 +186,73 @@ export default {
           },
           index: {
             hidden: true,
+          },
+        },
+      },
+      //服务订单参数
+      service: {
+        query: {
+          pageSize: 10,
+          dateType: 0,
+          searchType: 0,
+          sourceType: 0,
+          memberId: this.id,
+        },
+        columns: {
+          createTime: {
+            minWidth: 160,
+          },
+          index: {
+            hidden: true,
+          },
+          orderType: {
+            formatter(row) {
+              return row.orderType === 'CONSULT'
+                ? '在线咨询'
+                : row.orderType === 'REPEAT_CLINIC'
+                ? '在线复诊'
+                : row.orderType === 'CARRYON_PRESC'
+                ? '慢病续方'
+                : ''
+            },
+          },
+          wayType: {
+            formatter(row) {
+              return row.wayType === 'GRAPHIC'
+                ? '图文'
+                : row.wayType === 'VIDEO'
+                ? '视频'
+                : row.wayType === 'PHONE'
+                ? '电话'
+                : ''
+            },
+          },
+          orderStatus: {
+            formatter(row) {
+              return row.orderStatus === 'UNPAID'
+                ? '待付款'
+                : row.orderStatus === 'PAID'
+                ? '已支付'
+                : row.orderStatus === 'WAIT_TREAT'
+                ? '待接诊'
+                : row.orderStatus === 'IN_TREAT'
+                ? '接诊中'
+                : row.orderStatus === 'WAIT_TAKE'
+                ? '待自提'
+                : row.orderStatus === 'WAIT_SEND'
+                ? '待发货'
+                : row.orderStatus === 'WAIT_RECEIVE'
+                ? '待收货'
+                : row.orderStatus === 'TO_EVALUATE'
+                ? '待评价'
+                : row.orderStatus === 'IN_AFTER_SALE'
+                ? '售后中'
+                : row.orderStatus === 'FINISHED'
+                ? '已完成'
+                : row.orderStatus === 'CLOSED'
+                ? '已关闭'
+                : ''
+            },
           },
         },
       },
@@ -242,6 +320,7 @@ export default {
       this.clinic = {
         list: res.list.map(_ => ({
           clinicId: _.clinicId,
+          memberId: _.memberId,
           title: orderType[_.orderType],
           unread: 4,
           name: _.name,
@@ -249,6 +328,8 @@ export default {
           datetime: _.createTime,
           text: _.illnessDesc,
           state: status[_.status],
+          sessionId: _.sessionId,
+          userId:_.userId
         })),
         query: {
           pageSize: 10,

@@ -171,7 +171,7 @@
           <div class="header">
             <div class="today" v-html="rightDate"></div>
             <el-switch
-              v-if="idType != '1'"
+              v-if="idType != '1' && isWorkDay"
               v-model="status"
               :active-value="1"
               :inactive-value="0"
@@ -185,7 +185,8 @@
               "
             ></el-switch>
           </div>
-          <div class="plan">
+
+          <div class="planPeek">
             <div class="planList rest flex-between">
               <div class="range">
                 {{ afterTime }}
@@ -317,6 +318,7 @@ export default {
       // infoListNext: [],
       searchInfoListPre: [],
       searchInfoListNext: [],
+      isWorkDay: false, // 是否是工作日
     }
   },
   computed: {
@@ -422,9 +424,11 @@ export default {
       this.allConfId = res.allConfId
       this.allIds = res.allIds
       this.status = res.allState
+      this.isWorkDay = res.workDay
     },
     // 关闭、开启某个时段(单个)
     async handleChange(userName, timeConfId, dateTime, state, orderList) {
+      console.log(state)
       // if(userName.length>0){
 
       // }
@@ -608,7 +612,9 @@ export default {
       flex-direction: column;
     }
     .plan {
-      flex: 1;
+      // flex: 1;
+      overflow-y: scroll;
+      height: calc(100% - 10px);
     }
     &::v-deep {
       .el-calendar {
@@ -723,10 +729,10 @@ export default {
   font-size: 16px;
   white-space: nowrap;
 }
-.plan {
+.planPeek {
   border: 1px solid #ccc;
   border-bottom: 0;
-  height: 759px;
+  height: 516px;
   overflow-y: scroll;
   border-bottom: 1px solid #ccc;
   .planList {
@@ -770,12 +776,13 @@ export default {
   justify-content: center;
   // padding: 8px 25px 8px 100px;
   align-items: center;
+  margin: -10px 0 8px 0;
 }
 ::v-deep.el-switch {
   margin-left: 20px;
 }
 ::v-deep .el-tag.el-tag--success {
-  margin-left: 60px;
+  margin-left: 42px;
 }
 ::v-deep thead {
   display: none;

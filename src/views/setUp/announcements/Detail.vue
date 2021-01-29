@@ -14,13 +14,13 @@
         发布对象：
         <span v-for="(item, index) in role" :key="index">{{ item.name }}</span>
       </div>
-      <div>
+      <div v-if="type == 0">
         发布科室：
         <span v-for="(item, index) in dept" :key="index">{{ item.name }}</span>
       </div>
     </div>
     <div class="content" v-html="content"></div>
-    <el-button @click="pageBack">返回</el-button>
+    <el-button size="small" @click="pageBack">返回</el-button>
     <button>
       <el-button type="default" size="small" class="log" @click="handleClick()"
         >查看日志</el-button
@@ -55,6 +55,7 @@ export default {
       dept: [],
       // 发布对象
       role: [],
+      type: 0,
     }
   },
   created() {
@@ -75,9 +76,20 @@ export default {
       this.releaseState = res.releaseState
       this.releaseTime = res.releaseTime
       this.dept = res.dept
-      this.role = res.role
       this.title = res.title
       this.see = res.see
+      if (res.org?.length > 0) {
+        this.type = 1
+        this.role = res.org
+      }
+      if (res.role?.length > 0) {
+        this.type = 0
+        this.role = res.role
+      }
+      if (res.drugStore?.length > 0) {
+        this.type = 2
+        this.role = res.drugStore
+      }
     },
     // 变更显示与隐藏
     async isShow() {
@@ -104,11 +116,12 @@ export default {
   font-size: 14px;
   color: #666;
   margin-top: 20px;
-  margin-bottom: 40px;
-  display: flex;
-  align-items: center;
+  margin-bottom: 20px;
+  // display: flex;
+  // align-items: center;
   div {
     margin-right: 40px;
+    margin: 10px 0;
     span {
       margin-right: 10px;
     }

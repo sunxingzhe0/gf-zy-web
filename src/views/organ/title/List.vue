@@ -5,7 +5,6 @@
       :filter="filter"
       :columns="columns"
       :tableData="tableData"
-      :bats="[]"
     >
       <template v-slot:slot_seq="{ row }">
         <EditableText
@@ -73,7 +72,8 @@
     >
       <el-form :model="form" :rules="rules" ref="ruleForm" label-width="80px">
         <el-form-item label="职称编码" v-if="form.id">
-          <div>00125</div>
+          <!-- <div>00125</div> -->
+          <div>{{ form.id }}</div>
         </el-form-item>
         <el-form-item label="职称名称" prop="name">
           <el-input
@@ -395,10 +395,16 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
         })
-        titleManagement(this.fileData).then(() => {
-          loading.close()
-          this.$message.success('操作成功!')
-        })
+        titleManagement(this.fileData)
+          .then(() => {
+            this.$message.success('操作成功!')
+            this.$_fetchTableData()
+          })
+          .finally(() => {
+            setTimeout(() => {
+              loading.close()
+            }, 1000)
+          })
         this.importDialog.visible = false
         this.importDialog.sonListS = []
       } else {

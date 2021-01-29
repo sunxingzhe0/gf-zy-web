@@ -261,7 +261,7 @@ import {
   deptOuterChangeRecommend,
   deptOuterChangeState,
   deptOuterChangeOrder,
-  batchImport, //机构批量导入
+  deptOuterImportExcel, //机构批量导入
   deptOuterInfo,
 } from '@/api/organization'
 import {
@@ -458,7 +458,7 @@ export default {
   created() {},
   methods: {
     async download() {
-      modularLexcel('科室导入模板.xlsx')
+      modularLexcel('互联网科室导入模板.xlsx')
     },
     expandChange(row, expanded) {
       console.log(row, expanded)
@@ -506,6 +506,7 @@ export default {
     async getInnerDept() {
       const res = await getDeptInner({
         tree: false,
+        state: true,
       })
       this.innerDept = res
     },
@@ -667,7 +668,7 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
         })
-        batchImport(this.fileData)
+        deptOuterImportExcel(this.fileData)
           .then(() => {
             this.$message.success('操作成功!')
             this.$_fetchTableData()

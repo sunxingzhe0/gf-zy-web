@@ -27,7 +27,7 @@
       <div class="app-info-item">
         <div class="app-info-label">业务类型</div>
         <div class="app-info-value">
-          {{ orderInfo.bizType && serviceType[orderInfo.bizType] }}
+          {{ serviceType[orderInfo.bizType] || '-' }}
         </div>
       </div>
       <div class="app-info-item">

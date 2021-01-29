@@ -116,7 +116,7 @@
           ></el-input>
         </el-form-item>
 
-        <el-form-item label="描述" prop="remark">
+        <el-form-item label="描述">
           <el-input
             type="textarea"
             v-model="form.remark"
@@ -225,6 +225,9 @@ export default {
         this.form.remark = ''
         this.form.status = false
       }
+      this.$nextTick(() => {
+        this.$refs.ruleForm.clearValidate()
+      })
     },
     // 新增/编辑提交
     submit() {
@@ -320,11 +323,16 @@ export default {
         // debugger
         importOriginExcel(this.fileData, {
           mechanismId: this.query.mechanismId,
-        }).then(() => {
-          loading.close()
-          this.$message.success('操作成功!')
-          this.$_fetchTableData()
         })
+          .then(() => {
+            this.$message.success('操作成功!')
+            this.$_fetchTableData()
+          })
+          .finally(() => {
+            setTimeout(() => {
+              loading.close()
+            }, 1000)
+          })
         // .catch(e => loading && loading.close())
         this.importDialog.visible = false
         this.importDialog.sonListS = []

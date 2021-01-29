@@ -46,7 +46,7 @@
       <template v-slot:fixed="{ row }">
         <router-link
           class="el-button el-button--text el-button--mini"
-          :to="`detail/${row.memberId}`"
+          :to="`detail/${row.memberId}&${row.patientId}`"
         >
           查看
         </router-link>
@@ -101,7 +101,7 @@
 
 <script>
 import { List, mixin /* EditableText */ } from '@/components'
-import { fetchList } from '@/api/list'
+import { fetchList, pushMsg } from '@/api/list'
 import { invalidFieldSetFocus /* param */ } from '@/utils'
 // import { createOrUpdate } from 'echarts/lib/util/throttle'
 
@@ -279,29 +279,34 @@ export default {
       this.$_fetchTableData()
     }, */
 
-    handlePushBtnClick({ name }) {
-      this.dialog.user = name
+    handlePushBtnClick(row) {
+      this.dialog.user = row.name
       this.dialog.visible = true
+      this.tableData.multipleSelection = [row]
     },
 
     submit(formName) {
       this.$refs[formName].validate(async (valid, invalidFields) => {
-        if (valid) {
-          this.dialog.loading = true
-          await new Promise().finally(() =>
-            setTimeout(() => (this.dialog.loading = false), 200),
-          )
-
-          this.$message({
-            type: 'success',
-            message: '完成',
-            showClose: true,
-          })
-
-          this.$_fetchTableData()
-        } else {
+        if (!valid) {
           invalidFieldSetFocus(this.$refs[formName], invalidFields)
+          return
         }
+        // this.dialog.loading = true
+        //推送信息
+        const params = {
+          memberIds: this.tableData.multipleSelection.map(
+            item => item.memberId,
+          ),
+          memberNames: this.tableData.multipleSelection.map(item => item.name),
+          content: this.dialog.model.content,
+        }
+        await pushMsg(params)
+        this.dialog.visible = false
+        this.$message({
+          type: 'success',
+          message: '完成',
+          showClose: true,
+        })
       })
     },
 

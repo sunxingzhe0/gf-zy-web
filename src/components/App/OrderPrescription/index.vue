@@ -1,6 +1,9 @@
 <template>
   <div class="app-info">
-    <BlockTitle>处方信息</BlockTitle>
+    <BlockTitle
+      >处方信息
+      <!-- <el-button @click="seeHistory" class="seeHistory">痕迹查看</el-button> -->
+    </BlockTitle>
     <div>
       <div
         v-for="(item, index) in prescriptions"
@@ -79,6 +82,9 @@
         ></PrescriptionItem>
       </div>
     </div>
+    <el-dialog>
+      1
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -120,6 +126,10 @@ export default {
       this.prescriptions = res
       console.log(this.prescriptions)
     },
+    //痕迹查看
+    seeHistory() {
+      console.log(123)
+    },
   },
   watch: {
     orderId: {
@@ -145,6 +155,18 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.block-title {
+  height: 28px;
+  display: flex;
+  align-items: center;
+}
+.seeHistory {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 5px 10px;
+  margin-left: 10px;
+}
 .isBorder {
   border: 1px solid #e6e6e6;
 }

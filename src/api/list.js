@@ -190,3 +190,16 @@ export function loggerBillData(params) {
     params,
   })
 }
+
+/**
+ * 基本资料列表
+ * @param {object} patientId --就诊人基本信息id
+ */
+export function informationList(params) {
+  return request({
+    url: '/api/v1/myPatient/informationList',
+    method: 'get',
+    params,
+  })
+}
+

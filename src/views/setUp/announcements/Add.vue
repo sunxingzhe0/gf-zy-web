@@ -14,18 +14,89 @@
           </el-form-item>
         </el-col>
         <el-col>
-          <el-form-item label="发布对象" prop="roles">
-            <el-checkbox-group v-model="form.roles">
+          <el-form-item label="发布对象" prop="type">
+            <div style="display: flex;">
+              <el-select v-model="form.type">
+                <el-option label="角色" :value="0"></el-option>
+                <el-option label="机构" :value="1"></el-option>
+                <el-option label="药房" :value="2"></el-option>
+              </el-select>
+              <!--角色-->
+              <el-select
+                v-if="form.type == 0"
+                v-model="form.roles"
+                multiple
+                filterable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in rolesList"
+                  :label="item.name"
+                  :value="item.id"
+                  :key="item.id"
+                ></el-option>
+              </el-select>
+              <!--科室-->
+              <el-select
+                v-if="form.type == 0"
+                v-model="form.depts"
+                multiple
+                filterable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in options"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+              <!--机构-->
+              <el-select
+                v-if="form.type == 1"
+                v-model="form.organizes"
+                multiple
+                filterable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in orgList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+              <!--药房-->
+              <el-select
+                v-if="form.type == 2"
+                v-model="form.organizes"
+                multiple
+                filterable
+                placeholder="请选择"
+              >
+                <el-option
+                  v-for="item in drugStoreList"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                >
+                </el-option>
+              </el-select>
+            </div>
+
+            <!-- <el-checkbox-group v-model="form.roles">
               <el-checkbox
                 v-for="item in rolesList"
                 :key="item.id"
                 :label="item.id"
                 >{{ item.name }}</el-checkbox
               >
-            </el-checkbox-group>
+            </el-checkbox-group> -->
           </el-form-item>
         </el-col>
-        <el-col>
+        <!-- <el-col>
           <el-form-item
             label="科室范围"
             v-if="form.roles.indexOf('-1') > -1 && form.roles.length == 1"
@@ -63,7 +134,7 @@
               </el-option>
             </el-select>
           </el-form-item>
-        </el-col>
+        </el-col> -->
         <el-col>
           <el-form-item label="发布日期" prop="release">
             <el-radio-group v-model="form.release">
@@ -113,6 +184,8 @@ import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn'
 import {
   chooseRoles,
   selDepartment,
+  selectOrgs,
+  selectDrugstores,
   addAnn,
   editAnn,
   detailAnn,
@@ -120,19 +193,32 @@ import {
 import MyUploadAdapter from '@/utils/MyUploadAdapter.js'
 export default {
   data() {
+    let isvalidate = (rule, value, callback) => {
+      if (value === 0 && this.form.roles.length < 1) {
+        callback(new Error('请至少选择一个发布对象'))
+      } else if ((value == 1 || value == 2) && this.form.organizes.length < 1) {
+        callback(new Error('请至少选择一个发布对象'))
+      } else {
+        callback()
+      }
+    }
     return {
       editor: ClassicEditor,
       // 角色身份
       rolesList: [],
       options: [],
+      orgList: [],
+      drugStoreList: [],
       form: {
         title: '',
         roles: [],
         content: '',
         depts: [],
+        organizes: [],
         releaseTime: '',
         release: 1,
         id: '',
+        type: 0,
       },
       pickerOptions: {
         disabledDate(time) {
@@ -140,12 +226,12 @@ export default {
         },
       },
       rules: {
-        roles: [
+        type: [
           {
-            type: 'array',
             required: true,
             message: '请至少选择一个发布对象',
             trigger: 'change',
+            validator: isvalidate,
           },
         ],
         name: [
@@ -184,6 +270,8 @@ export default {
   created() {
     this.getRoles()
     this.getDepartment()
+    this.getselectOrgs()
+    this.getselectDrugstores()
     this.form.announceId = this.$route.query.id
     this.getDetailInfo()
   },
@@ -225,7 +313,6 @@ export default {
       let res = await chooseRoles({
         showUser: true,
       })
-      console.log(res, '******')
       this.rolesList = res
     },
     // 获取科室
@@ -235,6 +322,14 @@ export default {
       })
       this.options = res
       console.log(this.options)
+    },
+    // 获取机构
+    async getselectOrgs() {
+      this.orgList = await selectOrgs()
+    },
+    // 获取药房
+    async getselectDrugstores() {
+      this.drugStoreList = await selectDrugstores()
     },
     // 自定义图片上传
     onReady(editor) {
@@ -276,18 +371,19 @@ export default {
             this.form.release = 3
           }
         }
-
-        let rolesList = []
-        for (let i = 0; i < res.role.length; i++) {
-          rolesList.push(res.role[i].id)
+        if (res.org?.length > 0) {
+          this.form.type = 1
+          this.form.organizes = res.org.map(item => item.id)
         }
-        this.form.roles = rolesList
-        let deptList = []
-        for (let i = 0; i < res.dept.length; i++) {
-          deptList.push(res.dept[i].id)
+        if (res.role?.length > 0) {
+          this.form.type = 0
+          this.form.roles = res.role.map(item => item.id)
         }
-        this.form.depts = deptList
-        console.log(this.form.roles)
+        if (res.drugStore?.length > 0) {
+          this.form.type = 2
+          this.form.organizes = res.drugStore.map(item => item.id)
+        }
+        this.form.depts = res.dept.map(item => item.id)
       }
     },
   },

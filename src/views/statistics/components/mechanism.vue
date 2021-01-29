@@ -142,7 +142,7 @@
       </el-col>
 
       <el-col :md="4" class="is-right">
-        <el-radio-group v-model="type" @change="getListS">
+        <el-radio-group v-model="type" @change="MechanismTop">
           <el-radio-button
             v-for="(_, index) in ['订单数', '订单金额']"
             :key="_"
@@ -162,7 +162,11 @@
         >
           <el-table-column width="500" align="center">
             <template slot="header" slot-scope="{}">
-              <el-select size="mini" v-model="department" @change="getListS">
+              <el-select
+                size="mini"
+                v-model="department"
+                @change="MechanismTophandle"
+              >
                 <el-option
                   v-for="item in branch"
                   :key="item.id"
@@ -340,7 +344,7 @@ export default {
     // this.dj()
     this.getList(this.typ)
     this.Cheese()
-    this.getListS()
+    this.MechanismTop() //TOP
     this.roomListbtn() //科室
   },
   // watch: {
@@ -364,6 +368,9 @@ export default {
       this.getList()
       this.Cheese()
     },
+    MechanismTophandle() {
+      this.MechanismTop()
+    },
     hadnleSort({ order }) {
       //高低排序
       if (order === 'ascending') {
@@ -373,7 +380,7 @@ export default {
       } else {
         this.flashback = null
       }
-      this.getListS()
+      this.MechanismTop()
     },
     //机构端订单金额数据
     async getList() {
@@ -382,6 +389,7 @@ export default {
         endTime: this.date[1],
         bizType: this.lsitB, //业务类型
         type: 0,
+        deptId: this.depchLisb,
       })
       this.datas = this.datas.map(item =>
         Object.assign(item, {
@@ -399,7 +407,7 @@ export default {
       this.roomBsub = res
     },
     //机构端 订单和金额TOP5
-    async getListS() {
+    async MechanismTop() {
       let res = await getStatisticS({
         startTime: this.date[0], //开始时间
         endTime: this.date[1], //结束时间
@@ -418,7 +426,7 @@ export default {
     async Cheese() {
       let res = await statChart({
         orgId: this.$store.state.user.orgId, //机构id
-        // deptId: this.dept.id, //科室ID
+        deptId: this.depchLisb, //科室ID
         bizType: this.arrayS, //业务类型
         startTime: this.date[0],
         endTime: this.date[1],
@@ -458,7 +466,6 @@ export default {
         return false
       })
       this.Cheese()
-      this.getListS()
       this.getList()
     },
     changeDate(days) {
@@ -484,7 +491,7 @@ export default {
           break
       }
       this.Cheese()
-      this.getListS()
+      // this.getListS()
       this.getList()
     },
 

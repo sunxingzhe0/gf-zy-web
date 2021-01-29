@@ -91,7 +91,7 @@ export default {
             props: {
               label: '科室',
               options: [
-                { label: '不限', value: '' },
+                { label: '不限', value: null },
                 ...pre.dept.map(_ => ({ label: _.name, value: _.syncCode })),
               ],
             },

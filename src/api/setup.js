@@ -67,7 +67,7 @@ export function sortAd(params) {
 // 公告列表获取
 export function getAnnounceList(params) {
   return request({
-    url: '/api/v1/announce/announceList',
+    url: '/api/v2/announce/announceList',
     method: 'get',
     params,
   })
@@ -76,7 +76,7 @@ export function getAnnounceList(params) {
 // 删除公告
 export function delAnn(params) {
   return request({
-    url: '/api/v1/announce/delAnnounce',
+    url: '/api/v2/announce/delAnnounce',
     method: 'get',
     params,
   })
@@ -85,7 +85,7 @@ export function delAnn(params) {
 // 公告排序
 export function SortAnn(params) {
   return request({
-    url: '/api/v1/advertising/editAdvertingSeq',
+    url: '/api/v2/advertising/editAdvertingSeq',
     method: 'get',
     params,
   })
@@ -94,7 +94,7 @@ export function SortAnn(params) {
 // 新增公告--角色选择
 export function chooseRoles(params) {
   return request({
-    url: '/api/v1/role/chooseList',
+    url: '/api/v2/announce/roles',
     method: 'get',
     params,
   })
@@ -103,7 +103,23 @@ export function chooseRoles(params) {
 // 新增公告--科室选择
 export function selDepartment(params) {
   return request({
-    url: '/api/v1/dept/chooseList',
+    url: '/api/v2/announce/depts',
+    method: 'get',
+    params,
+  })
+}
+// 新增公告--机构选择
+export function selectOrgs(params) {
+  return request({
+    url: '/api/v2/announce/orgs',
+    method: 'get',
+    params,
+  })
+}
+// 新增公告--药房选择
+export function selectDrugstores(params) {
+  return request({
+    url: '/api/v2/announce/drugstores',
     method: 'get',
     params,
   })
@@ -112,7 +128,7 @@ export function selDepartment(params) {
 // 公告详情
 export function detailAnn(params) {
   return request({
-    url: '/api/v1/announce/queryAnnounce',
+    url: '/api/v2/announce/queryAnnounce',
     method: 'get',
     params,
   })
@@ -121,7 +137,7 @@ export function detailAnn(params) {
 // 公告隐藏与显示
 export function showAnn(params) {
   return request({
-    url: '/api/v1/announce/stateAnnounce',
+    url: '/api/v2/announce/stateAnnounce',
     method: 'get',
     params,
   })
@@ -130,7 +146,7 @@ export function showAnn(params) {
 // 编辑公告
 export function editAnn(data) {
   return request({
-    url: '/api/v1/announce/editAnnounce',
+    url: '/api/v2/announce/editAnnounce',
     method: 'post',
     data,
   })
@@ -139,7 +155,7 @@ export function editAnn(data) {
 // 新增公告
 export function addAnn(data) {
   return request({
-    url: '/api/v1/announce/addAnnounce',
+    url: '/api/v2/announce/addAnnounce',
     method: 'post',
     data,
   })
@@ -148,7 +164,7 @@ export function addAnn(data) {
 // 发布公告
 export function sendAnn(params) {
   return request({
-    url: '/api/v1/announce/sendAnnounce',
+    url: '/api/v2/announce/sendAnnounce',
     method: 'get',
     params,
   })
@@ -580,7 +596,7 @@ export function titleList(params) {
 // 公告通知列表
 export function anNotice(params) {
   return request({
-    url: '/api/v1/announce/announceAnyData',
+    url: '/api/v2/announce/announceAnyData',
     method: 'get',
     params,
   })
@@ -589,7 +605,7 @@ export function anNotice(params) {
 // 公告一键已读
 export function readAll(params) {
   return request({
-    url: '/api/v1/announce/batchReadAnnounce',
+    url: '/api/v2/announce/batchReadAnnounce',
     method: 'get',
     params,
   })
@@ -598,7 +614,7 @@ export function readAll(params) {
 // 公告已读
 export function read(params) {
   return request({
-    url: '/api/v1/announce/readAnnounce',
+    url: '/api/v2/announce/readAnnounce',
     method: 'get',
     params,
   })

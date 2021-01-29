@@ -28,7 +28,7 @@
     </el-row>
 
     <el-row class="view__content">
-      <el-col :span="4" style="margin: 0 30px 0 700px;" class="mycol">
+      <el-col :span="4" style="margin: 0 30px 0 10px;" class="mycol">
         <span>业务类型：</span>
         <el-select placeholder="全部" v-model="arrayS" @change="meter">
           <el-option label="全部" value=""></el-option>

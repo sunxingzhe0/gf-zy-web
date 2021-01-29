@@ -11,6 +11,17 @@
           新增机构
         </el-button>
       </template>
+      <template v-slot:slot_state="{ row }">
+        <el-switch
+          v-model="row.state"
+          @change="setEnable(row)"
+          active-text="启用"
+          inactive-text="禁用"
+          :width="50"
+          class="textSwitch"
+        >
+        </el-switch>
+      </template>
       <template v-slot:fixed="{ row }">
         <el-button size="mini" type="text" @click="edit(row)">
           编辑
@@ -32,9 +43,13 @@
         label-width="100px"
         ref="editForm"
       >
-        <el-form-item label="机构头像" prop="logo">
+        <el-form-item label="机构头像" prop="logo" ref="imgItem">
           <div class="uploadImg">
-            <el-image :src="FILE_URL(editForm.logo)" class="avatar_round">
+            <el-image
+              v-if="editForm.logo"
+              :src="FILE_URL(editForm.logo)"
+              class="avatar_round"
+            >
             </el-image>
             <el-upload
               class="upload"
@@ -59,11 +74,17 @@
           <el-input
             v-model="editForm.platOrgId"
             placeholder="请输入机构Id"
+            :disabled="!dialog.isAdd"
           ></el-input>
         </el-form-item>
-        <el-form-item label="机构地址" prop="addressList">
+        <el-form-item label="机构属性" prop="orgAtt" v-if="dialog.isAdd">
+          <el-radio-group v-model="editForm.orgAtt">
+            <el-radio label="HOSPITAL">医院</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="机构地址" prop="addressIds">
           <el-cascader
-            v-model="editForm.addressList"
+            v-model="editForm.addressIds"
             :options="options"
             @change="addressChange"
           ></el-cascader>
@@ -74,23 +95,49 @@
             placeholder="请输入详细地址"
           ></el-input>
         </el-form-item>
-        <el-form-item label="联系人" prop="name">
+        <el-form-item label="联系人" prop="contactName" v-if="!dialog.isAdd">
           <el-input
-            v-model="editForm.name"
+            v-model="editForm.contactName"
             placeholder="请输入联系人"
           ></el-input>
         </el-form-item>
-        <el-form-item label="登录账号" prop="account">
+        <el-form-item label="联系电话" prop="contactPhone" v-if="!dialog.isAdd">
+          <el-input
+            v-model="editForm.contactPhone"
+            placeholder="请输入联系电话"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="管理员工号" prop="workNo" v-if="false">
+          <el-input
+            v-model="editForm.workNo"
+            placeholder="请输入联系电话"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="登录账号" prop="account" v-if="dialog.isAdd">
           <el-input
             v-model="editForm.account"
             placeholder="请输入账号名称，一旦确认，不可修改"
           ></el-input>
         </el-form-item>
-        <el-form-item label="登录密码" prop="password">
+        <el-form-item label="登录密码" prop="password" v-if="dialog.isAdd">
           <el-input
             v-model="editForm.password"
             placeholder="请设置登录密码，6-18位，仅限字母、阿拉伯数字"
           ></el-input>
+        </el-form-item>
+        <el-form-item label="机构介绍" prop="intro" v-if="!dialog.isAdd">
+          <el-input
+            v-model="editForm.intro"
+            placeholder="请输入内容"
+            type="textarea"
+            class="text"
+          ></el-input>
+        </el-form-item>
+        <el-form-item label="账号状态" prop="userState" v-if="dialog.isAdd">
+          <el-radio-group v-model="editForm.userState">
+            <el-radio label="true">启用</el-radio>
+            <el-radio label="false">禁用</el-radio>
+          </el-radio-group>
         </el-form-item>
       </el-form>
 
@@ -103,7 +150,7 @@
             size="mini"
             type="primary"
             :loading="dialog.loading"
-            @click="submit"
+            @click="submit(dialog.isAdd)"
           >
             确认
           </el-button>
@@ -121,7 +168,13 @@ import {
   CodeToText /* TextToCode */,
 } from 'element-china-area-data'
 import { uploadFile } from '@/api'
-import { initOrg, mechanismList } from '@/api/mechanismList'
+import {
+  initOrg,
+  mechanismList,
+  changeState,
+  editInfo,
+  getInfo,
+} from '@/api/mechanismList'
 
 export default {
   components: {
@@ -134,18 +187,23 @@ export default {
       options: regionData,
       //表单数据
       editForm: {
-        addressList: [], //地址列表
+        addressIds: [], //地址列表编码
         orgName: '', //机构名称
         platOrgId: '', //机构id
+        orgAtt: 'HOSPITAL', //机构属性
         account: '', //	管理员账号
         password: '', //密码
-        name: '', //姓名
+        contactName: '', //联系人姓名
+        contactPhone: '', //联系人姓名
+        name: '', //管理员名
         workNo: '', //管理员工号
         logo: '', //机构logo
         province: '', //省
         city: '', //市
         area: '', //区/县
         address: '', //详细地址
+        intro: '', //机构介绍
+        userState: true, //账号状态
       },
       //验证规则
       rules: {
@@ -154,15 +212,25 @@ export default {
         platOrgId: [
           { required: true, message: '请输入机构Id', trigger: 'blur' },
         ],
-        addressList: [
+        orgAtt: [{ required: true, message: '请选择属性', trigger: 'change' }],
+        addressIds: [
           { required: true, message: '请选择地址', trigger: 'change' },
         ],
         address: [
           { required: true, message: '请输入详细地址', trigger: 'blur' },
         ],
-        name: [{ required: true, message: '请输入联系人', trigger: 'blur' }],
+        contactName: [
+          { required: false, message: '请输入联系人', trigger: 'blur' },
+        ],
+        contactPhone: [
+          { required: false, message: '请输入联系电话', trigger: 'blur' },
+        ],
+        workNo: [{ required: false, message: '请输入工号', trigger: 'blur' }],
         account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
         password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        userState: [
+          { required: true, message: '请选择账号状态', trigger: 'change' },
+        ],
       },
       //请求参数
       query: {
@@ -227,6 +295,17 @@ export default {
         fixed: {
           minWidth: 100,
         },
+        index: {
+          hidden: true,
+        },
+        state: {
+          label: '状态',
+          prop: 'slot_state',
+          minWidth: 100,
+        },
+        createTime: {
+          minWidth: 160,
+        },
       }
     },
   },
@@ -255,28 +334,24 @@ export default {
     //头像上传成功回调
     avaterChange(res) {
       console.log(res)
+      this.editForm.logo = res
+      this.$refs.imgItem.resetField()
       this.$set(this.editForm, 'logo', res)
     },
-    //新增显示弹窗
     showDialog() {
       this.dialog.visible = true
+      this.dialog.isAdd = true
     },
-    submit() {
-      this.$refs.editForm.validate(async valid => {
-        if (valid) {
-          let res = await initOrg(this.editForm)
-          res && (this.dialog.visible = true)
-        }
-      })
-    },
-    //取消
-    handleClosed() {
-      this.dialog.isBat = false
-      this.$refs.editForm.resetFields()
+    async edit(row) {
+      this.dialog.visible = true
+      this.dialog.isAdd = false
+      //获取机构详情
+      const res = await getInfo({ id: row.id })
+      this.editForm = res
     },
     //选择地址时
     addressChange(e) {
-      console.log(e)
+      console.log(e, '地址编号')
       let province = CodeToText[e[0]]
       let city = CodeToText[e[1]]
       let area = CodeToText[e[2]]
@@ -290,18 +365,52 @@ export default {
         this.editForm.city += area
       }
       //地址列表
-      const addressList = {
+      const addressIds = {
         province,
         city,
         area,
       }
-      Object.assign(this.editForm, addressList)
-      console.log(this.editForm)
+      Object.assign(this.editForm, addressIds)
     },
-    //编辑
-    edit(row) {
-      this.editForm = row
-      this.dialog.visible = true
+    // 变更启用状态
+    async setEnable(row) {
+      console.log(row)
+      await changeState({
+        id: row.id,
+        state: row.state,
+      })
+      // this.$_fetchTableData(deptOuterList)
+      this.$message.success(row.state ? '启用成功!' : '禁用成功')
+      /*    //变更后重新获取列表
+      if (row.level == 1) {
+        this.getDeptList()
+      } */
+    },
+
+    //取消
+    handleClosed() {
+      this.$refs.editForm.resetFields()
+    },
+    //确认
+    submit(status) {
+      console.log(status)
+      // return
+      this.$refs.editForm.validate(async valid => {
+        if (!valid) {
+          return
+        }
+        console.log(this.editForm, '参数')
+        if (status) {
+          //新增
+          await initOrg(this.editForm)
+          this.$message.success('操作成功！')
+        } else {
+          //编辑
+          await editInfo(this.editForm)
+          this.$message.success('操作成功！')
+        }
+        this.dialog.visible = false
+      })
     },
   },
 }
@@ -316,6 +425,9 @@ export default {
   width: 90%;
 }
 .el-cascader {
+  width: 90%;
+}
+.text {
   width: 90%;
 }
 .uploadImg {

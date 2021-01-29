@@ -484,10 +484,10 @@ export function packingUnit(params) {
   })
 }
 
-// 单位列表查询
+// 单位列表查询 机构端单位  更换
 export function listUnit(params) {
   return request({
-    url: '/api/v1/drug/listUnit',
+    url: '/api/v1/orgDrug/listUnit',
     method: 'get',
     params,
   })

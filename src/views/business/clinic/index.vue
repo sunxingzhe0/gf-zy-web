@@ -23,6 +23,7 @@
             start-placeholder="开始日期"
             end-placeholder="结束日期"
             value-format="yyyyMMddHHmmss"
+            :default-time="['00:00:00', '23:59:59']"
             @change="
               ;[conversation.query.startTime, conversation.query.endTime] =
                 $event || []

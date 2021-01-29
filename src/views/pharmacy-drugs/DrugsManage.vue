@@ -262,11 +262,23 @@ export default {
         })
         batchUpload(this.fileData, {
           mechanismId: this.query.mechanismId,
-        }).then(() => {
-          loading.close()
-          this.$message.success('操作成功!')
         })
-        // .catch(e => loading && loading.close())
+          .then(() => {
+            this.$message.success('操作成功!')
+            this.$_fetchTableData(getDrugList)
+          })
+          //  .catch(
+          //     setTimeout(() => {
+          //
+          //       this.$message.error('操作失败')
+
+          //     }, 2000),
+          //   )
+          .finally(() => {
+            setTimeout(() => {
+              loading.close()
+            }, 1000)
+          })
         this.importDialog.visible = false
         this.importDialog.fileList = []
       } else {
@@ -532,7 +544,7 @@ export default {
         attr: {
           //属性
           formatter(row) {
-            return row.attr ? '普通' : '特殊'
+            return row.attr ? '特殊' : '普通'
           },
         },
         split: {

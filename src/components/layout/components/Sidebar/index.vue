@@ -1,7 +1,7 @@
 <template>
   <div class="has-logo">
     <logo :collapse="isCollapse">
-      <el-image :src="FILE_URL(logo)" class="sidebar-logo">
+      <el-image :src="FILE_URL(logo)" class="sidebar-logo" v-if="!isShowLogo">
         <template slot="error">
           <svg-icon icon-class="guanfang-logo" />
         </template>
@@ -20,7 +20,7 @@
         mode="vertical"
       >
         <sidebar-item
-          v-for="route in permission_routes"
+          v-for="route in permissionRoutes"
           :key="route.path"
           :item="route"
           :base-path="route.path"
@@ -35,9 +35,15 @@ import { mapGetters } from 'vuex'
 import Logo from './Logo'
 import SidebarItem from './SidebarItem'
 import variables from '@/styles/_variables.scss'
-
+import checkPermission from '@/utils/permission'
+import checkPermissionNum from '@/utils/permissionNum'
 export default {
   components: { SidebarItem, Logo },
+  data() {
+    return {
+      permissionRoutes: [],
+    }
+  },
   computed: {
     ...mapGetters(['permission_routes', 'sidebar', 'logo']),
     activeMenu() {
@@ -57,6 +63,46 @@ export default {
     },
     isCollapse() {
       return !this.sidebar.opened
+    },
+    isShowLogo() {
+      console.log(checkPermission(['PLATFORM']))
+      return checkPermission(['PLATFORM'])
+    },
+  },
+  watch: {
+    permission_routes() {
+      this.getlist()
+    },
+  },
+  created() {
+    this.getlist()
+  },
+  methods: {
+    getlist() {
+      if (
+        checkPermission(['ORG_WEB_MECHANISM']) &&
+        checkPermissionNum(['ORG_WEB', 'DRUG_STORE', 'DRUG_DOC', 'DOC_WEB']) ==
+          1
+      ) {
+        let list = [...this.permission_routes]
+        console.log(list)
+        if (list.length > 0) {
+          for (let i = 0; i < list.length; i++) {
+            if (list[i].name == 'organ') {
+              console.log(list[i], 11111)
+
+              list.splice(0, 0, list[i]) //index:元素需要放置的位置索引，从0开始
+              list.splice(i + 1, 1) //移除原来位置上的该元素
+
+              break
+            }
+          }
+        }
+        this.permissionRoutes = list
+        this.$router.push(list[0].path)
+      } else {
+        this.permissionRoutes = [...this.permission_routes]
+      }
     },
   },
 }

@@ -1,27 +1,29 @@
 <template>
   <section class="view__card">
-    <List
-      v-model="query"
-      :filter="filter"
-      :columns="columns"
-      :tableData="tableData"
-    >
-      <template v-slot:slot_index="{ row }">
-        <EditableText
-          icon="el-icon-edit"
-          v-model="row.index"
-          @confirm="resolveSortChange($event, row)"
-        />
-      </template>
+    <div v-loading="isLoading">
+      <List
+        v-model="query"
+        :filter="filter"
+        :columns="columns"
+        :tableData="tableData"
+      >
+        <template v-slot:slot_index="{ row }">
+          <EditableText
+            icon="el-icon-edit"
+            v-model="row.index"
+            @confirm="resolveSortChange($event, row)"
+          />
+        </template>
 
-      <template v-slot:slot_gender="{ row }">
-        <span style="color: red;">{{ row.gender }}</span>
-      </template>
+        <template v-slot:slot_gender="{ row }">
+          <span style="color: red;">{{ row.gender }}</span>
+        </template>
 
-      <template v-slot:fixed>
-        <el-button type="text" @click="dialog.visible = true">查看</el-button>
-      </template>
-    </List>
+        <template v-slot:fixed="{ row }">
+          <el-button type="text" @click="seeInfo(row)">查看</el-button>
+        </template>
+      </List>
+    </div>
 
     <el-dialog
       title="推送详情"
@@ -33,20 +35,17 @@
         <el-row class="view__content">
           <el-col>
             <span>推送对象</span>
-            陶美玲
+            {{ dialog.dialogDatas.name }}
           </el-col>
 
           <el-col>
             <span>推送内容</span>
-            Lorem ipsum dolor sit amet consectetur, adipisicing elit. Libero
-            nesciunt laborum eius laboriosam dolor assumenda vero voluptatibus
-            mollitia facilis repellendus at molestias quia officia fuga,
-            corrupti, sapiente tempore quaerat? Voluptas!
+            {{ dialog.dialogDatas.content }}
           </el-col>
 
           <el-col>
             <span>推送时间</span>
-            陶美玲
+            {{ dialog.dialogDatas.pushTime }}
           </el-col>
         </el-row>
       </el-scrollbar>
@@ -67,7 +66,7 @@
 
 <script>
 import { List, mixin, EditableText } from '@/components'
-import { fetchList } from '@/api/list'
+import { pushList } from '@/api/list'
 
 export default {
   name: 'TableList',
@@ -75,18 +74,26 @@ export default {
     List,
     EditableText,
   },
-  mixins: [mixin({ fetchListFunction: fetchList })],
+  mixins: [
+    mixin({
+      fetchListFunction: pushList,
+    }),
+  ],
   data() {
     return {
+      tableData: {},
+      isLoading: true,
       query: {
-        pageSize: 10,
-        dateType: 0,
         searchType: 0,
-        sourceType: 0,
+        dateType: 0,
+        timeType: 3,
+        currentNum: 1,
+        pageSize: 10,
       },
 
       dialog: {
         visible: false,
+        dialogDatas: {},
       },
     }
   },
@@ -95,15 +102,15 @@ export default {
       return {
         date: {
           props: {
-            options: [{ label: '创建时间', value: 0 }],
+            options: [{ label: '推送时间', value: 0 }],
           },
           keys: ['dateType', 'start', 'end'],
         },
         search: {
           props: {
-            options: [{ label: '订单号', value: 0 }],
+            options: [{ label: '推送内容', value: 0 }],
           },
-          keys: ['searchType', 'searchKeywords'],
+          keys: ['searchType', 'content'],
         },
         /* inline: [
           {
@@ -176,6 +183,16 @@ export default {
       })
 
       this.$_fetchTableData()
+    },
+    seeInfo(row) {
+      console.log(row)
+      this.dialog.visible = true
+      this.dialog.dialogDatas = row
+    },
+  },
+  watch: {
+    tableData(val) {
+      if (val) this.isLoading = false
     },
   },
 }

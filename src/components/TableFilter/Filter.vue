@@ -126,6 +126,7 @@
                   :picker-options="pickerOptions"
                   v-bind="data.date.props"
                   @change="resolveEmitChange"
+                  :default-time="['00:00:00', '23:59:59']"
                 ></el-date-picker>
               </template>
 
@@ -516,6 +517,19 @@ export default {
       // 系统消息情况特殊条件判断
       if (this.values.readType == '') {
         this.values.readType = 0
+      }
+      console.log(this.$route.path)
+      // 掌医缴费状态特殊条件判断
+      if (
+        this.$route.path == '/payment/reg/list' ||
+        this.$route.path == '/payment/out-patient/list'
+      ) {
+        if (this.values.billState == '') {
+          this.values.billState = 0
+        }
+        if (this.values.deptId == '') {
+          this.values.deptId = null
+        }
       }
 
       // 清除关键字

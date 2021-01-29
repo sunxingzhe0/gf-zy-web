@@ -69,9 +69,7 @@
         </el-button>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="add(row)">
-          修改
-        </el-button>
+        <el-button size="mini" type="text" @click="add(row)"> 修改 </el-button>
         <!-- <el-button
           v-if="!row.state"
           size="mini"
@@ -138,7 +136,7 @@
           </div>
         </el-form-item>
         <el-form-item label="跳转链接">
-          <el-radio-group v-model="form.linksType">
+          <el-radio-group v-model="form.linksType" @change="handleRadio">
             <el-radio :label="0">内部链接</el-radio>
             <el-radio :label="1">外部链接</el-radio>
           </el-radio-group>
@@ -152,7 +150,7 @@
           <el-select
             style="width: 100%;"
             v-show="form.linksType == 0"
-            v-model="form.skipLinks"
+            v-model="form.Defaultvalue"
             placeholder="请选择"
           >
             <el-option
@@ -224,6 +222,7 @@ export default {
         skipLinks: '',
         seq: '',
         state: '',
+        Defaultvalue: '',
       },
       rules: {
         picId: [{ required: true, message: '请选择图片' }],
@@ -272,6 +271,14 @@ export default {
     this.getTitle()
   },
   methods: {
+    //切换状态 在切换保存默认
+    handleRadio(val) {
+      if (val === 1) {
+        this.form.skipLinks = ''
+      } else if (val === 0) {
+        this.form.skipLinks = ''
+      }
+    },
     // 自定义上传行为
     httpRequest({ file, onProgress, onSuccess, onError }) {
       const formData = new FormData()
@@ -351,12 +358,14 @@ export default {
         this.form.skipLinks = row.links
         this.form.seq = row.seq
         this.form.state = row.state
+        this.form.Defaultvalue = row.links
       } else {
         this.form.id = ''
         this.form.picId = 'E68111167F4340F0B55ED195637F95E5'
         this.form.linksType = 1
         this.form.skipLinks = ''
         this.form.seq = 0
+        this.form.Defaultvalue = ''
         this.form.state = true
       }
       console.log(this.form)
