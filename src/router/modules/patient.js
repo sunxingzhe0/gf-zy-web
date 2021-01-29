@@ -11,11 +11,7 @@ export default {
   meta: {
     title: '用户',
     icon: 'sidebar-patient',
-    roles: [
-      'DOC_WEB_PATIENT',
-      'ZY_ORG_PATIENT',
-      'ORG_WEB_USER_MENU',
-    ],
+    roles: ['DOC_WEB_PATIENT', 'ZY_ORG_PATIENT', 'ORG_WEB_USER_MENU'],
   },
   children: [
     {
@@ -51,7 +47,7 @@ export default {
         },
         {
           path: 'recordInfo',
-          name:'recordInfo',
+          name: 'recordInfo',
           component: () => import('@/views/patient/mine/recordInfo.vue'),
           hidden: true,
           meta: {
@@ -66,7 +62,7 @@ export default {
       component: () => import('@/views/patient/Push.vue'),
       meta: { title: '我的推送', roles: ['DOC_WEB_PATIENT_MY_PUSH'] },
     },
-   /*  {
+    /*  {
       path: 'patient',
       component: () => import('@/views/business/patient/List.vue'),
       meta: {
@@ -81,7 +77,7 @@ export default {
       component: () => import('@/views/patient/mine/Institutionalusers.vue'),
       meta: { title: '用户管理', roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT'] },
     },
- /*       {
+    /*       {
       path: 'blacklist',
       name: 'blacklist',
       component: () => import('@/views/zy-page/patient/Blacklist.vue'),
