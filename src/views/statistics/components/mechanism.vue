@@ -186,14 +186,14 @@
                 <!-- <el-col :span="4">{{ row.orderNum }}</el-col> -->
                 <el-col :span="4">
                   <template>
-                    {{ department == 0 ? row.orderNum : row.orderAmount }}
+                    {{ type == 0 ? row.orderNum : row.orderAmount }}
                   </template>
                 </el-col>
                 <el-col :span="20">
                   <el-progress
                     :stroke-width="20"
                     :percentage="
-                      department == 0
+                      type == 0
                         ? parseInt(row.orderNum)
                         : parseInt(row.orderAmount)
                     "
@@ -419,6 +419,7 @@ export default {
         selectType: this.department, //科室
         type: 0,
       })
+      console.log(res, '*****')
       this.tableData = res
     },
 

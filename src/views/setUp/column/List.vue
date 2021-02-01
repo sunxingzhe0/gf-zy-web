@@ -145,7 +145,7 @@
             type="input"
             placeholder="请输入"
             clearable
-            v-model="form.skipLinks"
+            v-model="form.inlinks"
           ></el-input>
           <el-select
             style="width: 100%;"
@@ -220,6 +220,7 @@ export default {
         picId: '64F46B174BDA4DB98836838C3B41392C',
         linksType: '',
         skipLinks: '',
+        inlinks: '',
         seq: '',
         state: '',
         Defaultvalue: '',
@@ -273,11 +274,11 @@ export default {
   methods: {
     //切换状态 在切换保存默认
     handleRadio(val) {
-      if (val === 1) {
-        this.form.skipLinks = ''
-      } else if (val === 0) {
-        this.form.skipLinks = ''
-      }
+      // if (val === 1) {
+      //   this.form.skipLinks = ''
+      // } else if (val === 0) {
+      //   this.form.skipLinks = ''
+      // }
     },
     // 自定义上传行为
     httpRequest({ file, onProgress, onSuccess, onError }) {
@@ -355,15 +356,21 @@ export default {
         this.form.id = row.id
         this.form.picId = row.picId
         this.form.linksType = row.linksType
-        this.form.skipLinks = row.links
+        if (row.linksType == 0) {
+          this.form.Defaultvalue = row.links
+          this.form.inlinks = ''
+        } else {
+          this.form.inlinks = row.links
+          this.form.Defaultvalue = ''
+        }
         this.form.seq = row.seq
         this.form.state = row.state
-        this.form.Defaultvalue = row.links
       } else {
         this.form.id = ''
         this.form.picId = 'E68111167F4340F0B55ED195637F95E5'
         this.form.linksType = 1
         this.form.skipLinks = ''
+        this.form.inlinks = ''
         this.form.seq = 0
         this.form.Defaultvalue = ''
         this.form.state = true
@@ -374,6 +381,11 @@ export default {
     submit() {
       this.$refs.ruleForm.validate(async valid => {
         if (valid) {
+          if (this.form.linksType == 0) {
+            this.form.skipLinks = this.form.Defaultvalue
+          } else {
+            this.form.skipLinks = this.form.inlinks
+          }
           if (this.form.id) {
             await editCol({
               ...this.form,

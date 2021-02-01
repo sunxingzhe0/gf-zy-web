@@ -46,7 +46,7 @@
       :key="index"
     >
       <div>
-        <el-avatar
+        <!-- <el-avatar
           :size="52"
           fit="cover"
           :src="
@@ -54,7 +54,16 @@
               ? FILE_URL(orderInfo.biz.avatar)
               : FILE_URL(orderInfo.userAvatar)
           "
-        ></el-avatar>
+        ></el-avatar> -->
+        <el-image
+          :src="
+            item.chatType == 'DOCTOR'
+              ? FILE_URL(orderInfo.biz.avatar)
+              : FILE_URL(orderInfo.userAvatar)
+          "
+        >
+          <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
+        </el-image>
       </div>
       <div class="flex_1" style="padding-left: 20px;">
         <div class="flex-between" style="margin-bottom: 20px;">
@@ -256,5 +265,11 @@ export default {
   position: sticky;
   text-align: right;
   background: #fff;
+}
+.el-image {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  margin-top: -48px;
 }
 </style>

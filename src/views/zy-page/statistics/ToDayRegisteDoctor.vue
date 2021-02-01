@@ -56,7 +56,7 @@ export default {
         timeType: 0,
         ghType: 1,
         currentNum: 1,
-        time: moment().format('YYYYMMDD') + '000000',
+        time: moment().format('YYYYMMDD'),
         startTime: moment().format('YYYYMMDD') + '000000',
         endTime: moment().format('YYYYMMDD') + '000000',
       },
@@ -68,10 +68,9 @@ export default {
       deep: true, //深度监听设置为 true
       handler: function (newV) {
         console.log(newV)
-        this.query.time = newV.time || moment().format('YYYYMMDD') + '000000'
-        this.query.startTime =
-          newV.time || moment().format('YYYYMMDD') + '000000'
-        this.query.endTime = newV.time || moment().format('YYYYMMDD') + '000000'
+        this.query.time = newV.time || moment().format('YYYYMMDD')
+        this.query.startTime = newV.time + '000000'
+        this.query.endTime = newV.time + '000000'
       },
     },
   },
@@ -86,11 +85,10 @@ export default {
             },
             data: {
               attrs: {
-                type: 'datetime',
-                valueFormat: 'yyyyMMddHHmmss',
+                type: 'date',
+                valueFormat: 'yyyyMMdd',
                 size: 'small',
                 placeholder: '选择挂号日期',
-                defaultTime: '00:00:00',
               },
               on: {
                 change: this.timeChange,
@@ -106,8 +104,7 @@ export default {
                 { label: '不限', value: '' },
                 ...pre.dept.map(_ => ({
                   label: _.name,
-                  value: _.id,
-                  index: _.name,
+                  value: _.syncCode,
                 })),
               ],
             },

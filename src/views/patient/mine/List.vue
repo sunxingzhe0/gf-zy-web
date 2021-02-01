@@ -193,6 +193,9 @@ export default {
     },
     columns() {
       return {
+        etCardNo: {
+          minWidth: 140,
+        },
         lastOrderType: {
           minWidth: 140,
         },
@@ -318,3 +321,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.el-button--medium {
+  font-size: 12px;
+}
+</style>

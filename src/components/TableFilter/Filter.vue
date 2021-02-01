@@ -531,6 +531,12 @@ export default {
           this.values.deptId = null
         }
       }
+      // 公告管理特殊条件判断
+      if (this.$route.path == '/set-up/announcements/list') {
+        this.values.deptId = null
+        this.values.roleId = null
+        this.values.state = null
+      }
 
       // 清除关键字
       this.values.searchKeywords = ''

@@ -42,6 +42,16 @@ export default {
             activeMenu: '/drugs/AddNewDrugs',
           },
         },
+        {
+          path: 'AddNewDrugstt',
+          component: () => import('@/views/pharmacy-drugs/AddNewDrugs.vue'),
+          hidden: true,
+          meta: {
+            title: '修改药品',
+            // roles: ['DRUG_STORE_DRUGS_ORIGIN_MANAGEMENT'],
+            activeMenu: '/drugs/AddNewDrugs',
+          },
+        },
       ],
     },
     {

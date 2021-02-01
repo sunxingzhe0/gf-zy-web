@@ -36,85 +36,16 @@
       </template>
     </List>
     <!-- 弹框 -->
-    <!-- <el-dialog title="发货" :visible.sync="dialogVisible" width="70%">
-      <div class="writeOffContent">
-        <el-row>
-          <el-col :span="8">
-            <div class="itemTitle">订单号</div>
-            <div class="itemContent">447744444555</div>
-          </el-col>
-          <el-col :span="8">
-            <div class="itemTitle">下单人</div>
-            <img src="../../assets/yaofang/touxiang.png" alt="" />
-            <div class="itemContent">微信号 手机号</div>
-          </el-col>
-          <el-col :span="8">
-            <div class="itemTitle">下单时间</div>
-            <div class="itemContent">2019-05-15 14:40:58</div>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="8">
-            <div class="itemTitle">就诊人</div>
-            <div class="itemContent">李连杰</div>
-          </el-col>
-          <el-col :span="8">
-            <div class="itemTitle">预留手机</div>
-            <div class="itemContent">15120203212</div>
-          </el-col>
-          <el-col :span="8">
-            <div class="itemTitle">预约时间</div>
-            <div class="itemContent">2019-05-15 14:40:58</div>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="24">
-            <div class="itemTitle">药品数量</div>
-            <div class="itemContent">4</div>
-          </el-col>
-        </el-row>
-        <el-table
-          :data="orderTableData"
-          border
-          style="width: 100%;"
-          class="tableList"
-        >
-          <el-table-column prop="index" label="序号" width="70" type="index">
-          </el-table-column>
-          <el-table-column prop="type" label="类型" width="80">
-          </el-table-column>
-          <el-table-column prop="drugsName" label="药品名称"> </el-table-column>
-          <el-table-column prop="specifications" label="规格">
-          </el-table-column>
-          <el-table-column prop="channel" label="用药途径"> </el-table-column>
-          <el-table-column prop="singleDose" label="单次剂量">
-          </el-table-column>
-          <el-table-column prop="rate" label="用药频次"> </el-table-column>
-          <el-table-column prop="total" label="总量"> </el-table-column>
-          <el-table-column prop="medicalInsurance" label="医保">
-          </el-table-column>
-          <el-table-column prop="price" label="单价"></el-table-column>
-          <el-table-column prop="totalPrice" label="总价"> </el-table-column>
-          <el-table-column prop="receiver" label="接收方"> </el-table-column>
-          <el-table-column prop="remarks" label="备注"> </el-table-column>
-        </el-table>
-      </div>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogVisible = false"
-          >确 定</el-button
-        >
-      </span>
-    </el-dialog> -->
     <Tosend ref="tosend" @getOrderList="getList"></Tosend>
+    <WriteOff ref="writeOff" @hxOrderSuccess="getList"></WriteOff>
   </section>
 </template>
 
 <script>
 import { List, mixin } from '@/components'
 import Tosend from './components/Tosend'
-
-import { getOrderList, toWaitOff, hxOrder } from '@/api/order'
+import WriteOff from './components/WriteOff'
+import { getOrderList } from '@/api/order'
 import {
   roleChooseList,
   deptChooseList,
@@ -161,6 +92,7 @@ export default {
   components: {
     List,
     Tosend,
+    WriteOff,
   },
   mixins: [mixin({ fetchListFunction: getOrderList })],
   data() {
@@ -212,26 +144,9 @@ export default {
     // undateEx(id) {
     //   this.$refs.tosend.getToSendDrugs(id)
     // },
-    // 点击查看更多
-    async showMore(id) {
-      this.orderId = id
-
-      const res = await toWaitOff({
-        orderId: id,
-        pharmacyId: this.$store.state.user.store.id,
-      })
-      this.contentList = res.contentList
-    },
     // 核销
     async handleSave(id) {
-      await hxOrder({
-        orderId: id,
-        pharmacyId: this.$store.state.user.store.id,
-      })
-      this.$message.success('核销成功！')
-      this.orderId = ''
-      this.dialogVisible = false
-      this.$_fetchTableData(getOrderList)
+      this.$refs.writeOff.showMore(id)
     },
     // 点击发货
     sendGoods(id, type) {

@@ -4,88 +4,92 @@
       >处方信息
       <!-- <el-button @click="seeHistory" class="seeHistory">痕迹查看</el-button> -->
     </BlockTitle>
-    <div>
-      <div
-        v-for="(item, index) in prescriptions"
-        :key="index"
-        :class="{ isBorder: prescriptions.length > 0 }"
-        class="infoWrap"
-      >
+    <!-- <div> -->
+    <div
+      v-for="(item, index) in prescriptions"
+      :key="index"
+      :class="{ isBorder: prescriptions.length > 0 }"
+      class="infoWrap"
+    >
+      <div class="app-info-row">
+        <div class="app-info-item">
+          <!-- <div class="app-info-label">关联处方</div> -->
+          <div class="app-info-value">
+            处方号：{{ item.id }}
+            <!-- <span v-for="val in item.relRpIds" :key="val">{{ val }}</span> -->
+          </div>
+        </div>
+      </div>
+      <div class="topInfo">
         <div class="app-info-row">
           <div class="app-info-item">
-            <!-- <div class="app-info-label">关联处方</div> -->
             <div class="app-info-value">
-              处方号：{{ item.id }}
-              <!-- <span v-for="val in item.relRpIds" :key="val">{{ val }}</span> -->
+              药品数量：{{ item.rpDrugList.length }}
             </div>
           </div>
         </div>
-        <div class="topInfo">
-          <div class="app-info-row">
-            <div class="app-info-item">
-              <div class="app-info-value">
-                药品数量：{{ item.rpDrugList.length }}
-              </div>
+
+        <div class="app-info-row">
+          <div class="app-info-item">
+            <div class="app-info-value">
+              医生：{{ item.doctorName }} {{ item.title }}
             </div>
           </div>
-
-          <div class="app-info-row">
-            <div class="app-info-item">
-              <div class="app-info-value">
-                医生：{{ item.doctorName }} {{ item.title }}
-              </div>
-            </div>
-            <!--  <div class="app-info-item">
+          <!--  <div class="app-info-item">
               <div class="app-info-label">开方时间</div>
               <div class="app-info-value">{{ item.createTime }}</div>
             </div> -->
-          </div>
+        </div>
 
-          <div class="app-info-row">
-            <!-- <div class="app-info-item">
+        <div class="app-info-row">
+          <!-- <div class="app-info-item">
               <div class="app-info-label">审方医生</div>
               <div class="app-info-value">
                 {{ item.auditUserName }} {{ item.auditUserTitle }}
               </div>
             </div> -->
-            <div class="app-info-item time">
-              <div class="app-info-value">审方时间：{{ item.auditTime }}</div>
-            </div>
+          <div class="app-info-item time">
+            <div class="app-info-value">审方时间：{{ item.auditTime }}</div>
           </div>
+        </div>
 
-          <div class="app-info-row">
-            <div class="app-info-item">
-              <div class="app-info-value">
-                中成药：￥{{ item.chPatentPrice }}
-              </div>
-            </div>
+        <div class="app-info-row">
+          <div class="app-info-item">
+            <div class="app-info-value">中成药：￥{{ item.chPatentFee }}</div>
           </div>
-          <div class="app-info-row">
-            <div class="app-info-item">
-              <div class="app-info-value">
-                西药：￥{{ item.prescriptionPrice }}
-              </div>
-            </div>
-          </div>
-          <div class="app-info-row">
-            <div class="app-info-item">
-              <div class="app-info-value allPrice">
-                合计：￥{{ +item.chPatentPrice + +item.prescriptionPrice }}
-              </div>
+        </div>
+        <div class="app-info-row">
+          <div class="app-info-item">
+            <!-- <div class="app-info-value">西药：￥{{ item.rpFee }}</div> -->
+            <div class="app-info-value">
+              西药：￥{{ item.prescriptionPrice || item.westFee }}
             </div>
           </div>
         </div>
-        <PrescriptionItem
-          ref="preData"
-          scene="isShowFooter"
-          :prescription="item"
-        ></PrescriptionItem>
+        <div class="app-info-row">
+          <div class="app-info-item">
+            <div class="app-info-value allPrice">
+              <!-- 合计：￥{{ +item.chPatentPrice + +item.prescriptionPrice  || '0.00'}} -->
+              合计：￥{{
+                (
+                  +(item.chPatentPrice || item.chPatentFee) +
+                  +(item.prescriptionPrice || item.westFee)
+                ).toFixed(2)
+              }}
+            </div>
+          </div>
+        </div>
       </div>
+      <PrescriptionItem
+        ref="preData"
+        scene="detail"
+        :footerShow="false"
+        :prescription="item"
+      ></PrescriptionItem>
     </div>
-    <el-dialog>
-      1
-    </el-dialog>
   </div>
+  <!-- <el-dialog> 1 </el-dialog> -->
+  <!-- </div> -->
 </template>
 <script>
 /*
@@ -124,7 +128,7 @@ export default {
     async getPrescriptionInfo() {
       const res = await curPre({ orderId: this.orderId })
       this.prescriptions = res
-      console.log(this.prescriptions)
+      // console.log(this.prescriptions)
     },
     //痕迹查看
     seeHistory() {

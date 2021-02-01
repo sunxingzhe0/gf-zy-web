@@ -62,16 +62,49 @@ export default {
       component: () => import('@/views/patient/Push.vue'),
       meta: { title: '我的推送', roles: ['DOC_WEB_PATIENT_MY_PUSH'] },
     },
-    /*  {
-      path: 'patient',
-      component: () => import('@/views/business/patient/List.vue'),
-      meta: {
-        title: '患者管理',
-        keepAlive: true,
-        // roles: ['ORG_WEB_BUSINESS_USER_MANAGEMENT'],
-        roles: ['ORG_WEB_USER_MENU_PATIENT_MANAGEMENT'],
-      },
-    }, */
+     {
+      path: 'patientTube',
+      component: RouterView,
+      redirect: '/patient/patientTube/list',
+      meta: {title: '患者管理',roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT']},
+      children: [
+        {
+          path: 'list',
+          component: () => import('@/views/patient/mine/List.vue'),
+          hidden: true,
+          meta: {
+            title: '列表',
+            activeMenu: '/patient/patientTube',
+          },
+        },
+        {
+          path: 'detail/:id&:patientId',
+          component: () => import('@/views/patient/mine/Detail.vue'),
+          props: true,
+          hidden: true,
+          meta: { title: '患者详情', activeMenu: '/patient/patientTube' },
+        },
+        {
+          path: 'roominfo/:sessionId&:clinicId&:userId',
+          component: () => import('@/views/patient/mine/roominfo.vue'),
+          hidden: true,
+          meta: {
+            title: '诊室记录详情',
+            activeMenu: '/patient/patientTube',
+          },
+        },
+        {
+          path: 'recordInfo',
+          name: 'recordInfo',
+          component: () => import('@/views/patient/mine/recordInfo.vue'),
+          hidden: true,
+          meta: {
+            title: '就诊记录详情',
+            activeMenu: '/patient/patientTube',
+          },
+        },
+      ],
+    },
     {
       path: 'usermanagement',
       component: () => import('@/views/patient/mine/Institutionalusers.vue'),

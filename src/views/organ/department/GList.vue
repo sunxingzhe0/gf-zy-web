@@ -174,7 +174,7 @@
                 type="textarea"
                 placeholder="请输入"
                 v-model="form.notice"
-                maxlength="200"
+                maxlength="1000"
                 show-word-limit
                 :autosize="{ minRows: 2, maxRows: 2 }"
               ></el-input>
@@ -186,7 +186,7 @@
                 v-model="form.intro"
                 type="textarea"
                 placeholder="请输入"
-                maxlength="200"
+                maxlength="1000"
                 show-word-limit
                 :autosize="{ minRows: 2, maxRows: 2 }"
               />
@@ -418,6 +418,7 @@ export default {
           level: {
             prop: 'slot_level',
             minWidth: 120,
+            hidden: true,
           },
           address: {
             prop: 'slot_title',
@@ -492,7 +493,6 @@ export default {
         tree: false,
         type: 'WEB', //区分web和h5返回方式有更改
       })
-      console.log(res, '*****111')
       this.options = res
       let obj_ = {
         id: '',
@@ -714,5 +714,8 @@ export default {
 }
 .el-form-item {
   margin-bottom: 16px;
+}
+.el-textarea .el-input__count {
+  background: none;
 }
 </style>

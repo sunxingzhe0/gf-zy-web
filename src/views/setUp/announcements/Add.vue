@@ -16,125 +16,84 @@
         <el-col>
           <el-form-item label="发布对象" prop="type">
             <div style="display: flex;">
-              <el-select v-model="form.type">
+              <el-select v-model="form.type" @change="typeChange">
                 <el-option label="角色" :value="0"></el-option>
                 <el-option label="机构" :value="1"></el-option>
                 <el-option label="药房" :value="2"></el-option>
               </el-select>
               <!--角色-->
-              <el-select
-                v-if="form.type == 0"
-                v-model="form.roles"
-                multiple
-                filterable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in rolesList"
-                  :label="item.name"
-                  :value="item.id"
-                  :key="item.id"
-                ></el-option>
-              </el-select>
-              <!--科室-->
-              <el-select
-                v-if="form.type == 0"
-                v-model="form.depts"
-                multiple
-                filterable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in options"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
+              <div v-if="form.type == 0">
+                <el-select
+                  v-model="form.roles"
+                  multiple
+                  filterable
+                  placeholder="请选择"
                 >
-                </el-option>
-              </el-select>
-              <!--机构-->
-              <el-select
-                v-if="form.type == 1"
-                v-model="form.organizes"
-                multiple
-                filterable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in orgList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
-              <!--药房-->
-              <el-select
-                v-if="form.type == 2"
-                v-model="form.organizes"
-                multiple
-                filterable
-                placeholder="请选择"
-              >
-                <el-option
-                  v-for="item in drugStoreList"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                >
-                </el-option>
-              </el-select>
-            </div>
+                  <el-option
+                    v-for="item in rolesList"
+                    :label="item.name"
+                    :value="item.id"
+                    :key="item.id"
+                  ></el-option>
+                </el-select>
+              </div>
 
-            <!-- <el-checkbox-group v-model="form.roles">
-              <el-checkbox
-                v-for="item in rolesList"
-                :key="item.id"
-                :label="item.id"
-                >{{ item.name }}</el-checkbox
-              >
-            </el-checkbox-group> -->
+              <!--科室-->
+              <div v-if="form.type == 0">
+                <el-select
+                  v-model="form.depts"
+                  multiple
+                  filterable
+                  placeholder="请选择"
+                >
+                  <el-option
+                    v-for="item in options"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </div>
+
+              <!--机构-->
+              <div v-if="form.type == 1">
+                <el-select
+                  v-model="form.organizes"
+                  multiple
+                  filterable
+                  placeholder="请选择"
+                >
+                  <el-option
+                    v-for="item in orgList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </div>
+
+              <!--药房-->
+              <div v-if="form.type == 2">
+                <el-select
+                  v-model="form.organizes"
+                  multiple
+                  filterable
+                  placeholder="请选择"
+                >
+                  <el-option
+                    v-for="item in drugStoreList"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  >
+                  </el-option>
+                </el-select>
+              </div>
+            </div>
           </el-form-item>
         </el-col>
-        <!-- <el-col>
-          <el-form-item
-            label="科室范围"
-            v-if="form.roles.indexOf('-1') > -1 && form.roles.length == 1"
-          >
-            <el-select
-              class="input"
-              v-model="form.depts"
-              multiple
-              filterable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-          <el-form-item label="科室范围" prop="depts" v-else>
-            <el-select
-              class="input"
-              v-model="form.depts"
-              multiple
-              filterable
-              placeholder="请选择"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-        </el-col> -->
         <el-col>
           <el-form-item label="发布日期" prop="release">
             <el-radio-group v-model="form.release">
@@ -308,12 +267,18 @@ export default {
     pageBack() {
       this.$router.back(-1)
     },
+    // 角色切换
+    typeChange() {
+      this.form.roles = []
+      this.form.depts = []
+      this.form.organizes = []
+    },
     // 获取角色身份
     async getRoles() {
       let res = await chooseRoles({
         showUser: true,
       })
-      this.rolesList = res
+      this.rolesList = [{ name: '患者', id: '-1' }, ...res]
     },
     // 获取科室
     async getDepartment() {

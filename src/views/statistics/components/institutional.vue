@@ -96,12 +96,12 @@
             <template v-slot:default="{ row }">
               <el-row>
                 <!-- <el-col :span="4">{{ row.orderNum }}</el-col> -->
-                <el-col :span="4">
+                <el-col :span="24">
                   <template>
                     {{ btnWcno == 0 ? row.deptName : row.doctorName }}
                   </template>
                 </el-col>
-                <el-col :span="20">
+                <!-- <el-col :span="20">
                   <el-progress
                     :stroke-width="20"
                     :percentage="
@@ -116,7 +116,7 @@
                     "
                     :show-text="false"
                   ></el-progress>
-                </el-col>
+                </el-col> -->
               </el-row>
             </template>
           </el-table-column>
@@ -373,5 +373,11 @@ export default {
 }
 .sortF {
   margin-left: 30px;
+}
+.el-col-12 {
+  width: 100%;
+}
+.el-table td div {
+  text-align: center;
 }
 </style>

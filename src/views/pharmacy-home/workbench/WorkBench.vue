@@ -71,7 +71,7 @@
                   margin-right: 10px;
                 "
                 :src="FILE_URL(perInfo.userAvatar)"
-                :fit="cover"
+                :fit="'cover'"
               >
                 <div slot="error" class="image-slot">
                   <img src="@/assets/headerImg.png" />
@@ -108,42 +108,13 @@
         </div>
 
         <!-- 表格 -->
-        <el-table
-          :data="tableData"
-          border
-          style="width: 100%;"
-          class="tableList"
+        <PrescriptionItem
+          scene="detail"
+          :prescription="{
+            rpDrugList: tableData,
+          }"
         >
-          <el-table-column prop="seq" label="序号" width="70" type="index">
-          </el-table-column>
-          <el-table-column prop="type" label="类型" width="80">
-          </el-table-column>
-          <el-table-column prop="name" label="药品名称"> </el-table-column>
-          <el-table-column prop="spec" label="规格"> </el-table-column>
-          <el-table-column prop="useWays" label="用药途径"> </el-table-column>
-          <el-table-column prop="singleDose" label="单次剂量">
-          </el-table-column>
-          <el-table-column prop="useFrequency" label="用药频次">
-          </el-table-column>
-          <el-table-column prop="total" label="总量"> </el-table-column>
-          <el-table-column label="医保"
-            >{{
-              medicare == 'A'
-                ? '甲'
-                : medicare == 'B'
-                ? '乙'
-                : medicare == 'C'
-                ? '丙'
-                : '自费'
-            }}
-          </el-table-column>
-          <el-table-column prop="price" label="单价"></el-table-column>
-          <el-table-column prop="totalPrice" label="总价"> </el-table-column>
-          <el-table-column prop="pharmacyName" label="接收方">
-          </el-table-column>
-          <el-table-column prop="remark" label="备注"> </el-table-column>
-        </el-table>
-
+        </PrescriptionItem>
         <!-- 按钮 -->
         <div class="buttonBox">
           <el-button class="cancle" @click="andleCancel">取消</el-button>
@@ -158,15 +129,13 @@
 // import { List, mixin } from '@/components'
 import { getOrderNum, getExchangeInfo, confirmExchange } from '@/api/phaIndex'
 import moment from 'moment'
+import PrescriptionItem from '@/components/Prescription/PrescriptionItem'
 
-let drugType = {
-  WESTERN_MEDICINE: '西药',
-  CHINESE_PATENT_MEDICINE: '中成药',
-  HERBS: '草药',
-}
 export default {
   name: 'TableList',
-
+  components: {
+    PrescriptionItem,
+  },
   data() {
     return {
       inputCode: '',
@@ -176,22 +145,7 @@ export default {
       waitSend: '',
       stockWarn: '',
       warnVal: '',
-      tableData: [
-        // {
-        //   type: '西药',
-        //   drugsName: '盐酸美林他嗪片',
-        //   specifications: '20mg*30',
-        //   channel: '口服',
-        //   singleDose: '1.5mg',
-        //   rate: '每日一次',
-        //   total: '4盒',
-        //   medicalInsurance: '自费',
-        //   price: '10.00',
-        //   totalPrice: '40.00',
-        //   receiver: '药房名称',
-        //   remarks: '忌口辛辣食物',
-        // },
-      ],
+      tableData: [],
       // 兑换码返回的个人信息
       perInfo: {},
       moment: moment,
@@ -290,11 +244,6 @@ export default {
           this.tableData = []
         }
       })
-      for (let i = 0; i < res.contentList.length; i++) {
-        res.contentList[i].totalPrice = '￥' + res.contentList[i].totalPrice
-        res.contentList[i].price = '￥' + res.contentList[i].price
-        res.contentList[i].type = drugType[res.contentList[i].type]
-      }
       this.perInfo = res
       this.tableData = res.contentList
     },
@@ -389,9 +338,9 @@ export default {
 .inputBox {
   width: 50%;
   margin: 20px auto;
-}
-::v-deep .el-input__inner {
-  height: 56px;
+  ::v-deep .el-input__inner {
+    height: 56px;
+  }
 }
 
 ::v-deep .el-input-group__prepend {

@@ -118,6 +118,7 @@ export default {
         orderId: this.id,
         pharmacyId: this.pharmacyId,
       })
+      console.log(res, '00000')
       this.detailInfo = res
       // 患者信息拼装
       this.orderInfo = {

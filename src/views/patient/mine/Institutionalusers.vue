@@ -8,10 +8,13 @@
     >
       <template v-slot:slot_nickname="{ row }">
         <!-- <el-avatar :size="60" :src="FILE_URL(row.avatar)"></el-avatar> -->
-        <el-image :src="FILE_URL(row.avatar)">
-          <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
-        </el-image>
-        <span>{{ row.nickname }}</span>
+        <div style="line-height: 30px;">
+          <el-image style="float: left;" :src="FILE_URL(row.avatar)">
+            <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
+          </el-image>
+          <span>{{ row.nickname }}</span>
+        </div>
+
         <!-- <img :src="FILE_URL(row.avatar)" alt=""> -->
       </template>
     </List>
@@ -107,7 +110,7 @@ export default {
   border-radius: 50%;
 }
 span {
-  margin-left: 16px;
+  margin-left: 15px;
 }
 ::v-deep .c__filter .prepend-select {
   width: 170px;

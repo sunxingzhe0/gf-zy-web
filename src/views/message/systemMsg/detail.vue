@@ -60,7 +60,7 @@ export default {
           msgType == '04' ||
           msgType == '05')
       ) {
-        this.$router.push('/prescription/pending/detail')
+        this.$router.push(`/prescription/pending/detail?id=` + this.bizId)
       } else if (clientType == 'YF') {
         if (msgType == '01') {
           this.$router.push(`/order/allorder/orderdetail?id=` + this.bizId)

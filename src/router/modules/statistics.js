@@ -62,6 +62,14 @@ export default {
         roles: ['DOC_WEB_STATISTICS_EVALUATION_STATISTICS'],
       },
     },
+    // {
+    //   path:'index',
+    //   component:() => import('@/views/statistics/components/index.vue'),
+    //   name:'index',
+    //   meta:{
+    //     title:'订单',
+    //   }
+    // },
     {
       path: 'comment',
       component: () => import('@/views/statistics/components/Comment.vue'), //医生端

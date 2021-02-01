@@ -218,11 +218,11 @@ export default Vue.extend({
           <div class="message__wrap message__text">
             [在线复诊]：
             {props.body === 'accept'
-              ? '对方已接受'
+              ? '已接受'
               : props.body === 'refuse'
-              ? '对方已拒绝'
+              ? '已拒绝'
               : props.body === 'leave'
-              ? '对方已挂断'
+              ? '已挂断'
               : '发起了视频聊天'}
           </div>
         )

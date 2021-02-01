@@ -3,7 +3,11 @@
     <div style="position: relatiev; display: flex;">
       <!-- 左侧菜单 -->
       <div class="leftMenu">
-        <el-tabs :tab-position="tabPosition" @tab-click="handleLeftList">
+        <el-tabs
+          :tab-position="tabPosition"
+          @tab-click="handleLeftList"
+          value="name"
+        >
           <el-tab-pane
             :label="item.title"
             v-for="(item, index) in leftList"
@@ -567,7 +571,7 @@
               </el-form-item>
             </el-col>
 
-            <el-col :xs="24" :sm="12" :md="10" :lg="6" :xl="6">
+            <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
               <el-form-item label="状态" prop="status" ref="status">
                 <!-- <el-radio-group v-model="form.status"> -->
                 <el-radio v-model="form.status" :label="false">启用</el-radio>
@@ -576,7 +580,7 @@
               </el-form-item>
             </el-col>
 
-            <el-col :xs="24" :sm="12" :md="10" :lg="6" :xl="6">
+            <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
               <el-form-item label="属性" prop="attr" ref="attr">
                 <el-radio-group v-model="form.attr">
                   <el-radio :label="false">普通</el-radio>
@@ -585,7 +589,7 @@
               </el-form-item>
             </el-col>
 
-            <el-col :xs="24" :sm="12" :md="10" :lg="6" :xl="6">
+            <el-col :xs="24" :sm="12" :md="12" :lg="8" :xl="6">
               <el-form-item label="排序" prop="seq">
                 <el-input
                   ref="seq"
@@ -721,7 +725,7 @@ export default {
         status: false, //状态
         seq: 0, //排序
         // remark: '', //备注
-        attr: true, //属性
+        attr: false, //属性
         split: false, // 是否拆零
         orgDrug: false, //是否机构创建
       },
@@ -1054,11 +1058,13 @@ export default {
       if (this.typeId) {
         if (type == 'DOSAGE_UNIT') {
           let optionB = await listUnit({
-            mechanismId: this.$store.state.user.store.id,
+            pageSize: 9999,
           })
-          this.optionB = optionB.filter(item => {
-            return item.typeList.indexOf('DOSAGE_UNIT') > -1
+          this.optionB = optionB.filter(val => {
+            let typeNull = val.typeList ? val.typeList : []
+            return typeNull.indexOf('DOSAGE_UNIT') > -1
           })
+
           // this.optionB.push({ unitName: val, id: this.typeId })
           this.$nextTick(() => {
             this.form.dosageUnit = this.optionB.filter(item => {
@@ -1068,12 +1074,13 @@ export default {
         } else if (type == 'CONVENTIONAL_PACKAGING_UNIT') {
           console.log(222222)
           let optionU = await listUnit({
-            mechanismId: this.$store.state.user.store.id,
+            // mechanismId: this.$store.state.user.store.id,
+            pageSize: 9999,
           })
-          this.optionU = optionU.filter(item => {
-            return item.typeList.indexOf('CONVENTIONAL_PACKAGING_UNIT') > -1
+          this.optionU = optionU.filter(val => {
+            let typeNull = val.typeList ? val.typeList : []
+            return typeNull.indexOf('CONVENTIONAL_PACKAGING_UNIT') > -1
           })
-          console.log(this.optionU)
           this.$nextTick(() => {
             console.log(this.typeId, '33333')
             this.form.regularUnit = this.optionU.filter(item => {
@@ -1083,11 +1090,14 @@ export default {
           // this.optionU.push({ unitName: val, id: this.typeId })
         } else if (type == 'BASIC_PACKAGING_UNIT') {
           let optionA = await listUnit({
-            mechanismId: this.$store.state.user.store.id,
+            // mechanismId: this.$store.state.user.store.id,
+            pageSize: 9999,
           })
-          this.optionA = optionA.filter(item => {
-            return item.typeList.indexOf('BASIC_PACKAGING_UNIT') > -1
+          this.optionA = optionA.filter(val => {
+            let typeNull = val.typeList ? val.typeList : []
+            return typeNull.indexOf('BASIC_PACKAGING_UNIT') > -1
           })
+
           // this.optionA.push({ unitName: val, id: this.typeId })
           this.$nextTick(() => {
             this.form.basicUnit = this.optionA.filter(item => {
@@ -1153,15 +1163,12 @@ export default {
         // mechanismId: this.$store.state.user.store.id,
         pageSize: 999,
       })
-      console.log(res, '8888')
 
       // regularUnit: 'CONVENTIONAL_PACKAGING_UNIT', //常规包装单位
       this.optionU = res.filter(val => {
-        console.log(val.typeList, '1111')
         let typeNull = val.typeList ? val.typeList : []
         return typeNull.indexOf('CONVENTIONAL_PACKAGING_UNIT') > -1
       })
-      console.log(this.optionU, '*****')
       // // basicUnit: 'BASIC_PACKAGING_UNIT',  // 基本包装单位
       this.optionA = res.filter(val => {
         let typeNull = val.typeList ? val.typeList : []
@@ -1172,6 +1179,7 @@ export default {
         let typeNull = val.typeList ? val.typeList : []
         return typeNull.indexOf('DOSAGE_UNIT') > -1
       })
+      console.log(this.optionB, '****')
       //全部单位保存下来
       this.typecodeList = res
       // this.optionC = res.list

@@ -116,9 +116,7 @@
             <p>{{ name }}</p>
             <p>
               {{ dept }} {{ doctor }} {{ position }}
-              <el-button
-                type="text"
-                @click="goRecordInfo('50D785D4EB5547CFAF36FEBF87146354')"
+              <el-button type="text" @click="goRecordInfo(medicalId)"
                 >申请查看</el-button
               >
             </p>
@@ -339,7 +337,7 @@ export default {
     //获取诊室记录列表
     async clinicRoomList() {
       const res = await clinicRoomList({
-        memberId: this.id,
+        patientId: this.patientId,
         ...this.clinic.query,
       })
       //数据处理
@@ -368,13 +366,13 @@ export default {
     //获取就诊记录列表
     async medicalList() {
       const res = await medicalList({
-        memberId: this.id,
+        patientId: this.patientId,
         ...this.treat.query,
       })
       console.log(res, '99-------')
       const { type } = types
       this.treat = {
-        list: /* res.list */ [1, 2, 3].map(_ => ({
+        list: res.list.map(_ => ({
           medicalId: _.medicalId,
           datetime: _.visitDate,
           name: _.name,

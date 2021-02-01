@@ -387,7 +387,7 @@ export default {
     handleEdit(row) {
       //修改
       this.$router.push({
-        path: 'AddNewDrugs',
+        path: 'AddNewDrugstt',
         query: {
           id: row,
         },

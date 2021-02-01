@@ -506,9 +506,8 @@ export default {
     async getInnerDept() {
       const res = await getDeptInner({
         tree: false,
-        state: true,
       })
-      this.innerDept = res
+      this.innerDept = res.filter(item => item.state)
     },
     // 排序 - 父科室
     async confirm(e, id) {

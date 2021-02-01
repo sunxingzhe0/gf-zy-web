@@ -260,18 +260,23 @@
                       </template>
                       <!-- 总量单位 -->
                       <template v-if="it.key === 'total'">
-                        <el-select
-                          :disabled="!item.edit"
-                          v-model="item.totalUnit"
-                          @change="changeHandler($event, index, 'totalUnit')"
-                        >
-                          <el-option
-                            v-for="_it in item.totalUnits"
-                            :label="_it.label"
-                            :value="_it.value"
-                            :key="_it.value"
-                          ></el-option>
-                        </el-select>
+                        <template v-if="scene === 'detail'">
+                          {{ item.totalUnitText }}
+                        </template>
+                        <template v-else>
+                          <el-select
+                            :disabled="!item.edit"
+                            v-model="item.totalUnit"
+                            @change="changeHandler($event, index, 'totalUnit')"
+                          >
+                            <el-option
+                              v-for="_it in item.totalUnits"
+                              :label="_it.label"
+                              :value="_it.value"
+                              :key="_it.value"
+                            ></el-option>
+                          </el-select>
+                        </template>
                       </template>
                     </div>
                   </el-tooltip>
@@ -284,7 +289,7 @@
     </div>
     <div
       class="prescription-item-footer"
-      v-if="scene !== 'drugList' && scene !== 'isShowFooter'"
+      v-if="footerShow && scene !== 'drugList'"
     >
       <div>
         <template
@@ -338,6 +343,7 @@
                 operate       当前操作['','temp', 'adjust', 'group', 'unGroup', 'delete', 'submit']
                 template      是否处方模板
                 prescription  处方信息
+                footerShow    是否显示footer信息
 @emit           
                 update
                   {type: update} 更新
@@ -382,6 +388,11 @@ export default {
     prescription: {
       type: Object,
       require: true,
+    },
+    // 是否显示底部信息
+    footerShow: {
+      type: Boolean,
+      default: true,
     },
   },
   data() {
