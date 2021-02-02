@@ -5,44 +5,83 @@
       :filter="filter"
       :columns="columns"
       :tableData="tableData"
-      @handleCommand="handleCommand"
-      :bats="[{ label: '批量推送', command: 'push' }]"
+      :bats="[{}]"
     >
-      <template v-slot:slot_index="{ row }">
-        <EditableText
-          icon="el-icon-edit"
-          v-model="row.index"
-          @confirm="resolveSortChange($event, row)"
-        />
+      <!-- 批量推送按钮 -->
+      <template v-slot:footertool>
+        <el-button
+          size="mini"
+          plain
+          type="primary"
+          @click="handleCommand('push')"
+        >
+          批量推送
+        </el-button>
       </template>
-
-      <template v-slot:slot_gender="{ row }">
-        <span style="color: red;">{{ row.gender }}</span>
-      </template>
-
-      <template v-slot:slot_nurseId="{ row }">
+      <!-- 就诊记录弹出层 -->
+      <template v-slot:slot_visitCount="{ row }">
         <el-popover placement="bottom">
-          <el-table :data="gridData">
+          <el-table
+            :data="row.visitList"
+            max-height="250"
+            size="small"
+            fit
+            lazy
+          >
             <el-table-column
-              width="150"
-              property="date"
-              label="日期"
+              type="index"
+              width="50"
+              label="序号"
+            ></el-table-column>
+            <el-table-column property="name" label="就诊人"></el-table-column>
+            <el-table-column property="orderType" label="类型">
+              <template v-slot="{ row }">
+                <span>{{ orderType[row.orderType] }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column property="wayType" label="形式">
+              <template v-slot="{ row }">
+                <span>{{ wayType[row.wayType] }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column
+              property="diagnosisInfo"
+              label="诊断"
+              width="120"
             ></el-table-column>
             <el-table-column
+              property="doctorName"
+              label="接诊人"
+            ></el-table-column>
+            <el-table-column
+              property="acceptsTime"
+              label="就诊时间"
               width="100"
-              property="name"
-              label="姓名"
             ></el-table-column>
-            <el-table-column
-              width="300"
-              property="address"
-              label="地址"
-            ></el-table-column>
+            <el-table-column label="患者记录">
+              <template v-slot="{ row }">
+                <span
+                  style="color: #0ab2c1; cursor: pointer;"
+                  @click="seeInfo(row)"
+                  >查看</span
+                >
+              </template>
+            </el-table-column>
           </el-table>
-          <el-button slot="reference" type="text">{{ row.nurseId }}</el-button>
+          <el-button slot="reference" type="text">{{
+            row.visitCount
+          }}</el-button>
         </el-popover>
       </template>
-
+      <!-- 推送次数跳转 -->
+      <template v-slot:slot_pushCount="{ row }">
+        <span
+          style="color: #0ab2c1; cursor: pointer;"
+          @click="goPushList(row)"
+          >{{ row.pushCount }}</span
+        >
+      </template>
+      <!-- 查看详情 -->
       <template v-slot:fixed="{ row }">
         <router-link
           class="el-button el-button--text el-button--mini"
@@ -55,6 +94,7 @@
       </template>
     </List>
 
+    <!-- 推送内容弹出层 -->
     <el-dialog
       :title="dialog.isBat ? '批量推送' : `推送对象 - ${dialog.user}`"
       :visible.sync="dialog.visible"
@@ -104,7 +144,7 @@ import { List, mixin /* EditableText */ } from '@/components'
 import { fetchList, pushMsg } from '@/api/list'
 import { invalidFieldSetFocus /* param */ } from '@/utils'
 // import { createOrUpdate } from 'echarts/lib/util/throttle'
-
+import enumsList from '../enumsList'
 export default {
   name: 'TableList',
   components: {
@@ -121,8 +161,8 @@ export default {
       //请求参数
       query: {
         pageSize: 10,
-        dateType: 0,
-        searchType: 0,
+        timeType: 0,
+        searchType: 2,
         sourceType: 0,
       },
 
@@ -135,6 +175,11 @@ export default {
         },
         user: '',
       },
+      //枚举类型
+      orderType: enumsList.orderType,
+      wayType: enumsList.wayType,
+      status: enumsList.status,
+      type: enumsList.type,
     }
   },
   computed: {
@@ -142,38 +187,74 @@ export default {
       return {
         date: {
           props: {
-            options: [{ label: '创建时间', value: 0 }],
+            options: [
+              { label: '创建时间', value: 0 },
+              { label: '最后一次就诊时间', value: 1 },
+            ],
           },
-          keys: ['dateType', 'start', 'end'],
+          keys: ['timeType', 'start', 'end'],
         },
         search: {
           props: {
-            options: [{ label: '订单号', value: 0 }],
+            options: [
+              { label: '患者ID', value: 0 },
+              { label: '电子健康卡号', value: 1 },
+              { label: '患者姓名', value: 2 },
+              { label: '身份证号', value: 3 },
+            ],
           },
           keys: ['searchType', 'searchKeywords'],
         },
-        /* inline: [
-          {
-            props: {
-              label: 'test',
-              is: 'el-input',
-            },
-            data: {
-              attrs: {
-                type: 'password',
-              },
-            },
-          },
-        ], */
         popover: [
           {
             props: {
-              label: '测试',
-              options: [{ label: '不限', value: '' }],
+              label: '性别',
+              options: [
+                { label: '不限', value: '' },
+                { label: '男', value: 1 },
+                { label: '女', value: 0 },
+              ],
             },
-            keys: 'a',
+            keys: 'sex',
           },
           {
+            props: {
+              label: '是否儿童',
+              options: [
+                { label: '不限', value: '' },
+                { label: '不是', value: 0 },
+                { label: '是', value: 1 },
+              ],
+            },
+            keys: 'childState',
+          },
+          {
+            props: {
+              label: '就诊记录',
+              is: 'InputRange',
+            },
+            keys: ['visitStartNum', 'visitEndNum'],
+          },
+          {
+            props: {
+              label: '推送次数',
+              is: 'InputRange',
+            },
+            keys: ['pushStartNum', 'pushEndNum'],
+          },
+          {
+            props: {
+              label: '最近一次就诊类型',
+              options: [
+                { label: '不限', value: '' },
+                { label: '在线咨询', value: 'CONSULT' },
+                { label: '在线复诊', value: 'REPEAT_CLINIC' },
+                { label: '慢病续方', value: 'CARRYON_PRESC' },
+              ],
+            },
+            keys: 'orderType',
+          },
+          /* {
             props: {
               label: '测试',
               is: 'el-input',
@@ -187,7 +268,7 @@ export default {
               },
             },
             keys: 'b',
-          },
+          }, */
         ],
       }
     },
@@ -197,7 +278,16 @@ export default {
           minWidth: 140,
         },
         lastOrderType: {
-          minWidth: 140,
+          minWidth: 120,
+          formatter(row) {
+            return row.lastOrderType === 'CONSULT'
+              ? '在线咨询'
+              : row.lastOrderType === 'REPEAT_CLINIC'
+              ? '在线复诊'
+              : row.lastOrderType === 'CARRYON_PRESC'
+              ? '慢病续方'
+              : ''
+          },
         },
         acceptsTime: {
           minWidth: 140,
@@ -205,45 +295,32 @@ export default {
         createTime: {
           minWidth: 160,
         },
-        gender: {
-          prop: 'slot_gender',
+        idCard: {
+          minWidth: 140,
         },
-        nurseId: {
-          prop: 'slot_nurseId',
+        visitCount: {
+          prop: 'slot_visitCount',
+        },
+        pushCount: {
+          prop: 'slot_pushCount',
         },
         index: {
           hidden: true,
-          /* prop: 'slot_index',
-          minWidth: 160, */
         },
         fixed: {
           minWidth: 100,
         },
+        sex: {
+          formatter(row) {
+            return row.sex == 0 ? '女' : row.sex == 1 ? '男' : ''
+          },
+        },
+        childState: {
+          formatter(row) {
+            return row.childState == 0 ? '否' : row.childState == 1 ? '是' : ''
+          },
+        },
       }
-    },
-    gridData() {
-      return [
-        {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-        {
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄',
-        },
-      ]
     },
     rules() {
       return {
@@ -261,7 +338,6 @@ export default {
         })
         return
       }
-
       switch (command) {
         case 'push':
           {
@@ -271,17 +347,6 @@ export default {
           break
       }
     },
-    /*     async resolveSortChange(index, { id }) {
-      console.log(index, id)
-      this.$message({
-        type: 'success',
-        message: '完成',
-        showClose: true,
-      })
-
-      this.$_fetchTableData()
-    }, */
-
     handlePushBtnClick(row) {
       this.dialog.user = row.name
       this.dialog.visible = true
@@ -297,10 +362,10 @@ export default {
         // this.dialog.loading = true
         //推送信息
         const params = {
-          memberIds: this.tableData.multipleSelection.map(
-            item => item.memberId,
+          patientIds: this.tableData.multipleSelection.map(
+            item => item.patientId,
           ),
-          memberNames: this.tableData.multipleSelection.map(item => item.name),
+          patientNames: this.tableData.multipleSelection.map(item => item.name),
           content: this.dialog.model.content,
         }
         await pushMsg(params)
@@ -318,11 +383,30 @@ export default {
       this.$refs.form.resetFields()
       this.$refs.table.clearSelection()
     },
+    //查看就诊记录详情
+    seeInfo(row) {
+      this.$router.push({
+        name: 'recordInfo',
+        params: {
+          medicalId: row.medicalId,
+        },
+      })
+    },
+    //推送次数跳转
+    goPushList(row) {
+      this.$router.push({
+        name: 'pushList',
+        params: row,
+      })
+    },
   },
 }
 </script>
 <style lang="scss" scoped>
 .el-button--medium {
   font-size: 12px;
+}
+::v-deep .el-dropdown {
+  display: none !important;
 }
 </style>

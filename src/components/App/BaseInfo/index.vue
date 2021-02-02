@@ -32,7 +32,9 @@
     <div class="app-info-row">
       <div class="app-info-item">
         <div class="app-info-label">接诊医生</div>
+        <div class="app-info-value">{{ treatmentInfo.deptName }}</div>
         <div class="app-info-value">{{ treatmentInfo.doctorName }}</div>
+        <div class="app-info-value">{{ treatmentInfo.title }}</div>
       </div>
       <div class="app-info-item">
         <div class="app-info-label">接诊时间</div>
@@ -77,3 +79,16 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.app-info-row {
+  width: 100%;
+  .app-info-item {
+    width: 33.333%;
+
+    .app-info-value {
+      min-width: none;
+      flex: 0;
+    }
+  }
+}
+</style>

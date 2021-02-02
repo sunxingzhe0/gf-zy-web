@@ -59,6 +59,7 @@ export default {
     },
     {
       path: 'push',
+      name:'pushList',
       component: () => import('@/views/patient/Push.vue'),
       meta: { title: '我的推送', roles: ['DOC_WEB_PATIENT_MY_PUSH'] },
     },

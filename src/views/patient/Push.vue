@@ -79,16 +79,19 @@ export default {
       fetchListFunction: pushList,
     }),
   ],
+
   data() {
     return {
+      //跳转过来的参数
+      name: '',
       tableData: {},
       isLoading: true,
       query: {
         searchType: 0,
-        dateType: 0,
         timeType: 3,
         currentNum: 1,
         pageSize: 10,
+        numType: 3,
       },
 
       dialog: {
@@ -102,9 +105,9 @@ export default {
       return {
         date: {
           props: {
-            options: [{ label: '推送时间', value: 0 }],
+            options: [{ label: '推送时间', value: 3 }],
           },
-          keys: ['dateType', 'start', 'end'],
+          keys: ['timeType', 'start', 'end'],
         },
         search: {
           props: {
@@ -112,30 +115,10 @@ export default {
           },
           keys: ['searchType', 'content'],
         },
-        /* inline: [
-          {
-            props: {
-              label: 'test',
-              is: 'el-input',
-            },
-            data: {
-              attrs: {
-                type: 'password',
-              },
-            },
-          },
-        ], */
         popover: [
           {
             props: {
-              label: '测试',
-              options: [{ label: '不限', value: '' }],
-            },
-            keys: 'a',
-          },
-          {
-            props: {
-              label: '测试',
+              label: '患者姓名',
               is: 'el-input',
             },
             data: {
@@ -146,7 +129,21 @@ export default {
                 change: console.log,
               },
             },
-            keys: 'b',
+            keys: 'name',
+          },
+          {
+            props: {
+              label: '已读人数',
+              is: 'InputRange',
+            },
+            keys: ['readStartNum', 'readEndNum'],
+          },
+          {
+            props: {
+              label: '推送人数',
+              is: 'InputRange',
+            },
+            keys: ['pushStartNum', 'pushEndNum'],
           },
         ],
       }
@@ -173,6 +170,10 @@ export default {
       }
     },
   },
+  created() {
+    this.$route.params?.name && (this.name = this.$route.params?.name)
+    console.log(this.name, '得到的筛选参数')
+  },
   methods: {
     async resolveSortChange(index, { id }) {
       console.log(index, id)
@@ -194,6 +195,17 @@ export default {
     tableData(val) {
       if (val) this.isLoading = false
     },
+  },
+  async mounted() {
+    if (!this.name) {
+      return
+    }
+    //筛选
+    const res = await pushList({
+      ...this.query,
+      name: this.name,
+    })
+    this.tableData = res
   },
 }
 </script>

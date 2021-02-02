@@ -155,6 +155,12 @@ export default {
     let isvalidate = (rule, value, callback) => {
       if (value === 0 && this.form.roles.length < 1) {
         callback(new Error('请至少选择一个发布对象'))
+      } else if (
+        value === 0 &&
+        !(this.form.roles.indexOf('-1') > -1 && this.form.roles.length == 1) &&
+        this.form.depts < 1
+      ) {
+        callback(new Error('请选择科室'))
       } else if ((value == 1 || value == 2) && this.form.organizes.length < 1) {
         callback(new Error('请至少选择一个发布对象'))
       } else {
@@ -188,7 +194,6 @@ export default {
         type: [
           {
             required: true,
-            message: '请至少选择一个发布对象',
             trigger: 'change',
             validator: isvalidate,
           },

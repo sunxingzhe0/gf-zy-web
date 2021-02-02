@@ -62,7 +62,6 @@
               type,
               datetime,
               text,
-              state,
               sessionId,
               userId,
             } in clinic.list"
@@ -82,12 +81,20 @@
             >
               查看
             </router-link>
-            <div class="prepend" :data-unread="unread < 100 ? unread : '99+'">
+            <div
+              class="prepend"
+              :class="{
+                typeOne: title === '在线咨询',
+                typeTwo: title === '在线复诊',
+                typeTree: title === '慢病续方',
+              }"
+              :data-unread="unread < 100 ? unread : '99+'"
+            >
               {{ title }}
             </div>
-            <div class="append" :class="{ close: state === '已结束' }">
+            <!-- <div class="append" :class="{ close: state === '已结束' }">
               {{ state }}
-            </div>
+            </div> -->
           </li>
         </ul>
 
@@ -108,6 +115,7 @@
               dept,
               doctor,
               position,
+              doctorId,
             } in treat.list"
             :key="medicalId"
             :data-tag="tag"
@@ -116,8 +124,10 @@
             <p>{{ name }}</p>
             <p>
               {{ dept }} {{ doctor }} {{ position }}
-              <el-button type="text" @click="goRecordInfo(medicalId)"
-                >申请查看</el-button
+              <el-button
+                type="text"
+                @click="goRecordInfo({ medicalId, doctorId })"
+                >{{ userId === doctorId ? '' : '申请' }}查看</el-button
               >
             </p>
           </li>
@@ -181,11 +191,13 @@ export default {
   ],
   data() {
     return {
+      //登录的id
+      userId: '',
       //详情枚举项
       enums: [
-        { lable: '姓名', value: 'name' },
-        { lable: '就诊卡号', value: 'patientCard' },
+        { lable: '患者ID', value: 'cardNo' },
         { lable: '性别', value: 'sex' },
+        { lable: '就诊卡号', value: 'cardNo' },
         { lable: '出生日期', value: 'birthday' },
         { lable: '身份证号', value: 'idCard' },
         { lable: '手机号', value: 'phone' },
@@ -204,13 +216,30 @@ export default {
           createTime: {
             minWidth: 160,
           },
+          birthday: {
+            minWidth: 120,
+          },
+          address: {
+            minWidth: 140,
+          },
+          idCard: {
+            minWidth: 140,
+          },
+          addressNow: {
+            minWidth: 140,
+          },
           index: {
             hidden: true,
           },
           //头像
           userName: {
             prop: 'slot_userName',
-            minWidth: 90,
+            minWidth: 160,
+          },
+          sex: {
+            formatter(row) {
+              return row.sex == 0 ? '女' : row.sex == 1 ? '男' : ''
+            },
           },
         },
       },
@@ -314,6 +343,7 @@ export default {
     this.getPatientInfo()
     this.clinicRoomList()
     this.medicalList()
+    this.userId = this.$store.state.user.userId
   },
   methods: {
     //切换菜单
@@ -331,7 +361,10 @@ export default {
     },
     //获取患者详情信息
     async getPatientInfo() {
-      const res = await patientInfo({ memberId: this.id })
+      const res = await patientInfo({ patientId: this.patientId })
+      //数据处理
+      res.sex === 0 && (res.sex = '女')
+      res.sex === 1 && (res.sex = '男')
       this.patientInfo = res
     },
     //获取诊室记录列表
@@ -380,6 +413,7 @@ export default {
           dept: _.deptName,
           doctor: _.doctorName,
           position: _.titleName,
+          doctorId: _.doctorId,
         })),
         query: {
           pageSize: 10,
@@ -402,14 +436,20 @@ export default {
       this.medicalList()
     },
     //查看就诊记录详情
-    goRecordInfo(parameter) {
-      console.log(parameter, '入参-----')
-      this.$router.push({
-        name: 'recordInfo',
-        params: {
-          medicalId: parameter,
-        },
-      })
+    goRecordInfo(row) {
+      console.log(this.userId, '登录的id-----')
+      console.log(row.doctorId, '此项医生id-----')
+      console.log(row.medicalId, '入参-----')
+      if (this.userId === row.doctorId) {
+        this.$router.push({
+          name: 'recordInfo',
+          params: {
+            medicalId: row.medicalId,
+          },
+        })
+      } else {
+        this.$alert('已发送查看申请!')
+      }
     },
   },
 }
@@ -488,26 +528,26 @@ export default {
         width: 500px;
         height: 500px;
         border-radius: 50%;
-        border: 10px solid $--color-primary-light-9;
-        background: $--color-primary;
-        color: $--color-white;
+        border: 10px solid #e1f6f8;
+        background: #c8eef1;
+        color: #00adbb;
         font-size: 24px;
         writing-mode: vertical-rl;
-
-        /*  &::before {
-          position: absolute;
-          top: 38%;
-          right: -10px;
-          width: 25px;
-          height: 25px;
-          background: $--color-danger;
-          border: 1px solid $--color-white;
-          border-radius: 50%;
-          line-height: 25px;
-          writing-mode: lr;
-          font-size: 12px;
-          content: attr(data-unread);
-        } */
+      }
+      .typeOne {
+        border: 10px solid #e1f6f8;
+        background: #c8eef1;
+        color: #00adbb;
+      }
+      .typeTwo {
+        border: 10px solid #cedbf7;
+        background: #bbcdf3;
+        color: #2e64d8;
+      }
+      .typeTree {
+        border: 10px solid #e5f5e7;
+        background: #ceedd1;
+        color: #24b03b;
       }
 
       .append {

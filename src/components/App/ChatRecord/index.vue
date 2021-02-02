@@ -79,6 +79,8 @@
           }}</span>
         </div>
         <div class="info">{{ formatMessage(item) }}</div>
+        <br />
+        <div>{{ item.body }}</div>
         <el-divider></el-divider>
       </div>
     </div>

@@ -93,6 +93,7 @@ export default {
     async getTreatmentHistoryInfo() {
       if (!this.medicalId) return
       const res = await hisRecord({ medicalId: this.medicalId })
+      debugger
       this.treatmentInfo = res || {}
       console.log(this.treatmentInfo, '00000')
       this.orderInfo = {
