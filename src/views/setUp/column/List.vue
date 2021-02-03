@@ -273,7 +273,7 @@ export default {
   },
   methods: {
     //切换状态 在切换保存默认
-    handleRadio(val) {
+    handleRadio() {
       // if (val === 1) {
       //   this.form.skipLinks = ''
       // } else if (val === 0) {

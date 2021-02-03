@@ -81,7 +81,7 @@
         </el-table-column>
         <el-table-column prop="total" label="总量">
           <template slot-scope="scoped">
-            {{ scoped.row.totalUnitText }}
+            {{ scoped.row.total }} {{ scoped.row.totalUnitText }}
           </template>
         </el-table-column>
         <el-table-column label="医保">

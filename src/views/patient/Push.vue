@@ -111,26 +111,14 @@ export default {
         },
         search: {
           props: {
-            options: [{ label: '推送内容', value: 0 }],
+            options: [
+              { label: '患者姓名', value: 0 },
+              { label: '推送内容', value: 1 },
+            ],
           },
-          keys: ['searchType', 'content'],
+          keys: ['searchType', 'searchKeywords'],
         },
         popover: [
-          {
-            props: {
-              label: '患者姓名',
-              is: 'el-input',
-            },
-            data: {
-              attrs: {
-                placeholder: '请输入内容',
-              },
-              on: {
-                change: console.log,
-              },
-            },
-            keys: 'name',
-          },
           {
             props: {
               label: '已读人数',

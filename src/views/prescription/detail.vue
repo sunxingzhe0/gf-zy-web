@@ -197,7 +197,7 @@ export default {
       statusText: {
         DRAFT: '草稿',
         PASSED: '已通过',
-        PENDING: '待审核',
+        PENDING_REVIEW: '待审核',
         REJECTED: '已驳回',
       },
       activeName: 'info', // 当前页签

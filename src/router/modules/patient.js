@@ -59,15 +59,15 @@ export default {
     },
     {
       path: 'push',
-      name:'pushList',
+      name: 'pushList',
       component: () => import('@/views/patient/Push.vue'),
       meta: { title: '我的推送', roles: ['DOC_WEB_PATIENT_MY_PUSH'] },
     },
-     {
+    {
       path: 'patientTube',
       component: RouterView,
       redirect: '/patient/patientTube/list',
-      meta: {title: '患者管理',roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT']},
+      meta: { title: '患者管理', roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT'] },
       children: [
         {
           path: 'list',

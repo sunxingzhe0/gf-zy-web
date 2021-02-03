@@ -27,6 +27,7 @@
                   v-model="form.roles"
                   multiple
                   filterable
+                  collapse-tags
                   placeholder="请选择"
                 >
                   <el-option
@@ -42,8 +43,10 @@
               <div v-if="form.type == 0">
                 <el-select
                   v-model="form.depts"
+                  style="width: 220px;"
                   multiple
                   filterable
+                  collapse-tags
                   placeholder="请选择"
                 >
                   <el-option
@@ -60,8 +63,10 @@
               <div v-if="form.type == 1">
                 <el-select
                   v-model="form.organizes"
+                  style="width: 220px;"
                   multiple
                   filterable
+                  collapse-tags
                   placeholder="请选择"
                 >
                   <el-option
@@ -78,8 +83,10 @@
               <div v-if="form.type == 2">
                 <el-select
                   v-model="form.organizes"
+                  style="width: 220px;"
                   multiple
                   filterable
+                  collapse-tags
                   placeholder="请选择"
                 >
                   <el-option
@@ -204,7 +211,6 @@ export default {
             min: 3,
             max: 25,
             message: '长度在 3 到 25 个字符',
-            trigger: 'blur',
           },
         ],
         title: [{ required: true, message: '请输入标题' }],
@@ -277,6 +283,9 @@ export default {
       this.form.roles = []
       this.form.depts = []
       this.form.organizes = []
+      this.$nextTick(() => {
+        this.$refs.ruleForm.clearValidate()
+      })
     },
     // 获取角色身份
     async getRoles() {

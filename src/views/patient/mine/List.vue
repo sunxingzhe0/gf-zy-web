@@ -161,9 +161,9 @@ export default {
       //请求参数
       query: {
         pageSize: 10,
-        timeType: 0,
-        searchType: 2,
-        sourceType: 0,
+        timeType: 1,
+        searchType: 0,
+        sourceType: this.$store.state.user.platform === 'ORG_WEB' ? 1 : 0,
       },
 
       dialog: {
@@ -182,14 +182,17 @@ export default {
       type: enumsList.type,
     }
   },
+  created() {
+    console.log(this.$store.state.user.platform)
+  },
   computed: {
     filter() {
       return {
         date: {
           props: {
             options: [
-              { label: '创建时间', value: 0 },
-              { label: '最后一次就诊时间', value: 1 },
+              { label: '创建时间', value: 1 },
+              { label: '最后一次就诊时间', value: 2 },
             ],
           },
           keys: ['timeType', 'start', 'end'],
@@ -235,13 +238,13 @@ export default {
             },
             keys: ['visitStartNum', 'visitEndNum'],
           },
-          {
+       /*    {
             props: {
               label: '推送次数',
               is: 'InputRange',
             },
             keys: ['pushStartNum', 'pushEndNum'],
-          },
+          }, */
           {
             props: {
               label: '最近一次就诊类型',

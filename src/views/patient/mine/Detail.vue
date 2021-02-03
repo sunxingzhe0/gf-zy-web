@@ -1,16 +1,46 @@
 <template>
   <section class="view__p-mine-detail">
-    <header>
-      <h3>{{ patientInfo.name }}</h3>
+    <header v-if="patientInfo">
+      <div class="left">
+        <div class="top">
+          <h3>{{ patientInfo.name }}</h3>
+          <div class="code">成人</div>
+        </div>
+        <div class="bottom">
+          <span>患者ID：</span>
+          {{ patientInfo.cardNo }}
+        </div>
+        <!--  <div class="bottom">
+          <span>就诊卡号：</span>
+          {{ patientInfo.cardNo }}
+        </div> -->
+      </div>
+      <div class="right">
+        <el-row>
+          <el-col :span="12">
+            <span>性别：</span>
+            {{ patientInfo.sex }}
+          </el-col>
+          <el-col :span="12">
+            <span>出生日期：</span>
+            {{ patientInfo.birthday }}
+          </el-col>
+          <el-col :span="12">
+            <span>民族：</span>
+            {{ patientInfo.nation || '-' }}
+          </el-col>
+          <el-col :span="12">
+            <span>身份证号：</span>
+            {{ patientInfo.idCard }}
+          </el-col>
 
-      <el-row v-if="patientInfo">
-        <el-col v-for="val in enums" :key="val.value" :span="8">
-          <span>{{ val.lable }}：</span>
-          {{ patientInfo[val.value] }}
-        </el-col>
-      </el-row>
+          <!--  <el-col :span="8">
+            <span>手机号：</span>
+            {{ patientInfo.phone }}
+          </el-col> -->
+        </el-row>
+      </div>
     </header>
-
     <el-tabs
       class="clinic__tabs"
       v-model="activeName"
@@ -44,7 +74,11 @@
           <template v-slot:fixed="{ row }">
             <router-link
               class="el-button el-button--text el-button--mini"
-              :to="`/business/order/detail/${row.orderId}`"
+              :to="
+                clientType === 'ORG_WEB'
+                  ? `/order/business/detail/${row.orderId}`
+                  : `/business/order/detail/${row.orderId}`
+              "
             >
               查看
             </router-link>
@@ -77,7 +111,11 @@
             <p class="text-overflow">{{ text }}</p>
             <router-link
               class="el-button el-button--text el-button--mini"
-              :to="`/patient/mine/roominfo/${sessionId}&${clinicId}&${userId}`"
+              :to="
+                clientType === 'ORG_WEB'
+                  ? `/patient/patientTube/roominfo/${sessionId}&${clinicId}&${userId}`
+                  : `/patient/mine/roominfo/${sessionId}&${clinicId}&${userId}`
+              "
             >
               查看
             </router-link>
@@ -105,6 +143,7 @@
         />
       </el-tab-pane>
       <el-tab-pane label="就诊记录" name="treat" lazy>
+        <TimeAxis :tiemDatas="tiemDatas" />
         <ul class="card-wrapper treat">
           <li
             v-for="{
@@ -161,6 +200,7 @@
  * @emit   none
  */
 import { List, mixin, TableFooterTool } from '@/components'
+import TimeAxis from '@/components/App/TimeAxis'
 // import { formatDate, randomString } from '@/utils'
 import {
   loggerBillData,
@@ -169,6 +209,7 @@ import {
   clinicRoomList,
   medicalList,
   informationList,
+  getMedicalTimeGroup,
 } from '@/api/list'
 //类型枚举
 import types from '../enumsList'
@@ -181,6 +222,7 @@ export default {
   components: {
     List,
     TableFooterTool,
+    TimeAxis,
   },
   mixins: [
     mixin([
@@ -191,15 +233,20 @@ export default {
   ],
   data() {
     return {
+      //端类型
+      clientType: '',
+      //时间轴数据
+      tiemDatas: [],
       //登录的id
       userId: '',
       //详情枚举项
       enums: [
         { lable: '患者ID', value: 'cardNo' },
+        { lable: '出生日期', value: 'birthday' },
+        { lable: '民族', value: 'nation' },
+        { lable: '身份证号', value: 'idCard' },
         { lable: '性别', value: 'sex' },
         { lable: '就诊卡号', value: 'cardNo' },
-        { lable: '出生日期', value: 'birthday' },
-        { lable: '身份证号', value: 'idCard' },
         { lable: '手机号', value: 'phone' },
       ],
       //患者详情信息
@@ -344,6 +391,8 @@ export default {
     this.clinicRoomList()
     this.medicalList()
     this.userId = this.$store.state.user.userId
+    this.getMedicalTimeGroup()
+    this.clientType = this.$store.state.user.platform
   },
   methods: {
     //切换菜单
@@ -451,6 +500,16 @@ export default {
         this.$alert('已发送查看申请!')
       }
     },
+    //时间线数据
+    async getMedicalTimeGroup() {
+      let res = await getMedicalTimeGroup({ memberId: this.id })
+      for (let val of res) {
+        for (let item of val.months) {
+          this.tiemDatas.push(val.year + '年' + item + '月')
+        }
+      }
+      this.tiemDatas.reverse()
+    },
   },
 }
 </script>
@@ -475,12 +534,45 @@ export default {
   }
 
   > header {
-    padding: 30px;
     background: $--color-primary;
     color: $--color-white;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
     border-radius: 2px;
+    display: flex;
 
+    .left {
+      width: 30%;
+      padding: 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      .top {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 22px;
+        .code {
+          background: #39c0cc;
+          width: 46px;
+          height: 24px;
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          font-size: 16px;
+        }
+      }
+      .bottom {
+        color: #f0f9fa;
+      }
+    }
+    .right {
+      width: 70%;
+      padding: 24px 30px 54px 70px;
+      background: #d6fcff;
+      color: #696a6b;
+      font-size: 14px;
+    }
     h3 {
       margin: 0;
     }

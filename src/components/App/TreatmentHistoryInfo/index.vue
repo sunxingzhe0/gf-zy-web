@@ -15,8 +15,22 @@
                 >医生：{{ item.auditName }} {{ item.auditTitle || '' }}</span
               >
               <span>审方时间：{{ item.auditTime }}</span>
-              <span>西药：￥{{ item.westFee }}</span>
-              <span>中成药：￥{{ item.chPatentFee }}</span>
+              <template v-for="t in drugTypes">
+                <span
+                  :key="t.id"
+                  v-if="item.contentList.map(r => r.type).indexOf(t.id) > -1"
+                >
+                  {{ t.name }}：￥{{
+                    t.code == 'WESTERN_MEDICINE'
+                      ? item.westFee
+                      : t.code == 'HERBS'
+                      ? '-'
+                      : t.code == 'CHINESE_PATENT_MEDICINE'
+                      ? item.chPatentFee
+                      : '-'
+                  }}
+                </span>
+              </template>
               <span class="price">合计：￥{{ item.rpFee }}</span>
             </div>
           </div>
@@ -52,6 +66,7 @@ import {
   InspectReport,
   MedicalRecord,
 } from '@/components/App'
+import { mapState } from 'vuex'
 import { hisRecord } from '@/api/prescription'
 import { BlockTitle } from '@/components/Base'
 import PrescriptionItem from '@/components/Prescription/PrescriptionItem'
@@ -80,6 +95,9 @@ export default {
     }
   },
   computed: {
+    ...mapState({
+      drugTypes: state => state.drug.drugTypes,
+    }),
     rpList() {
       const rpList = this.treatmentInfo.rpList || []
       return rpList.map(item => ({
@@ -93,7 +111,6 @@ export default {
     async getTreatmentHistoryInfo() {
       if (!this.medicalId) return
       const res = await hisRecord({ medicalId: this.medicalId })
-      debugger
       this.treatmentInfo = res || {}
       console.log(this.treatmentInfo, '00000')
       this.orderInfo = {

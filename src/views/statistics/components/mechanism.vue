@@ -133,7 +133,7 @@
     <el-row class="view__content">
       <el-col :md="12">
         <span>业务类型</span>
-        <el-select v-model="arrayS" @change="Cheese">
+        <el-select v-model="arrayS" @change="MechanismTop">
           <el-option label="全部" value=""></el-option>
           <el-option label="在线咨询" value="CONSULT"></el-option>
           <el-option label="在线复诊" value="REPEAT_CLINIC"></el-option>
@@ -213,7 +213,7 @@
 import moment from 'moment'
 import { isEqual } from 'lodash'
 import { mapState } from 'vuex'
-import { getStatistics, getStatisticS, statChart } from '@/api/statistics'
+import { getStatistics, orderCountTable, statChart } from '@/api/statistics'
 import { deptChooseList } from '@/api'
 
 import echarts from 'echarts/lib/echarts'
@@ -408,7 +408,7 @@ export default {
     },
     //机构端 订单和金额TOP5
     async MechanismTop() {
-      let res = await getStatisticS({
+      let res = await orderCountTable({
         startTime: this.date[0], //开始时间
         endTime: this.date[1], //结束时间
         deptId: this.depchLisb, //科室ID
@@ -419,7 +419,6 @@ export default {
         selectType: this.department, //科室
         type: 0,
       })
-      console.log(res, '*****')
       this.tableData = res
     },
 
@@ -468,6 +467,7 @@ export default {
       })
       this.Cheese()
       this.getList()
+      this.MechanismTop()
     },
     changeDate(days) {
       this.active = days
@@ -494,6 +494,7 @@ export default {
       this.Cheese()
       // this.getListS()
       this.getList()
+      this.MechanismTop()
     },
 
     initCharts() {

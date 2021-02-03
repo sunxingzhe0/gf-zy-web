@@ -80,7 +80,7 @@
         </div>
         <div class="info">{{ formatMessage(item) }}</div>
         <br />
-        <div>{{ item.body }}</div>
+        <!-- <div>{{ item.body }}</div> -->
         <el-divider></el-divider>
       </div>
     </div>
@@ -272,6 +272,6 @@ export default {
   width: 50px;
   height: 50px;
   border-radius: 50%;
-  margin-top: -48px;
+  margin-bottom: 64px;
 }
 </style>

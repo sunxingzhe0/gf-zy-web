@@ -17,7 +17,7 @@ export function statChart(params) {
 }
 
 //科室医生订单数（金额）统计表、医生端、药房端、机构端
-export function getStatisticS(params) {
+export function orderCountTable(params) {
   return request({
     url: '/api/v1/order/countTable',
     method: 'get',

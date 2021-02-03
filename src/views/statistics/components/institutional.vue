@@ -98,7 +98,7 @@
                 <!-- <el-col :span="4">{{ row.orderNum }}</el-col> -->
                 <el-col :span="24">
                   <template>
-                    {{ btnWcno == 0 ? row.deptName : row.doctorName }}
+                    {{ btnWcno == 1 ? row.deptName : row.doctorName }}
                   </template>
                 </el-col>
                 <!-- <el-col :span="20">
@@ -176,21 +176,21 @@ export default {
     return {
       active: 7,
       arrayS: '', //业务类型
-      department: 0, //科室
+      department: 1, //科室
       actionsBlue: [], //柱状侧
       actBotton: [], //柱状下
       vbrSan: [], //总分
       bacBat: 0,
-      btnWcno: 0,
+      btnWcno: 1,
       branch: [
         //科室 医生 护士 药师
         {
           name: '科室',
-          id: 0,
+          id: 1,
         },
         {
           name: '医生',
-          id: 1,
+          id: 2,
         },
       ],
       date: [
@@ -273,9 +273,9 @@ export default {
       // this.actBotton = res.map(item => {if(this.department == 0 ){item.deptNam}})
       this.actBotton = res.map(item => {
         let name = ''
-        if (this.department == 0) {
+        if (this.department == 1) {
           name = item.deptName
-        } else if (this.department == 1) {
+        } else if (this.department == 2) {
           name = item.doctorName
         }
         return name

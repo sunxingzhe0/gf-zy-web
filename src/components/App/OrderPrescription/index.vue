@@ -53,29 +53,45 @@
           </div>
         </div>
 
-        <div class="app-info-row">
+        <!-- <div class="app-info-row">
           <div class="app-info-item">
             <div class="app-info-value">中成药：￥{{ item.chPatentFee }}</div>
           </div>
-        </div>
-        <div class="app-info-row">
-          <div class="app-info-item">
-            <!-- <div class="app-info-value">西药：￥{{ item.rpFee }}</div> -->
-            <div class="app-info-value">
-              西药：￥{{ item.prescriptionPrice || item.westFee }}
+        </div> -->
+        <template v-for="t in drugTypes">
+          <div
+            class="app-info-row"
+            :key="t.id"
+            v-if="item.contentList.map(r => r.type).indexOf(t.id) > -1"
+          >
+            <div class="app-info-item">
+              <!-- <div class="app-info-value">西药：￥{{ item.rpFee }}</div> -->
+              <div class="app-info-value">
+                {{ t.name }}：￥{{
+                  t.code == 'WESTERN_MEDICINE'
+                    ? item.westFee
+                    : t.code == 'HERBS'
+                    ? '-'
+                    : t.code == 'CHINESE_PATENT_MEDICINE'
+                    ? item.chPatentFee
+                    : '-'
+                }}
+              </div>
             </div>
           </div>
-        </div>
+        </template>
+
         <div class="app-info-row">
           <div class="app-info-item">
             <div class="app-info-value allPrice">
               <!-- 合计：￥{{ +item.chPatentPrice + +item.prescriptionPrice  || '0.00'}} -->
-              合计：￥{{
+              <!-- 合计：￥{{
                 (
                   +(item.chPatentPrice || item.chPatentFee) +
                   +(item.prescriptionPrice || item.westFee)
                 ).toFixed(2)
-              }}
+              }} -->
+              合计：￥{{ item.rpFee }}
             </div>
           </div>
         </div>
@@ -101,6 +117,7 @@
 @emit
 */
 import { curPre } from '@/api/prescription'
+import { mapState } from 'vuex'
 import { BlockTitle } from '@/components/Base'
 import PrescriptionItem from '@/components/Prescription/PrescriptionItem'
 export default {
@@ -124,16 +141,25 @@ export default {
       prescriptions: [],
     }
   },
+  computed: {
+    ...mapState({
+      drugTypes: state => state.drug.drugTypes,
+    }),
+  },
+  created() {
+    console.log(this.drugTypes, 1111)
+  },
   methods: {
     async getPrescriptionInfo() {
       const res = await curPre({ orderId: this.orderId })
+      console.log(this.drugTypes, 1111)
       this.prescriptions = res
       // console.log(this.prescriptions)
     },
     //痕迹查看
-    seeHistory() {
-      console.log(123)
-    },
+    // seeHistory() {
+    //   console.log(123)
+    // },
   },
   watch: {
     orderId: {
