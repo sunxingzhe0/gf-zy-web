@@ -2,10 +2,11 @@
   <div class="message__wrap message__text">
     <div>{{ orderIllness.illnessDesc }}</div>
     <div :style="{ marginTop: '10px' }">
-      <img
+      <el-image
         v-for="_ in orderIllness.picList"
         :key="_"
         :src="FILE_URL(_)"
+        :preview-src-list="[FILE_URL(_)]"
         class="img"
       />
     </div>
@@ -67,6 +68,12 @@ export default {
   },
 }
 </script>
+<style>
+/* .vue-recycle-scroller.ready .vue-recycle-scroller__item-view {
+  will-change: initial;
+  transform: initial !important;
+} */
+</style>
 <style lang="scss" scoped>
 .img {
   width: 90px;

@@ -37,7 +37,7 @@
         </div>
       </div>
     </div>
-    <div class="app-info-row">
+    <div class="app-info-row ohter">
       <div class="app-info-item full">
         <div class="app-info-label">病情自诉</div>
         <div class="app-info-value">
@@ -49,13 +49,13 @@
       <div class="app-info-item full with-img">
         <el-image
           v-for="item in picList"
-          :preview-src-list="[]"
+          :preview-src-list="[FILE_URL(item)]"
           :src="FILE_URL(item)"
           :key="item"
         ></el-image>
       </div>
     </div>
-    <div class="app-info-row">
+    <div class="app-info-row" v-if="orderInfo.bizType !== 'CONSULT'">
       <div class="app-info-item full">
         <div class="app-info-label">诊断</div>
         <div class="app-info-value">{{ orderInfo.diagnose || '无' }}</div>
@@ -118,6 +118,13 @@ export default {
       height: 120px;
       margin-right: 20px;
     }
+  }
+}
+.ohter {
+  margin-bottom: 10px;
+  .app-info-value {
+    white-space: normal;
+    line-height: 20px;
   }
 }
 </style>

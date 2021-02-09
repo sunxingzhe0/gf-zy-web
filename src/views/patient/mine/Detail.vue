@@ -1,35 +1,31 @@
 <template>
   <section class="view__p-mine-detail">
     <header v-if="patientInfo">
-      <div class="left">
-        <div class="top">
-          <h3>{{ patientInfo.name }}</h3>
-          <div class="code">成人</div>
+      <div class="top">
+        <h3>{{ patientInfo.name }}</h3>
+        <div class="code">
+          {{ patientInfo.childState == 0 ? '成人' : '儿童' }}
         </div>
-        <div class="bottom">
-          <span>患者ID：</span>
-          {{ patientInfo.cardNo }}
-        </div>
-        <!--  <div class="bottom">
-          <span>就诊卡号：</span>
-          {{ patientInfo.cardNo }}
-        </div> -->
       </div>
-      <div class="right">
+      <div class="bottom">
         <el-row>
-          <el-col :span="12">
+          <el-col :span="5">
+            <span>患者ID：</span>
+            {{ patientInfo.cardNo }}
+          </el-col>
+          <el-col :span="4">
             <span>性别：</span>
             {{ patientInfo.sex }}
           </el-col>
-          <el-col :span="12">
+          <el-col :span="5">
             <span>出生日期：</span>
             {{ patientInfo.birthday }}
           </el-col>
-          <el-col :span="12">
+          <el-col :span="5">
             <span>民族：</span>
             {{ patientInfo.nation || '-' }}
           </el-col>
-          <el-col :span="12">
+          <el-col :span="5">
             <span>身份证号：</span>
             {{ patientInfo.idCard }}
           </el-col>
@@ -61,7 +57,11 @@
                 src="@/assets/headerImg.png"
               />
             </el-image>
-            <span>{{ row.userName }}</span>
+            <span class="name">{{ row.userName }}</span>
+          </template>
+
+          <template v-slot:slot_patientAtt="{ row }">
+            <span>{{ row.child ? '就诊人、监护人' : '就诊人' }}</span>
           </template>
         </List>
       </el-tab-pane>
@@ -98,6 +98,7 @@
               text,
               sessionId,
               userId,
+              orderId,
             } in clinic.list"
             :key="clinicId"
           >
@@ -109,16 +110,12 @@
             </p>
             <p>{{ datetime }}</p>
             <p class="text-overflow">{{ text }}</p>
-            <router-link
-              class="el-button el-button--text el-button--mini"
-              :to="
-                clientType === 'ORG_WEB'
-                  ? `/patient/patientTube/roominfo/${sessionId}&${clinicId}&${userId}`
-                  : `/patient/mine/roominfo/${sessionId}&${clinicId}&${userId}`
-              "
+            <el-button
+              type="text"
+              @click="gotoRoomInfo({ sessionId, clinicId, userId, orderId })"
+              >查看</el-button
             >
-              查看
-            </router-link>
+
             <div
               class="prepend"
               :class="{
@@ -143,8 +140,8 @@
         />
       </el-tab-pane>
       <el-tab-pane label="就诊记录" name="treat" lazy>
-        <TimeAxis :tiemDatas="tiemDatas" />
-        <ul class="card-wrapper treat">
+        <TimeAxis :tiemDatas="tiemDatas" @changeTime="changeTime" />
+        <ul class="card-wrapper treat" v-loading="isQuery">
           <li
             v-for="{
               medicalId,
@@ -155,6 +152,8 @@
               doctor,
               position,
               doctorId,
+              open,
+              patientId,
             } in treat.list"
             :key="medicalId"
             :data-tag="tag"
@@ -165,8 +164,12 @@
               {{ dept }} {{ doctor }} {{ position }}
               <el-button
                 type="text"
-                @click="goRecordInfo({ medicalId, doctorId })"
-                >{{ userId === doctorId ? '' : '申请' }}查看</el-button
+                @click="goRecordInfo({ medicalId, doctorId, patientId, open })"
+                >{{
+                  userId === doctorId || clientType === 'ORG_WEB' || open
+                    ? ''
+                    : '申请'
+                }}查看</el-button
               >
             </p>
           </li>
@@ -187,6 +190,7 @@
         </List>
       </el-tab-pane>
     </el-tabs>
+    <!-- <router-view></router-view> -->
   </section>
 </template>
 
@@ -210,6 +214,7 @@ import {
   medicalList,
   informationList,
   getMedicalTimeGroup,
+  applyAuthByDocWeb,
 } from '@/api/list'
 //类型枚举
 import types from '../enumsList'
@@ -235,8 +240,11 @@ export default {
     return {
       //端类型
       clientType: '',
+      isQuery: false,
       //时间轴数据
       tiemDatas: [],
+      //当前选中时间
+      nowTime: {},
       //登录的id
       userId: '',
       //详情枚举项
@@ -257,7 +265,7 @@ export default {
       basicInfo: {
         query: {
           pageSize: 10,
-          patientId: this.patientId, //患者进本信息id
+          patientId: this.$route.query.patientId, //患者进本信息id
         },
         columns: {
           createTime: {
@@ -283,6 +291,9 @@ export default {
             prop: 'slot_userName',
             minWidth: 160,
           },
+          patientAtt: {
+            prop: 'slot_patientAtt',
+          },
           sex: {
             formatter(row) {
               return row.sex == 0 ? '女' : row.sex == 1 ? '男' : ''
@@ -296,8 +307,8 @@ export default {
           pageSize: 10,
           dateType: 0,
           searchType: 0,
-          sourceType: 0,
-          memberId: this.id,
+          patientId: this.$route.query.patientId,
+          sourceType: this.$store.state.user.platform === 'ORG_WEB' ? 1 : 0,
         },
         columns: {
           createTime: {
@@ -363,6 +374,7 @@ export default {
         query: {
           pageSize: 10,
           currentNum: 1,
+          sourceType: this.$store.state.user.platform === 'ORG_WEB' ? 1 : 0,
         },
       },
       //就诊记录参数
@@ -371,12 +383,13 @@ export default {
         query: {
           pageSize: 10,
           currentNum: 1,
+          sourceType: this.$store.state.user.platform === 'ORG_WEB' ? 1 : 0,
         },
       },
       //操作日志参数
       log: {
         query: {
-          businessRel: this.id,
+          businessRel: this.$route.query.patientId,
         },
         columns: {
           createTime: {
@@ -386,15 +399,19 @@ export default {
       },
     }
   },
-  created() {
-    this.getPatientInfo()
-    this.clinicRoomList()
-    this.medicalList()
-    this.userId = this.$store.state.user.userId
-    this.getMedicalTimeGroup()
-    this.clientType = this.$store.state.user.platform
+  async created() {
+    this.init()
   },
   methods: {
+    async init() {
+      this.userId = this.$store.state.user.userId
+      this.clientType = this.$store.state.user.platform
+      this.getPatientInfo()
+      this.clinicRoomList()
+      //先请求时间轴数据
+      await this.getMedicalTimeGroup()
+      this.medicalList()
+    },
     //切换菜单
     handleTabClick({ name, $slots }) {
       if (['clinic', 'treat'].includes(name)) return
@@ -410,7 +427,7 @@ export default {
     },
     //获取患者详情信息
     async getPatientInfo() {
-      const res = await patientInfo({ patientId: this.patientId })
+      const res = await patientInfo({ patientId: this.$route.query.patientId })
       //数据处理
       res.sex === 0 && (res.sex = '女')
       res.sex === 1 && (res.sex = '男')
@@ -419,7 +436,7 @@ export default {
     //获取诊室记录列表
     async clinicRoomList() {
       const res = await clinicRoomList({
-        patientId: this.patientId,
+        patientId: this.$route.query.patientId,
         ...this.clinic.query,
       })
       //数据处理
@@ -437,6 +454,7 @@ export default {
           state: status[_.status],
           sessionId: _.sessionId,
           userId: _.userId,
+          orderId: _.orderId,
         })),
         query: {
           pageSize: 10,
@@ -447,10 +465,13 @@ export default {
     },
     //获取就诊记录列表
     async medicalList() {
+      this.isQuery = true
       const res = await medicalList({
-        patientId: this.patientId,
+        patientId: this.$route.query.patientId,
         ...this.treat.query,
+        ...this.nowTime,
       })
+      this.isQuery = false
       console.log(res, '99-------')
       const { type } = types
       this.treat = {
@@ -463,6 +484,8 @@ export default {
           doctor: _.doctorName,
           position: _.titleName,
           doctorId: _.doctorId,
+          open: _.open,
+          patientId: _.patientId,
         })),
         query: {
           pageSize: 10,
@@ -484,32 +507,80 @@ export default {
       }
       this.medicalList()
     },
+    //查看诊室记录
+    gotoRoomInfo(row) {
+      this.$router.push({
+        path:
+          this.clientType === 'ORG_WEB'
+            ? '/patient/patientTube/detail/roominfo'
+            : '/patient/mine/detail/roominfo',
+        query: {
+          sessionId: row.sessionId,
+          clinicId: row.clinicId,
+          userId: row.userId,
+          orderId: row.orderId,
+        },
+      })
+    },
     //查看就诊记录详情
-    goRecordInfo(row) {
+    async goRecordInfo(row) {
       console.log(this.userId, '登录的id-----')
       console.log(row.doctorId, '此项医生id-----')
       console.log(row.medicalId, '入参-----')
-      if (this.userId === row.doctorId) {
+      if (
+        this.userId === row.doctorId ||
+        this.clientType === 'ORG_WEB' ||
+        row.open
+      ) {
         this.$router.push({
-          name: 'recordInfo',
-          params: {
+          path:
+            this.clientType === 'ORG_WEB'
+              ? '/patient/patientTube/detail/recordInfo'
+              : '/patient/mine/detail/recordInfo',
+          query: {
             medicalId: row.medicalId,
           },
         })
       } else {
+        await applyAuthByDocWeb({ medicalId: row.medicalId, patientId: row.patientId })
         this.$alert('已发送查看申请!')
       }
     },
     //时间线数据
     async getMedicalTimeGroup() {
-      let res = await getMedicalTimeGroup({ memberId: this.id })
+      let res = await getMedicalTimeGroup({
+        patientId: this.$route.query.patientId,
+      })
+      this.tiemDatas = []
       for (let val of res) {
         for (let item of val.months) {
           this.tiemDatas.push(val.year + '年' + item + '月')
         }
       }
-      this.tiemDatas.reverse()
+      this.nowTime = {
+        year: this.tiemDatas[0].substr(0, 4) || '',
+        month: this.tiemDatas[0].substr(5, 2) || '',
+      }
+      console.log(this.tiemDatas, '时间轴-------')
+      console.log(this.nowTime, '默认时间-------')
+      return true
     },
+    //选中时间
+    changeTime(data) {
+      this.nowTime = {
+        year: data.substr(0, 4) || '',
+        month: data.substr(5, 2) || '',
+      }
+      this.medicalList()
+    },
+  },
+  mounted() {
+    console.log('--------------------')
+  },
+  beforeRouteEnter(to, from, next) {
+    next(vm => {
+      vm.init()
+    })
   },
 }
 </script>
@@ -517,71 +588,53 @@ export default {
 <style lang="scss">
 @import '@/styles/_variables.scss';
 @import '@/styles/_modules-detail.scss';
-.el-tooltip {
-  display: flex;
-  align-items: center;
-}
-.el-image {
-  width: 30px;
-  height: 30px;
-  border-radius: 50%;
-  margin-right: 5px;
-}
 
 .view__p-mine-detail {
+  .el-image {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    margin-right: 5px;
+  }
   > * + * {
     margin-top: 20px;
   }
 
   > header {
-    background: $--color-primary;
-    color: $--color-white;
+    height: 130px;
+    padding: 30px;
+    box-sizing: border-box;
     box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.1);
     border-radius: 2px;
-    display: flex;
-
-    .left {
-      width: 30%;
-      padding: 30px;
+    background-image: url('../../../assets/infoTop.png');
+    .top {
       display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      .top {
+      h3 {
+        margin: 0 20px 0 0;
+        font-size: 24px;
+      }
+      .code {
+        width: 46px;
+        height: 24px;
         display: flex;
-        flex-direction: row;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
-        font-size: 22px;
-        .code {
-          background: #39c0cc;
-          width: 46px;
-          height: 24px;
-          display: flex;
-          justify-content: center;
-          align-items: center;
-          font-size: 16px;
-        }
-      }
-      .bottom {
-        color: #f0f9fa;
+        font-size: 16px;
+        background: rgba($color: #000000, $alpha: 0.1);
       }
     }
-    .right {
-      width: 70%;
-      padding: 24px 30px 54px 70px;
-      background: #d6fcff;
-      color: #696a6b;
-      font-size: 14px;
+    .bottom {
+      color: #333;
     }
-    h3 {
-      margin: 0;
-    }
-
     .el-col {
       margin-top: 30px;
     }
   }
-
+  .name {
+    position: relative;
+    bottom: 8px;
+    left: 0;
+  }
   .card-wrapper {
     display: grid;
     justify-content: space-around;
@@ -616,30 +669,31 @@ export default {
         text-align: center;
         line-height: 80px;
         top: -106%;
-        left: -125%;
+        left: -126%;
         width: 500px;
         height: 500px;
         border-radius: 50%;
-        border: 10px solid #e1f6f8;
-        background: #c8eef1;
-        color: #00adbb;
-        font-size: 24px;
+        border: 10px solid #f3fbfc;
+        background: #e7f7f9;
+        color: #0ab2c1;
+        font-size: 22px;
+        letter-spacing: 3px;
         writing-mode: vertical-rl;
       }
       .typeOne {
-        border: 10px solid #e1f6f8;
-        background: #c8eef1;
+        border: 10px solid #f3fbfc;
+        background: #e7f7f9;
         color: #00adbb;
       }
       .typeTwo {
-        border: 10px solid #cedbf7;
-        background: #bbcdf3;
-        color: #2e64d8;
+        border: 10px solid #f4f7fd;
+        background: #eaeffb;
+        color: #2d5fdf;
       }
       .typeTree {
-        border: 10px solid #e5f5e7;
-        background: #ceedd1;
-        color: #24b03b;
+        border: 10px solid #f4fbf4;
+        background: #e9f7e9;
+        color: #26b523;
       }
 
       .append {

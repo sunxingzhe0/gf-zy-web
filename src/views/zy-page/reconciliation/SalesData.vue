@@ -164,6 +164,11 @@ export default {
           minWidth: 120,
           prop: 'slot_payPrice',
         },
+        feeType: { minWidth: 100 },
+        patientName: { minWidth: 100 },
+        cardNo: { minWidth: 100 },
+        payWay: { minWidth: 100 },
+        payState: { minWidth: 100 },
       }
     },
   },
@@ -195,7 +200,7 @@ export default {
       if (selecData.length == 0 && command != 'query') {
         this.$message({
           type: 'warning',
-          message: '请选择需要操作的问题',
+          message: '请选择需要操作的数据',
         })
         return false
       }
@@ -221,3 +226,4 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped></style>

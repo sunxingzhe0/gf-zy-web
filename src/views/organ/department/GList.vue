@@ -1,5 +1,5 @@
 <template>
-  <div class="view__card">
+  <div class="view__card" v-loading.lock="faList.loading">
     <List
       v-model="faList.query"
       :filter="filter"
@@ -8,13 +8,6 @@
       :treeSet="{ key: 'id', props: 'sonDeptList' }"
       @expandChange="expandChange"
     >
-      <!-- <template v-slot:slot_title="{ row }">
-        <el-button v-if="row.sonDeptList" type="text" size="mini">{{
-          row.address
-        }}</el-button>
-        <span v-else>{{ row.address }}</span>
-      </template> -->
-
       <template v-slot:slot_doctorNum="{ row }">
         <router-link
           v-if="row.doctorNum != 0"
@@ -28,9 +21,24 @@
         >
           {{ row.doctorNum }}
         </router-link>
-        <p v-else>{{ row.doctorNum }}</p>
+        <span v-else>{{ row.doctorNum }}</span>
       </template>
-
+      <template v-slot:slot_index="{ row }">
+        {{ row.level == 1 ? row.index : '' }}
+      </template>
+      <template v-slot:slot_id="{ row }">
+        <span
+          :style="{
+            color: row.level == 1 && row.sonDeptNum > 0 ? '#0ab2c1' : '',
+          }"
+          >{{ row.id
+          }}<i
+            v-if="row.sonDeptNum > 0"
+            @click="taptoggleRowExpansion(row)"
+            :class="row.open ? 'el-icon-arrow-down' : 'el-icon-arrow-right'"
+          ></i
+        ></span>
+      </template>
       <!-- 子科室 -->
       <template v-slot:slot_sonDeptNum="{ row }">
         <el-button
@@ -65,8 +73,8 @@
         </div> -->
       </template>
       <template v-slot:slot_level="{ row }">
-        <p v-show="row.level == 1">一级</p>
-        <p v-show="row.level == 2">二级</p>
+        <span v-show="row.level == 1">一级</span>
+        <span v-show="row.level == 2">二级</span>
       </template>
 
       <template v-slot:slot_state="{ row }">
@@ -98,7 +106,7 @@
         </el-button> -->
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="add(row)"> 修改 </el-button>
+        <el-button type="text" @click="add(row)"> 修改 </el-button>
       </template>
     </List>
     <el-dialog
@@ -207,8 +215,8 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer is-center">
-        <el-button size="mini" @click="isAdd = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="submit">确 定</el-button>
+        <el-button @click="isAdd = false">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -398,7 +406,8 @@ export default {
         },
         columns: {
           index: {
-            hidden: true,
+            prop: 'slot_index',
+            width: 60,
           },
           sonDeptNum: {
             minWidth: 120,
@@ -414,6 +423,10 @@ export default {
           },
           fixed: {
             minWidth: 60,
+          },
+          id: {
+            prop: 'slot_id',
+            minWidth: 200,
           },
           level: {
             prop: 'slot_level',
@@ -438,14 +451,18 @@ export default {
             prop: 'slot_recommend',
             minWidth: 100,
           },
-          id: {
-            minWidth: 150,
-          },
           orgName: {
             hidden: true,
           },
           faDeptName: {
             hidden: true,
+            minWidth: 90,
+          },
+          name: {
+            minWidth: 90,
+          },
+          intro: {
+            minWidth: 90,
           },
         },
       },
@@ -481,6 +498,12 @@ export default {
     // this.preservation()
   },
   methods: {
+    // 展开子科室
+    taptoggleRowExpansion(row) {
+      console.log(this.$refs)
+      this.$refs.table.toggleRowExpansion(row, !row.open)
+      row.open = !row.open
+    },
     async download() {
       modularLexcel('科室导入模板.xlsx')
     },
@@ -690,7 +713,20 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
+.el-table {
+  ::v-deep .el-table__expand-icon {
+    display: none;
+  }
+  ::v-deep .el-table__placeholder {
+    width: 0;
+    margin-left: 0;
+  }
+  .el-button--text {
+    padding: 0;
+  }
+}
+
 .avatar-uploader {
   height: 86px;
   width: 86px;
@@ -710,12 +746,19 @@ export default {
   cursor: pointer;
 }
 .el-select > .el-input {
-  width: 450px;
+  width: 100%;
 }
 .el-form-item {
   margin-bottom: 16px;
 }
 .el-textarea .el-input__count {
   background: none;
+}
+::v-deep .table-wrap .cell {
+  font-size: 16px;
+}
+::v-deep .el-table .cell.el-tooltip {
+  font-size: 14px;
+  // padding-left: 6px;
 }
 </style>

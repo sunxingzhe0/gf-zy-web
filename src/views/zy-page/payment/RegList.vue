@@ -24,7 +24,20 @@
       </template>
 
       <template v-slot:fixed="{ row }">
-        <el-button type="text" @click="goto(row)">查看</el-button>
+        <router-link
+          class="el-button el-button--text"
+          :to="`/payment/reg/detail?orderId=${row.orderId}&cardNo=${
+            row.cardNo
+          }&state=${
+            row.billStateName == 1
+              ? '已付款'
+              : row.billStateName == 2
+              ? '已退费'
+              : ''
+          }`"
+        >
+          查看
+        </router-link>
       </template>
     </List>
   </section>
@@ -142,17 +155,23 @@ export default {
           hidden: true,
         },
         fixed: {
-          minWidth: 60,
+          minWidth: 80,
         },
+        noTypeName: { minWidth: 100 },
+        patientName: { minWidth: 100 },
+        cardNo: { minWidth: 100 },
+        paymentName: { minWidth: 100 },
         totalFee: {
           formatter(row) {
             return `￥${row.totalFee}`
           },
+          minWidth: 100,
         },
         billStateName: {
           formatter(row) {
             return row.billStateName === '1' ? '已付款' : '已退费'
           },
+          minWidth: 100,
         },
       }
     },

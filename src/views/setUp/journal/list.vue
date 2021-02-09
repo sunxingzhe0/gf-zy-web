@@ -13,6 +13,7 @@
 import { List, mixin } from '@/components'
 import { getLogList } from '@/api/setup'
 import { drugStoreChooseList } from '@/api/index'
+import listIndex from './listIndex.js'
 export default {
   components: {
     List,
@@ -44,22 +45,7 @@ export default {
         {
           props: {
             label: '所属模块',
-            options: [
-              { label: '全部', value: '' },
-              { label: '机构', value: 'ORG' },
-              { label: '员工', value: 'STAFF' },
-              { label: '业务', value: 'BUSINESS' },
-              { label: '订单', value: 'ORDER' },
-              { label: '排班', value: 'SCHEDULE' },
-              { label: '字典', value: 'DICT' },
-              { label: '权限', value: 'AUTH' },
-              // { label: '处方', value: 'RP' },
-              // { label: '消息', value: 'MSG' },
-              // { label: '模板', value: 'MODEL' },
-              { label: '设置', value: 'SETTING' },
-              // { label: '患者', value: 'PATIENT' },
-              // { label: '统计', value: 'COUNT' },
-            ],
+            options: listIndex(this.scope),
           },
           keys: 'logTypes',
         },

@@ -404,11 +404,16 @@ export default {
 
       &.el-badge {
         ::v-deep .el-badge__content {
-          width: 21px;
-          border-radius: 50%;
-          padding: 0;
+          min-width: 20px;
+          /* border-radius: 50%; */
+          display: flex;
+          padding: 2px;
+          height: 18px;
           font-size: 8px;
-          line-height: 16px;
+          /* line-height: 16px; */
+          display: flex;
+          align-items: center;
+          justify-content: center;
         }
         ::v-deep .el-badge__content.is-fixed {
           top: 11px;

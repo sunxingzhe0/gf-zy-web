@@ -1243,7 +1243,7 @@ export default {
       loading: false,
       model: {
         avatar: '',
-        type: '',
+        type: 'DOCTOR',
         roleId: [],
         account: '',
         password: '',
@@ -1514,7 +1514,7 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
 @use '@/styles/_modules-detail.scss';
 .reset_btn {
   position: absolute;

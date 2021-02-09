@@ -24,7 +24,12 @@
       </template>
 
       <template v-slot:fixed="{ row }">
-        <el-button type="text" @click="goto(row)">查看</el-button>
+        <router-link
+          class="el-button el-button--text"
+          :to="`/payment/out-patient/detail?billNo=${row.billNo}&patientId=${row.patientId}`"
+        >
+          查看
+        </router-link>
       </template>
     </List>
   </section>
@@ -141,13 +146,19 @@ export default {
           hidden: true,
         },
         fixed: {
-          minWidth: 60,
+          minWidth: 80,
         },
         totalFee: {
           formatter(row) {
             return `￥${row.totalFee}`
           },
+          minWidth: 100,
         },
+        billStateName: { minWidth: 100 },
+        noTypeName: { minWidth: 100 },
+        patientName: { minWidth: 100 },
+        cardNo: { minWidth: 100 },
+        paymentName: { minWidth: 100 },
       }
     },
   },

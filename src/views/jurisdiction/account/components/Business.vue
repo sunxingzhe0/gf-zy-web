@@ -59,7 +59,6 @@
             <el-input
               :disabled="!model.custom"
               style="max-width: 80%; vertical-align: middle;"
-              size="mini"
               v-model="item.bizPrice"
             >
               <template v-slot:prepend>¥</template>

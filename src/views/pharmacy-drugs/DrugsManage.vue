@@ -498,6 +498,12 @@ export default {
     },
     columns() {
       return {
+        name: {
+          minWidth: 100,
+        },
+        drugAttr: {
+          minWidth: 100,
+        },
         createTime: {
           minWidth: 160,
         },
@@ -514,10 +520,10 @@ export default {
           hidden: true,
         },
         basicUnitText: {
-          minWidth: 100,
+          minWidth: 130,
         },
         regularUnitText: {
-          minWidth: 100,
+          minWidth: 130,
         },
         maritalType: {
           prop: 'slot_maritalType',
@@ -556,6 +562,7 @@ export default {
               return row.split ? '是' : '否'
             }
           },
+          minWidth: 100,
         },
       }
     },

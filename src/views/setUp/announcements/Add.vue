@@ -8,7 +8,7 @@
               class="input"
               placeholder="请输入"
               v-model="form.title"
-              maxlength="200"
+              maxlength="25"
               show-word-limit
             ></el-input>
           </el-form-item>

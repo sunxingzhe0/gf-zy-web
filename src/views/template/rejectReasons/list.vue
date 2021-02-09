@@ -7,20 +7,15 @@
       :tableData="tableData"
     >
       <template v-slot:footertool>
-        <el-button size="mini" type="primary" @click="add()">
+        <el-button type="primary" @click="add()">
           新增模板
         </el-button>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="add(row)">
+        <el-button type="text" @click="add(row)">
           修改
         </el-button>
-        <el-button
-          size="mini"
-          style="color: #f74949;"
-          type="text"
-          @click="del(row.id)"
-        >
+        <el-button style="color: #f74949;" type="text" @click="del(row.id)">
           删除
         </el-button>
       </template>
@@ -44,10 +39,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer">
-        <el-button size="mini" @click="isreject = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="rejectSubmit"
-          >确 定</el-button
-        >
+        <el-button @click="isreject = false">取 消</el-button>
+        <el-button type="primary" @click="rejectSubmit">确 定</el-button>
       </div>
     </el-dialog>
   </div>
@@ -165,4 +158,11 @@ export default {
 .dialog-footer {
   text-align: center;
 }
+// ::v-deep .table-wrap .cell{
+//   font-size: 16px;
+// }
+// ::v-deep .el-table .cell.el-tooltip {
+//   font-size: 14px;
+//   // padding-left: 6px;
+// }
 </style>

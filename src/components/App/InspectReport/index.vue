@@ -51,6 +51,7 @@
           <el-table
             :data="item.labInfoList"
             style="width: 100%; margin-top: 10px;"
+            border
           >
             <el-table-column type="name" label="检验项"> </el-table-column>
             <el-table-column prop="name" label="值"> </el-table-column>
@@ -77,3 +78,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+v-deep .el-tabs--left .el-tabs__item.is-left {
+  text-align: left;
+}
+</style>

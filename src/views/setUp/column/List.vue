@@ -45,34 +45,24 @@
         ></el-image>
       </template>
       <template v-slot:footertool>
-        <el-button size="mini" type="primary" plain @click="del()">
+        <el-button type="primary" plain @click="del()">
           批量删除
         </el-button>
-        <el-button
-          size="mini"
-          type="primary"
-          plain
-          @click="stateChange('', false)"
-        >
+        <el-button type="primary" plain @click="stateChange('', false)">
           批量隐藏
         </el-button>
-        <el-button
-          size="mini"
-          type="primary"
-          plain
-          @click="stateChange('', true)"
-        >
+        <el-button type="primary" plain @click="stateChange('', true)">
           批量显示
         </el-button>
-        <el-button size="mini" type="primary" @click="add(false)">
+        <el-button type="primary" @click="add(false)">
           新增栏目
         </el-button>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="add(row)"> 修改 </el-button>
+        <el-button type="text" @click="add(row)"> 修改 </el-button>
         <!-- <el-button
           v-if="!row.state"
-          size="mini"
+          
           type="text"
           @click="stateChange_(true, [row.id])"
         >
@@ -80,18 +70,13 @@
         </el-button>
         <el-button
           v-if="row.state"
-          size="mini"
+          
           type="text"
           @click="stateChange_(false, [row.id])"
         >
           隐藏
         </el-button> -->
-        <el-button
-          size="mini"
-          style="color: #f74949;"
-          type="text"
-          @click="del([row.id])"
-        >
+        <el-button style="color: #f74949;" type="text" @click="del([row.id])">
           删除
         </el-button>
       </template>
@@ -123,11 +108,7 @@
               <i class="el-icon-plus avatar-uploader-icon"></i>
               <div>添加照片</div>
             </div>
-            <el-button
-              class="changeImg"
-              v-if="form.picId"
-              size="mini"
-              type="primary"
+            <el-button class="changeImg" v-if="form.picId" type="primary"
               >更改</el-button
             >
           </el-upload>
@@ -177,8 +158,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer is-center">
-        <el-button size="mini" @click="isAdd = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="submit">确 定</el-button>
+        <el-button @click="isAdd = false">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
   </div>

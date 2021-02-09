@@ -248,7 +248,7 @@ export default {
     phone() {
       return this.$store.state.user.phone
         ? this.$store.state.user.phone.replace(
-            this.$store.state.user.phone.substring(3, 7),
+            this.$store.state.user.phone.substring(4, 8),
             '****',
           )
         : '-'

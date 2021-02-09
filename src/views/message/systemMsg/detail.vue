@@ -71,10 +71,14 @@ export default {
         } else if (msgType == '06' || msgType == '07') {
           // this.$router.push('/order/prescription-order/list')
         }
-      } else if (clientType == 'ORG' && (msgType == '01' || msgType == '02')) {
-        this.$router.push('/jurisdiction/account/list')
+      } else if (clientType == 'ORG') {
+        if (msgType == '01' || msgType == '02') {
+          this.$router.push('/jurisdiction/account/list')
+        } else if (msgType == '03') {
+          this.$router.push(`/set-up/announcements/detail?id=${this.bizId}`)
+        }
       }
-      if (clientType == 'ALL' && msgType == '06') {
+      if (clientType == 'ALL') {
         this.$router.push('/set-up/account')
       }
     },

@@ -355,7 +355,7 @@ export default {
     },
     async delTemps() {
       try {
-        const confirm = await this.$confirm('您确定要删除选中的模板吗')
+        const confirm = await this.$confirm('您确定要删除选中的模板吗？')
         if (confirm === 'confirm') {
           this.handleDel()
         }

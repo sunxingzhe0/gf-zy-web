@@ -137,6 +137,10 @@ export default {
           },
           minWidth: 120,
         },
+
+        noType: { minWidth: 100 },
+        cardNo: { minWidth: 100 },
+        payWay: { minWidth: 100 },
       }
     },
   },

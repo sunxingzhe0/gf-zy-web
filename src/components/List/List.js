@@ -9,6 +9,7 @@ import TableFooterTool from '../TableFooterTool'
 
 import variables from '@/styles/_variables.scss'
 import './List.scss'
+import { template } from 'lodash'
 
 export function resolveHeader(headers, columns) {
   this.table.checkedColumns = this.table.checkedColumns || []
@@ -137,8 +138,13 @@ export default ({
             align="center"
           ></el-table-column>
         )}
-
-        <el-table-column type="index" label="序号" width="80"></el-table-column>
+        {!treeSet && (
+          <el-table-column
+            type="index"
+            label="序号"
+            width="80"
+          ></el-table-column>
+        )}
 
         {tableColumns.length
           ? tableColumns.reduce(

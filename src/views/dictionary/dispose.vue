@@ -135,6 +135,7 @@ export default {
         index: {
           hidden: true,
         },
+        partName: { minWidth: 120 },
         type: {
           prop: 'slotType',
         },

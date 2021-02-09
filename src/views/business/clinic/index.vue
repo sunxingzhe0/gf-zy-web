@@ -115,7 +115,13 @@
           >
             请在右侧点击请求查看患者档案
           </div>
-          <iframe :src="archives" width="100%" class="iframeWa" else></iframe>
+          <iframe
+            v-if="isShow"
+            :src="archives"
+            width="100%"
+            class="iframeWa"
+            else
+          ></iframe>
         </el-tab-pane>
         <!-- <el-tab-pane label="院外档案" name="out" lazy>
           <CourtFile />
@@ -172,6 +178,7 @@ export default {
       moment().endOf('day').format('YYYYMMDDHHmmss'),
     ]
     return {
+      isShow: false,
       archives: [], //档案
       loadingLeft: false,
       activeNameType: 'all',
@@ -317,22 +324,27 @@ export default {
     },
     //档案
     openTreatmentRecord(item) {
+      let path = ''
       let prefix = '/cdr/#/diagnosis/diagnosis'
       if (process.env.NODE_ENV === 'development') {
-        prefix =
-          'https://demo.chuntaoyisheng.com:10002/cdr/#/diagnosis/diagnosis'
+        prefix = 'https://wxapp.chuntaoyisheng.com/cdr/#/diagnosis/diagnosis'
       }
+      this.isShow = false
       //outer 互联网  inner院内
       if (item.type == 'outer') {
-        this.archives = `${prefix}?tk=${getToken()}&typeName=${
+        path = `${prefix}?tk=${getToken()}&typeName=${
           item.medicalType
         }&orderId=${item.orderId}&medicalId=${item.id}`
       } else {
-        this.archives = `${prefix}?tk=${getToken()}&typeName=${
-          item.medicalType
-        }&mpiId=${item.cardNo}&ehrId=${item.visitNo}`
+        path = `${prefix}?tk=${getToken()}&typeName=${item.medicalType}&mpiId=${
+          item.cardNo
+        }&ehrId=${item.visitNo}`
       }
-      this.activeName = 'treatmentRecord'
+      setTimeout(() => {
+        this.isShow = true
+        this.archives = path
+        this.activeName = 'treatmentRecord'
+      })
     },
     handleClose() {
       this.isFullScreen = false

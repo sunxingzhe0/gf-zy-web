@@ -20,15 +20,7 @@
                   :key="t.id"
                   v-if="item.contentList.map(r => r.type).indexOf(t.id) > -1"
                 >
-                  {{ t.name }}：￥{{
-                    t.code == 'WESTERN_MEDICINE'
-                      ? item.westFee
-                      : t.code == 'HERBS'
-                      ? '-'
-                      : t.code == 'CHINESE_PATENT_MEDICINE'
-                      ? item.chPatentFee
-                      : '-'
-                  }}
+                  {{ t.name }}：￥{{ getAllPrice(t.id, item.contentList) }}
                 </span>
               </template>
               <span class="price">合计：￥{{ item.rpFee }}</span>
@@ -126,6 +118,17 @@ export default {
         diagnose: res.diagnose,
         illnessDesc: res.illnessDesc,
       }
+    },
+    // 计算总价
+    getAllPrice(id, list) {
+      let arr = []
+      arr = list
+        .filter(item => item.type == id)
+        .map(t => {
+          return t.totalPrice ? parseFloat(t.totalPrice) : 0
+        })
+      console.log(arr)
+      return eval(arr.join('+')).toFixed(2)
     },
   },
   watch: {

@@ -9,9 +9,8 @@
       :tableData="tableData"
     >
       <template v-slot:footertool>
-        <el-button size="mini" type="primary" @click="edit()"> 新增 </el-button>
+        <el-button type="primary" @click="edit()"> 新增 </el-button>
         <el-button
-          size="mini"
           plain
           type="primary"
           @click="
@@ -37,7 +36,7 @@
         ></el-switch>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="edit(row)"> 修改 </el-button>
+        <el-button type="text" @click="edit(row)"> 修改 </el-button>
       </template>
     </List>
 
@@ -88,8 +87,8 @@
         </el-row>
       </el-form>
       <div slot="footer" class="dialog-footer is-center">
-        <el-button size="mini" @click="editShow = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="submit">确 定</el-button>
+        <el-button @click="editShow = false">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog
@@ -276,18 +275,35 @@ export default {
           minWidth: 180,
         },
         regularUnitText: {
-          minWidth: 100,
+          minWidth: 120,
         },
         //是否拆零
         split: {
           formatter(row) {
             return row.split ? '是' : '否'
           },
+          minWidth: 100,
         },
+        regularPackVolume: {
+          minWidth: 120,
+        },
+        chemicalName: {
+          minWidth: 100,
+        },
+        healthAttrText: { minWidth: 100 },
         price: {
           formatter(row) {
             return '￥' + row.price
           },
+        },
+        manageCodeText: {
+          minWidth: 120,
+        },
+        name: {
+          minWidth: 100,
+        },
+        commonName: {
+          minWidth: 120,
         },
         fixed: {
           minWidth: 60,

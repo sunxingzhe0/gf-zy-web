@@ -62,19 +62,26 @@
           <div
             class="app-info-row"
             :key="t.id"
-            v-if="item.contentList.map(r => r.type).indexOf(t.id) > -1"
+            v-if="
+              item.contentList
+                ? item.contentList.map(r => r.type).indexOf(t.id) > -1
+                : item.rpDrugList
+                ? item.rpDrugList.map(r => r.type).indexOf(t.id) > -1
+                : false
+            "
           >
             <div class="app-info-item">
               <!-- <div class="app-info-value">西药：￥{{ item.rpFee }}</div> -->
               <div class="app-info-value">
                 {{ t.name }}：￥{{
-                  t.code == 'WESTERN_MEDICINE'
-                    ? item.westFee
-                    : t.code == 'HERBS'
-                    ? '-'
-                    : t.code == 'CHINESE_PATENT_MEDICINE'
-                    ? item.chPatentFee
-                    : '-'
+                  getAllPrice(
+                    t.id,
+                    item.contentList
+                      ? item.contentList
+                      : item.rpDrugList
+                      ? item.rpDrugList
+                      : [],
+                  )
                 }}
               </div>
             </div>
@@ -91,7 +98,7 @@
                   +(item.prescriptionPrice || item.westFee)
                 ).toFixed(2)
               }} -->
-              合计：￥{{ item.rpFee }}
+              合计：￥{{ item.rpFee || item.prescriptionPrice }}
             </div>
           </div>
         </div>
@@ -155,6 +162,17 @@ export default {
       console.log(this.drugTypes, 1111)
       this.prescriptions = res
       // console.log(this.prescriptions)
+    },
+    // 计算总价
+    getAllPrice(id, list) {
+      let arr = []
+      arr = list
+        .filter(item => item.type == id)
+        .map(t => {
+          return t.totalPrice ? parseFloat(t.totalPrice) : 0
+        })
+      console.log(arr)
+      return eval(arr.join('+')).toFixed(2)
     },
     //痕迹查看
     // seeHistory() {

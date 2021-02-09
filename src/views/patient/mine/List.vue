@@ -1,5 +1,5 @@
 <template>
-  <section class="view__card">
+  <section class="view__card" :class="{ isShowcheck: !isShowBtn }">
     <List
       v-model="query"
       :filter="filter"
@@ -8,13 +8,8 @@
       :bats="[{}]"
     >
       <!-- 批量推送按钮 -->
-      <template v-slot:footertool>
-        <el-button
-          size="mini"
-          plain
-          type="primary"
-          @click="handleCommand('push')"
-        >
+      <template v-slot:footertool v-if="isShowBtn">
+        <el-button plain type="primary" @click="handleCommand('push')">
           批量推送
         </el-button>
       </template>
@@ -44,11 +39,11 @@
                 <span>{{ wayType[row.wayType] }}</span>
               </template>
             </el-table-column>
-            <el-table-column
-              property="diagnosisInfo"
-              label="诊断"
-              width="120"
-            ></el-table-column>
+            <el-table-column property="diagnosisInfo" label="诊断" width="120">
+              <template v-slot="{ row }">
+                <span>{{ row.diagnosisInfo || '-' }}</span>
+              </template></el-table-column
+            >
             <el-table-column
               property="doctorName"
               label="接诊人"
@@ -83,14 +78,10 @@
       </template>
       <!-- 查看详情 -->
       <template v-slot:fixed="{ row }">
-        <router-link
-          class="el-button el-button--text el-button--mini"
-          :to="`detail/${row.memberId}&${row.patientId}`"
+        <el-button type="text" @click="gotoInfo(row)">查看</el-button>
+        <el-button type="text" @click="handlePushBtnClick(row)" v-if="isShowBtn"
+          >推送</el-button
         >
-          查看
-        </router-link>
-
-        <el-button type="text" @click="handlePushBtnClick(row)">推送</el-button>
       </template>
     </List>
 
@@ -122,11 +113,10 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="mini" @click="dialog.visible = false">
+          <el-button @click="dialog.visible = false">
             取消
           </el-button>
           <el-button
-            size="mini"
             type="primary"
             :loading="dialog.loading"
             @click="submit('form')"
@@ -158,6 +148,10 @@ export default {
   ],
   data() {
     return {
+      //是否显示机构端按钮
+      isShowBtn: true,
+      //端类型
+      clientType: '',
       //请求参数
       query: {
         pageSize: 10,
@@ -183,7 +177,8 @@ export default {
     }
   },
   created() {
-    console.log(this.$store.state.user.platform)
+    this.clientType = this.$store.state.user.platform
+    this.$route.path === '/patient/patientTube/list' && (this.isShowBtn = false)
   },
   computed: {
     filter() {
@@ -225,7 +220,7 @@ export default {
               label: '是否儿童',
               options: [
                 { label: '不限', value: '' },
-                { label: '不是', value: 0 },
+                { label: '否', value: 0 },
                 { label: '是', value: 1 },
               ],
             },
@@ -238,7 +233,7 @@ export default {
             },
             keys: ['visitStartNum', 'visitEndNum'],
           },
-       /*    {
+          /*    {
             props: {
               label: '推送次数',
               is: 'InputRange',
@@ -281,7 +276,7 @@ export default {
           minWidth: 140,
         },
         lastOrderType: {
-          minWidth: 120,
+          minWidth: 150,
           formatter(row) {
             return row.lastOrderType === 'CONSULT'
               ? '在线咨询'
@@ -293,7 +288,7 @@ export default {
           },
         },
         acceptsTime: {
-          minWidth: 140,
+          minWidth: 180,
         },
         createTime: {
           minWidth: 160,
@@ -303,15 +298,20 @@ export default {
         },
         visitCount: {
           prop: 'slot_visitCount',
+          minWidth: 90,
         },
         pushCount: {
           prop: 'slot_pushCount',
+          minWidth: 90,
         },
         index: {
           hidden: true,
         },
         fixed: {
-          minWidth: 100,
+          minWidth: 140,
+        },
+        name: {
+          minWidth: 90,
         },
         sex: {
           formatter(row) {
@@ -322,6 +322,7 @@ export default {
           formatter(row) {
             return row.childState == 0 ? '否' : row.childState == 1 ? '是' : ''
           },
+          minWidth: 90,
         },
       }
     },
@@ -332,6 +333,10 @@ export default {
     },
   },
   methods: {
+    //请求数据
+    async fetchList() {
+      this.tableData = await fetchList(this.query)
+    },
     handleCommand(command) {
       if (command !== 'query' && this.tableData.multipleSelection.length < 1) {
         this.$message({
@@ -402,14 +407,81 @@ export default {
         params: row,
       })
     },
+    //查看详情
+    gotoInfo(row) {
+      this.$router.push({
+        path:
+          this.clientType === 'ORG_WEB'
+            ? '/patient/patientTube/detail'
+            : '/patient/mine/detail',
+        query: {
+          id: row.memberId,
+          patientId: row.patientId,
+        },
+      })
+    },
+    //删除推送次数
+    delPush() {
+      this.tableData.headers.forEach((item, index) => {
+        if (item.dataField === 'pushCount') {
+          this.tableData.headers.splice(index, 1)
+        }
+      })
+    },
   },
+  watch: {
+    tableData() {
+      if (
+        this.clientType === 'ORG_WEB' ||
+        this.$route.path === '/patient/patientTube/list'
+      ) {
+        this.delPush()
+      }
+    },
+    $route(to) {
+      console.log(to.path, '---跳转的路由')
+      if (to.path === '/patient/patientTube/list') {
+        this.isShowBtn = false
+        this.delPush()
+      } else if (to.path === '/patient/mine/list') {
+        this.fetchList()
+        this.isShowBtn = true
+      }
+    },
+  },
+
+  /* beforeRouteLeave(to, from, next) {
+    // 设置下一个路由的 meta
+    to.meta.keepAlive = false // 详情不缓存，刷新
+    next()
+  }, */
 }
 </script>
 <style lang="scss" scoped>
+.isShowcheck {
+  ::v-deep .left-btns {
+    .el-checkbox {
+      .el-checkbox__inner {
+        display: none;
+      }
+    }
+  }
+}
+
 .el-button--medium {
   font-size: 12px;
 }
 ::v-deep .el-dropdown {
   display: none !important;
+}
+// ::v-deep .table-wrap .cell{
+//   font-size: 16px;
+// }
+// ::v-deep .el-table .cell.el-tooltip {
+//   font-size: 14px;
+//   // padding-left: 6px;
+// }
+.el-button--medium {
+  font-size: 14px;
 }
 </style>

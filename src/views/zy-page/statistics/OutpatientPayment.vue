@@ -126,6 +126,7 @@ export default {
           formatter(row) {
             return `￥${row.payPrice}`
           },
+          minWidth: 100,
         },
         billStateName: {
           formatter(row) {
@@ -136,6 +137,12 @@ export default {
               : ''
           },
         },
+
+        noType: { minWidth: 100 },
+        cardNo: { minWidth: 100 },
+        payWay: { minWidth: 100 },
+
+        feeType: { minWidth: 100 },
       }
     },
   },

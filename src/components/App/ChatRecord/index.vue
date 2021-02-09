@@ -79,7 +79,7 @@
           }}</span>
         </div>
         <div class="info">{{ formatMessage(item) }}</div>
-        <br />
+        <!-- <br /> -->
         <!-- <div>{{ item.body }}</div> -->
         <el-divider></el-divider>
       </div>
@@ -172,11 +172,18 @@ export default {
       formatDate: formatDate,
     }
   },
-  mounted() {
-    this.search()
+  created() {
+    // this.search()
   },
   watch: {
     date: 'search',
+    orderInfo: {
+      handler() {
+        this.search()
+        console.log('数据变化-----------')
+      },
+      deep: true,
+    },
   },
   methods: {
     formatMessage,

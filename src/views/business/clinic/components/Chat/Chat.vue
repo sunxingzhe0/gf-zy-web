@@ -457,13 +457,28 @@ export default {
     DragSize,
   },
   data() {
-    this.itemClass = function ({ from, tips, childMessageType, chatType }) {
+    this.itemClass = function ({
+      from,
+      tips,
+      childMessageType,
+      chatType,
+      body,
+    }) {
+      let illness = false
+      if (childMessageType == 'ANY' && body.indexOf('ILLNESS') > -1) {
+        illness = true
+      }
+      //为元素添加状态
+      document
+        .querySelector('.message-Illness')
+        ?.parentNode.classList.add('demo')
       return {
         'is-self':
           from === this.userId && (chatType == 'DOCTOR' || chatType == 2),
         'is-tips': tips,
         [childMessageType?.toLowerCase?.()]:
           typeof childMessageType === 'string',
+        'message-Illness': illness,
       }
     }
 
@@ -599,6 +614,9 @@ export default {
         // 这是刷新左边列表 直接调用泪目
         this.beginWork()
       }
+    },
+    item() {
+      console.log(123)
     },
   },
   created() {
@@ -1097,6 +1115,10 @@ export default {
 @import '@/styles/_variables.scss';
 
 .c__chat {
+  .vue-recycle-scroller.ready .vue-recycle-scroller__item-view.demo {
+    will-change: initial;
+    transform: initial !important;
+  }
   .begin-work {
     position: absolute;
     top: 1px;

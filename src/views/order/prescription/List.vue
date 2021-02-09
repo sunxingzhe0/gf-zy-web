@@ -42,7 +42,7 @@
         ¥{{ row.prescriptionPrice }}
       </template> -->
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="info(row.id)">
+        <el-button type="text" @click="info(row.id)">
           查看
         </el-button>
       </template>
@@ -206,14 +206,22 @@ export default {
         fixed: {
           minWidth: 60,
         },
+
+        doctorName: { minWidth: 120 },
+        memberName: { minWidth: 120 },
+        number: { minWidth: 120 },
+
         serviceType: {
           prop: 'slot_serviceType',
+          minWidth: 120,
         },
         serviceMode: {
           prop: 'slot_serviceMode',
+          minWidth: 120,
         },
         status: {
           prop: 'slot_status',
+          minWidth: 120,
         },
         prescriptionPrice: {
           prop: 'slot_prescriptionPrice',

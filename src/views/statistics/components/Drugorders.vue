@@ -362,7 +362,7 @@ export default {
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/styles/_modules-detail.scss';
 
 .view__statistics-comment {

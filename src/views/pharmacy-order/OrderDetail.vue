@@ -46,11 +46,13 @@
         <PatinetInfo :orderInfo="orderInfo"></PatinetInfo>
         <OrderPrescription :prescriptionInfo="detailInfo"></OrderPrescription>
       </el-tab-pane>
-      <el-tab-pane label="操作日志" name="log" lazy>
-        <OperateLog :businessId="id"></OperateLog>
-      </el-tab-pane>
+
       <el-tab-pane label="配送信息" name="Distribution" lazy>
         <DeliveryInfo :orderInfo="detailInfo"></DeliveryInfo>
+      </el-tab-pane>
+
+      <el-tab-pane label="操作日志" name="log" lazy>
+        <OperateLog :businessId="id"></OperateLog>
       </el-tab-pane>
     </el-tabs>
   </section>

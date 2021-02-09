@@ -61,11 +61,11 @@
       <el-form-item label="工号" prop="name">
         <div class="text">{{ user.workNo }}</div>
       </el-form-item>
-      <el-form-item label="从业年限" prop="name">
-        <div class="text">{{ user.workHistory }}</div>
+      <el-form-item label="从业年限">
+        <div class="text">{{ user.workHistory || '-' }}</div>
       </el-form-item>
       <el-form-item label="邮箱">
-        <div class="text" v-if="user.mail">{{ user.mail }}</div>
+        <div class="text" v-if="user.mail">{{ user.mail || '-' }}</div>
       </el-form-item>
     </el-form>
   </div>

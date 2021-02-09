@@ -1,15 +1,14 @@
 <template>
-  <div class="view__card">
+  <div class="view__card" v-loading.lock="faList.loading">
     <List
       v-model="faList.query"
       :filter="filter"
       :columns="faList.columns"
       :tableData="faList.tableData"
-      :treeSet="{ key: 'id', props: 'sonDeptList' }"
       @expandChange="expandChange"
     >
       <!-- <template v-slot:slot_title="{ row }">
-        <el-button v-if="row.sonDeptList" type="text" size="mini">{{
+        <el-button v-if="row.sonDeptList" type="text">{{
           row.address
         }}</el-button>
         <span v-else>{{ row.address }}</span>
@@ -28,7 +27,7 @@
         >
           {{ row.doctorNum }}
         </router-link>
-        <p v-else>{{ row.doctorNum }}</p>
+        <span v-else>{{ row.doctorNum }}</span>
       </template>
 
       <!-- 子科室 -->
@@ -65,8 +64,8 @@
         </div> -->
       </template>
       <template v-slot:slot_level="{ row }">
-        <p v-show="row.level == 1">一级</p>
-        <p v-show="row.level == 2">二级</p>
+        <span v-show="row.level == 1">一级</span>
+        <span v-show="row.level == 2">二级</span>
       </template>
 
       <template v-slot:slot_state="{ row }">
@@ -85,11 +84,10 @@
         </el-switch>
       </template>
       <template v-slot:footertool>
-        <el-button size="mini" type="primary" @click="add()">
+        <el-button type="primary" @click="add()">
           新增科室
         </el-button>
         <el-button
-          size="mini"
           plain
           type="primary"
           @click="
@@ -101,7 +99,7 @@
         </el-button>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="add(row)"> 修改 </el-button>
+        <el-button type="text" @click="add(row)"> 修改 </el-button>
       </template>
     </List>
     <el-dialog
@@ -131,7 +129,6 @@
               :key="item.id"
               :label="item.name"
               :value="item.id"
-              :disabled="!item.state"
             >
               <span style="float: left;" v-if="!item.state">{{
                 item.name
@@ -185,12 +182,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer is-center">
-        <el-button size="mini" @click="isAdd = false">取 消</el-button>
-        <el-button
-          size="mini"
-          type="primary"
-          @click="submit"
-          :loading="submitLoading"
+        <el-button @click="isAdd = false">取 消</el-button>
+        <el-button type="primary" @click="submit" :loading="submitLoading"
           >确 定</el-button
         >
       </div>
@@ -412,6 +405,15 @@ export default {
           id: {
             minWidth: 150,
           },
+          name: {
+            minWidth: 90,
+          },
+          faDeptName: {
+            minWidth: 90,
+          },
+          intro: {
+            minWidth: 90,
+          },
         },
       },
       loading: false,
@@ -507,6 +509,7 @@ export default {
       const res = await getDeptInner({
         tree: false,
       })
+      console.log(res, '*****')
       this.innerDept = res.filter(item => item.state)
     },
     // 排序 - 父科室
@@ -537,6 +540,7 @@ export default {
     async add(row) {
       this.isAdd = true
       this.addLoading = true
+      await this.getDept()
       await this.getInnerDept()
       this.addLoading = false
       if (row) {
@@ -688,6 +692,11 @@ export default {
 </script>
 
 <style lang="scss" scope>
+.el-table {
+  .el-button--text {
+    padding: 0;
+  }
+}
 .el-icon-top {
   margin-right: 10px;
   font-size: 20px;
@@ -697,4 +706,14 @@ export default {
   font-size: 20px;
   cursor: pointer;
 }
+.el-table .cell {
+  font-size: 14px;
+}
+// ::v-deep .table-wrap .cell{
+//   font-size: 16px;
+// }
+// ::v-deep .el-table .cell.el-tooltip {
+//   font-size: 14px;
+//   padding-left: 6px;
+// }
 </style>

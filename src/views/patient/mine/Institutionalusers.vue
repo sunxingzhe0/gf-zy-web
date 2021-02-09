@@ -113,10 +113,17 @@ span {
   margin-left: 15px;
 }
 ::v-deep .c__filter .prepend-select {
-  width: 170px;
+  width: 210px;
 }
 ::v-deep .c__filter .prepend-select-date .el-input__inner {
   // width: calc(100px +51px);
   width: 100%;
+}
+::v-deep .table-wrap .cell {
+  font-size: 16px;
+}
+::v-deep .el-table .cell.el-tooltip {
+  font-size: 14px;
+  padding-left: 6px;
 }
 </style>

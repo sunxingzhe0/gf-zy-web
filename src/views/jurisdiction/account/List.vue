@@ -46,23 +46,17 @@
       </template>
 
       <template v-slot:fixed="{ row }">
-        <router-link
-          class="el-button el-button--text el-button--mini"
-          :to="`detail/${row.id}`"
-        >
+        <router-link class="el-button el-button--text" :to="`detail/${row.id}`">
           查看
         </router-link>
 
-        <router-link
-          class="el-button el-button--text el-button--mini"
-          :to="`edit/${row.id}`"
-        >
+        <router-link class="el-button el-button--text" :to="`edit/${row.id}`">
           修改
         </router-link>
 
         <router-link
           v-if="row.examineState === 'TO_EXAMINE'"
-          class="el-button el-button--text el-button--mini"
+          class="el-button el-button--text"
           :to="`audit/${row.id}`"
         >
           审核
@@ -70,7 +64,6 @@
 
         <el-button
           type="text"
-          size="mini"
           @click="
             ;(resetDialog.visible = true), (resetDialog.model.id = row.id)
           "
@@ -81,17 +74,12 @@
       <template v-slot:footertool>
         <router-link
           type="primary"
-          class="el-button el-button--primary el-button--mini"
+          class="el-button el-button--primary"
           to="add"
         >
           新增帐号
         </router-link>
-        <el-button
-          type="primary"
-          size="mini"
-          plain
-          @click="importDialog.visible = true"
-        >
+        <el-button type="primary" plain @click="importDialog.visible = true">
           批量导入
         </el-button>
       </template>
@@ -483,12 +471,19 @@ export default {
               ? '其他'
               : ''
           },
+          minWidth: 100,
         },
         star: {
           prop: 'slot_star',
+          minWidth: 100,
         },
+        diagNum: { minWidth: 100 },
+        account: { minWidth: 100 },
+        roleName: { minWidth: 100 },
+        deptName: { minWidth: 100 },
         recommend: {
           prop: 'slot_recommend',
+          minWidth: 100,
         },
         state: {
           prop: 'slot_state',
@@ -500,12 +495,13 @@ export default {
         },
         business: {
           prop: 'slot_business',
-          minWidth: 120,
+          minWidth: 140,
         },
         auth: {
           formatter(row) {
             return row.auth ? '是' : '否'
           },
+          minWidth: 100,
         },
         examineState: {
           formatter(row) {
@@ -521,6 +517,7 @@ export default {
               ? '否'
               : ''
           },
+          minWidth: 100,
         },
         businessArea: {
           formatter(row) {
@@ -549,6 +546,7 @@ export default {
                   .join(', ')
               : row.businessArea
           },
+          minWidth: 100,
         },
         businessType: {
           formatter(row) {
@@ -584,7 +582,7 @@ export default {
           minWidth: 160,
         },
         fixed: {
-          minWidth: 180,
+          minWidth: 260,
         },
       }
     },

@@ -43,10 +43,7 @@
       </template>
 
       <template v-slot:fixed="{ row }">
-        <router-link
-          class="el-button el-button--text el-button--mini"
-          :to="`detail/${row.id}`"
-        >
+        <router-link class="el-button el-button--text" :to="`detail/${row.id}`">
           查看
         </router-link>
 
@@ -371,6 +368,7 @@ export default {
               ? '慢病续方'
               : ''
           },
+          minWidth: 90,
         },
         serviceMode: {
           formatter(row) {
@@ -380,6 +378,7 @@ export default {
               ? '视频'
               : ''
           },
+          minWidth: 90,
         },
         status: {
           formatter(row) {
@@ -393,6 +392,7 @@ export default {
               ? '已通过'
               : ''
           },
+          minWidth: 90,
         },
         memberSex: {
           formatter(row) {
@@ -418,7 +418,16 @@ export default {
           hidden: this.$route.path === '/prescription/pending/list',
         },
         fixed: {
-          minWidth: 140,
+          minWidth: 200,
+        },
+        memberName: {
+          minWidth: 90,
+        },
+        doctorName: {
+          minWidth: 90,
+        },
+        number: {
+          minWidth: 90,
         },
       }
     },
@@ -478,23 +487,36 @@ export default {
           this.dialog.visible = true
           return
         }
-        let reasonId = this.dialog.options.filter(
-          item => item.content == reason,
-        )[0]?.id
 
-        await Promise.all(
-          ids.map(id => operateRp({ id, statusType, reason, reasonId })),
-        )
-
-        this.$message({
-          type: 'success',
-          message: '完成',
-          showClose: true,
-        })
-        this.$_fetchTableData(webPageRpList)
+        if ('PASSED' === statusType) {
+          this.$confirm('是否确认操作?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+          }).then(async () => {
+            this.passFnc(ids, statusType, reason)
+          })
+        } else {
+          this.passFnc(ids, statusType, reason)
+        }
       }
     },
+    async passFnc(ids, statusType, reason) {
+      let reasonId = this.dialog.options.filter(
+        item => item.content == reason,
+      )[0]?.id
 
+      await Promise.all(
+        ids.map(id => operateRp({ id, statusType, reason, reasonId })),
+      )
+
+      this.$message({
+        type: 'success',
+        message: '完成',
+        showClose: true,
+      })
+      this.$_fetchTableData(webPageRpList)
+    },
     async handleDialogOpen() {
       this.dialog.model = {
         value: '',
@@ -566,5 +588,15 @@ export default {
   .MobileImg {
     margin: 30px auto 40px;
   }
+}
+::v-deep .table-wrap .cell {
+  font-size: 16px;
+}
+::v-deep .el-table .cell.el-tooltip {
+  font-size: 14px;
+  padding-left: 6px;
+}
+.el-select-dropdown__item {
+  width: 400px;
 }
 </style>

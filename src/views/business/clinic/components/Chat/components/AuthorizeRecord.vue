@@ -61,6 +61,7 @@ export default {
   },
   watch: {
     'body.optContent'(val) {
+      console.log(val, '变化-----')
       if (val) {
         if (val === '已同意') {
           eventbus.$emit('UPDATE_MEDICAL_AUTH', this.body.content)

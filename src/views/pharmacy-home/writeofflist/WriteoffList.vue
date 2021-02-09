@@ -176,6 +176,13 @@ export default {
     }
   }
 }
+::v-deep .table-wrap .cell {
+  font-size: 16px;
+}
+::v-deep .el-table .cell.el-tooltip {
+  font-size: 14px;
+  padding-left: 6px;
+}
 .watch {
   cursor: pointer;
 }

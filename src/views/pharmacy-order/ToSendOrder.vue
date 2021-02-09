@@ -340,7 +340,7 @@ export default {
           hidden: true,
         },
         appointmentTime: {
-          minWidth: 130,
+          minWidth: 150,
         },
         createTime: {
           minWidth: 140,
@@ -349,27 +349,38 @@ export default {
           formatter: (row, col, cell) => {
             return '￥' + cell
           },
+          minWidth: 120,
         },
         expressMode: {
           formatter: (row, col, cell) => {
             return serviceExpressMode[cell]
           },
+          minWidth: 120,
         },
         wayType: {
           formatter: (row, col, cell) => {
             return serviceModeMap[cell]
           },
+          minWidth: 120,
         },
         bizType: {
           formatter: (row, col, cell) => {
             return serviceTypeMap[cell]
           },
+          minWidth: 120,
         },
         orderStatus: {
           formatter: (row, col, cell) => {
             return statusMap[cell]
           },
+          minWidth: 120,
         },
+        memberName: {
+          minWidth: 120,
+        },
+        doctorName: { minWidth: 120 },
+        drugNumber: { minWidth: 120 },
+        rpNumber: { minWidth: 120 },
       }
     },
   },

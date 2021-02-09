@@ -2,7 +2,8 @@
   <section class="view__card view__detail">
     <header>
       <h3 class="view__title">
-        订单号：{{ id }}
+        <!-- 订单号：{{ id }} -->
+        处方号：{{ id }}
         <el-tag :type="btnType[rpInfo.status]" size="mini">
           {{ statusText[rpInfo.status] }}
         </el-tag>

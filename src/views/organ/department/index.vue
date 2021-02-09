@@ -1,10 +1,10 @@
 <template>
   <div class="accountWrap view__card">
     <el-tabs type="border-card" v-model="active">
-      <el-tab-pane label="互联网科室" name="0" lazy>
+      <el-tab-pane label="互联网科室" name="0">
         <HList :dept="dept" @deptChange="deptChange"></HList>
       </el-tab-pane>
-      <el-tab-pane label="预约挂号科室" name="1" lazy>
+      <el-tab-pane label="预约挂号科室" name="1">
         <GList></GList>
       </el-tab-pane>
     </el-tabs>
@@ -46,7 +46,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .accountWrap {
-  padding: 0;
+  padding: 0 !important;
   .account_main {
     padding: 0 90px;
     ::v-deep.ck-content {
@@ -64,5 +64,15 @@ export default {
   ::v-deep.el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
     border: 1px solid transparent;
   }
+}
+::v-deep .el-table .cell {
+  line-height: 20px;
+}
+::v-deep .table-wrap .cell {
+  font-size: 16px;
+}
+::v-deep .el-table .cell.el-tooltip {
+  font-size: 14px;
+  padding-left: 6px;
 }
 </style>

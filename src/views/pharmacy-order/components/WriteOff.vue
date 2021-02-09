@@ -66,7 +66,7 @@
         </el-table-column>
         <el-table-column label="类型" width="80">
           <template slot-scope="scoped"
-            >{{ scoped.row.type == 'WESTERN_MEDICINE' ? '西药' : '中成药' }}
+            >{{ drugTypes.filter(item => item.id == scoped.row.type)[0].name }}
           </template>
         </el-table-column>
         <el-table-column prop="name" label="药品名称"> </el-table-column>
@@ -117,6 +117,7 @@
 </template>
 <script>
 import { toWaitOff, hxOrder } from '@/api/order'
+import { mapState } from 'vuex'
 export default {
   data() {
     return {
@@ -125,6 +126,11 @@ export default {
       contentList: [],
       orderId: '',
     }
+  },
+  computed: {
+    ...mapState({
+      drugTypes: state => state.drug.drugTypes,
+    }),
   },
   methods: {
     // 点击查看更多

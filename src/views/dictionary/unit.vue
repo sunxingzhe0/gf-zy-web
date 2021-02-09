@@ -7,11 +7,10 @@
       :tableData="tableData"
     >
       <template v-slot:footertool>
-        <el-button size="mini" type="primary" @click="add()">
+        <el-button type="primary" @click="add()">
           新增单位
         </el-button>
         <el-button
-          size="mini"
           plain
           type="primary"
           @click="
@@ -23,7 +22,7 @@
         </el-button>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="add(row)"> 修改 </el-button>
+        <el-button type="text" @click="add(row)"> 修改 </el-button>
       </template>
       <template v-slot:slot_status="{ row }">
         <el-switch
@@ -92,8 +91,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer is-center">
-        <el-button size="mini" @click="isAdd = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="submit">确 定</el-button>
+        <el-button @click="isAdd = false">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
     <el-dialog

@@ -98,10 +98,8 @@
         <el-col :span="22">
           <div style="display: flex;">
             <span class="info">{{ userName }}</span>
-            <el-tag style="margin-left: 10px;" size="mini">{{
-              BizWayMap[bizWay]
-            }}</el-tag>
-            <el-tag style="margin-left: 10px;" size="mini">{{
+            <el-tag style="margin-left: 10px;">{{ BizWayMap[bizWay] }}</el-tag>
+            <el-tag style="margin-left: 10px;">{{
               BizTypeMap[bizType]
             }}</el-tag>
 

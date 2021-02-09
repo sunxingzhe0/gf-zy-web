@@ -8,7 +8,7 @@
     >
       <template v-slot:slot_payFee="{ row }"> ¥{{ row.payFee }} </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="info(row.orderId)">
+        <el-button type="text" @click="info(row.orderId)">
           查看
         </el-button>
       </template>
@@ -222,34 +222,41 @@ export default {
         fixed: {
           minWidth: 60,
         },
+        rpNumber: { minWidth: 120 },
+        drugNumber: { minWidth: 120 },
+        doctorName: { minWidth: 120 },
+        memberName: { minWidth: 120 },
         wayType: {
           formatter: (row, col, cell) => {
             return serviceModeMap[cell]
           },
+          minWidth: 120,
         },
         bizType: {
           formatter: (row, col, cell) => {
             return serviceTypeMap[cell]
           },
+          minWidth: 120,
         },
         orderStatus: {
           formatter: (row, col, cell) => {
             return statusMap[cell]
           },
+          minWidth: 120,
         },
         expressMode: {
           formatter: (row, col, cell) => {
             return expressModeMap[cell]
           },
+          minWidth: 120,
         },
         payFee: {
           prop: 'slot_payFee',
+          minWidth: 120,
         },
-        appointmentTime: {
-          minWidth: 130,
-        },
+        appointmentTime: { minWidth: 150 },
         createTime: {
-          minWidth: 130,
+          minWidth: 140,
         },
       },
     }

@@ -41,6 +41,7 @@ export default {
           component: () =>
             import('@/views/order/prescription-order/Detail.vue'),
           props: true,
+          meta: { activeMenu: '/home/writeoff', title: '核销记录详情' },
           hidden: true,
         },
         {

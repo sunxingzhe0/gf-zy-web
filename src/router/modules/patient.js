@@ -30,30 +30,46 @@ export default {
           },
         },
         {
-          path: 'detail/:id&:patientId',
-          component: () => import('@/views/patient/mine/Detail.vue'),
+          path: 'detail',
+          name: 'detail',
+          component: RouterView,
           props: true,
           hidden: true,
-          meta: { title: '患者详情', activeMenu: '/patient/mine' },
-        },
-        {
-          path: 'roominfo/:sessionId&:clinicId&:userId',
-          component: () => import('@/views/patient/mine/roominfo.vue'),
-          hidden: true,
+          redirect: '/patient/mine/detail/detail',
           meta: {
-            title: '诊室记录详情',
+            keepAlive: true,
+            title: '患者详情',
             activeMenu: '/patient/mine',
           },
-        },
-        {
-          path: 'recordInfo',
-          name: 'recordInfo',
-          component: () => import('@/views/patient/mine/recordInfo.vue'),
-          hidden: true,
-          meta: {
-            title: '就诊记录详情',
-            activeMenu: '/patient/mine',
-          },
+          children: [
+            {
+              path: 'detail',
+              name: 'detail',
+              component: () => import('@/views/patient/mine/Detail.vue'),
+              props: true,
+              hidden: true,
+              meta: { keepAlive: true, activeMenu: '/patient/mine' },
+            },
+            {
+              path: 'roominfo',
+              component: () => import('@/views/patient/mine/roominfo.vue'),
+              hidden: true,
+              meta: {
+                title: '诊室记录详情',
+                activeMenu: '/patient/mine',
+              },
+            },
+            {
+              path: 'recordInfo',
+              name: 'recordInfo',
+              component: () => import('@/views/patient/mine/recordInfo.vue'),
+              hidden: true,
+              meta: {
+                title: '就诊记录详情',
+                activeMenu: '/patient/mine',
+              },
+            },
+          ],
         },
       ],
     },
@@ -67,7 +83,11 @@ export default {
       path: 'patientTube',
       component: RouterView,
       redirect: '/patient/patientTube/list',
-      meta: { title: '患者管理', roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT'] },
+      meta: {
+        keepAlive: true,
+        title: '患者管理',
+        roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT'],
+      },
       children: [
         {
           path: 'list',
@@ -79,30 +99,46 @@ export default {
           },
         },
         {
-          path: 'detail/:id&:patientId',
-          component: () => import('@/views/patient/mine/Detail.vue'),
+          path: 'detail',
+          name: 'detail',
+          component: RouterView,
           props: true,
           hidden: true,
-          meta: { title: '患者详情', activeMenu: '/patient/patientTube' },
-        },
-        {
-          path: 'roominfo/:sessionId&:clinicId&:userId',
-          component: () => import('@/views/patient/mine/roominfo.vue'),
-          hidden: true,
+          redirect: '/patient/patientTube/detail/detail',
           meta: {
-            title: '诊室记录详情',
+            keepAlive: true,
+            title: '患者详情',
             activeMenu: '/patient/patientTube',
           },
-        },
-        {
-          path: 'recordInfo',
-          name: 'recordInfo',
-          component: () => import('@/views/patient/mine/recordInfo.vue'),
-          hidden: true,
-          meta: {
-            title: '就诊记录详情',
-            activeMenu: '/patient/patientTube',
-          },
+          children: [
+            {
+              path: 'detail',
+              name: 'detail',
+              component: () => import('@/views/patient/mine/Detail.vue'),
+              props: true,
+              hidden: true,
+              meta: { keepAlive: true, activeMenu: '/patient/patientTube' },
+            },
+            {
+              path: 'roominfo',
+              component: () => import('@/views/patient/mine/roominfo.vue'),
+              hidden: true,
+              meta: {
+                title: '诊室记录详情',
+                activeMenu: '/patient/patientTube',
+              },
+            },
+            {
+              path: 'recordInfo',
+              name: 'recordInfo',
+              component: () => import('@/views/patient/mine/recordInfo.vue'),
+              hidden: true,
+              meta: {
+                title: '就诊记录详情',
+                activeMenu: '/patient/patientTube',
+              },
+            },
+          ],
         },
       ],
     },
@@ -111,11 +147,11 @@ export default {
       component: () => import('@/views/patient/mine/Institutionalusers.vue'),
       meta: { title: '用户管理', roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT'] },
     },
-    /*       {
+    {
       path: 'blacklist',
       name: 'blacklist',
       component: () => import('@/views/zy-page/patient/Blacklist.vue'),
       meta: { title: '黑名单管理', roles: ['ZY_ORG_PATIENT_BLACK'] },
-    }, */
+    },
   ],
 }

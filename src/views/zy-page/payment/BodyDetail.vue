@@ -5,8 +5,8 @@
       <el-tag
         style="margin-left: 10px; font-weight: nomal;"
         size="mini"
-        :type="infoData.state == '1' ? 'success' : ''"
-        >{{ infoData.state == 1 ? '已付款' : '已退费' }}</el-tag
+        type="success"
+        >已付款</el-tag
       >
     </div>
     <div class="infoWrap">
@@ -29,21 +29,21 @@
       </div>
       <div class="infoItem">
         <div v-if="infoData.refundFee">
-          <span>{{ infoData.state == 1 ? '支付' : '退费' }}金额</span
+          <span>{{ infoData.state == -1 ? '支付' : '退费' }}金额</span
           ><b style="font-weight: normal; color: red;"
             >￥{{ parseFloat(infoData.payFee).toFixed(2) }}</b
           >
         </div>
         <div>
-          <span>{{ infoData.state == 1 ? '支付' : '退费流水' }}号</span
+          <span>{{ infoData.state == -1 ? '支付' : '退费流水' }}号</span
           >{{ infoData.hisPayId || '-' }}
         </div>
         <div>
-          <span>{{ infoData.state == 1 ? '支付' : '退费' }}方式</span
-          >{{ infoData.payWayName || '-' }}
+          <span>{{ infoData.state == -1 ? '支付' : '退费' }}方式</span
+          >{{ infoData.payWay || '-' }}
         </div>
         <div>
-          <span>{{ infoData.state == 1 ? '支付' : '退费' }}时间</span
+          <span>{{ infoData.state == -1 ? '支付' : '退费' }}时间</span
           >{{ infoData.payTime || '-' }}
         </div>
       </div>

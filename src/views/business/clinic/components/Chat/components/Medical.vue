@@ -227,6 +227,7 @@
       class="importTemplateDialog"
       :style="{ padding: 0, margin: 0 }"
       :visible.sync="importTemplate.visible"
+      width="68%"
       @open="openDialog"
     >
       <el-container style="border: 1px solid #eee;">
@@ -260,10 +261,22 @@
           <template v-if="importTemplate.selected.dtoList > 0">
             <template v-for="item in tabs">
               <div :key="item.name" v-if="item.name != 'dtoList'">
-                <p :style="{ fontSize: '16px', color: '#666' }">
+                <p
+                  :style="{
+                    fontSize: '16px',
+                    color: '#666',
+                    marginTop: '26px',
+                  }"
+                >
                   {{ item.label }}
                 </p>
-                <div :style="{ fontSize: '16px', color: '#333' }">
+                <div
+                  :style="{
+                    fontSize: '16px',
+                    color: '#333',
+                    lineHeight: '24px',
+                  }"
+                >
                   {{
                     importTemplate.list.dtoList[
                       importTemplate.selected.dtoList
@@ -663,6 +676,7 @@ export default {
   }
   .el-main {
     width: 700px;
+    max-height: 500px;
     border-left: 10px solid #f2f2f2;
   }
 }

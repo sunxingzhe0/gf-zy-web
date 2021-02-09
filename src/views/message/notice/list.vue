@@ -13,12 +13,12 @@
       </template>
 
       <template v-slot:footertool>
-        <el-button size="mini" type="primary" @click="batchRead">
+        <el-button type="primary" @click="batchRead">
           一键已读
         </el-button>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="info(row.id)">
+        <el-button type="text" @click="info(row.id)">
           查看
         </el-button>
       </template>

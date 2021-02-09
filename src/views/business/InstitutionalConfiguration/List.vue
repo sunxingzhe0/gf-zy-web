@@ -46,11 +46,11 @@
             </template>
 
             <template v-slot:fixed="{ row }">
-              <el-button size="mini" type="text" @click="add(row)">
+              <el-button type="text" @click="add(row)">
                 修改
               </el-button>
 
-              <el-button size="mini" type="text" @click="opanLog(row)">
+              <el-button type="text" @click="opanLog(row)">
                 日志
               </el-button>
               <!-- <router-link
@@ -68,7 +68,7 @@
             </template>
 
             <template v-slot:footertool>
-              <el-button size="mini" type="primary" @click="add()">
+              <el-button type="primary" @click="add()">
                 新增业务
               </el-button>
             </template>
@@ -524,7 +524,7 @@
       </div>
     </el-dialog>
 
-    <dialogBillData ref="dialogBillData"></dialogBillData>
+    <dialogBillDataf ref="dialogBillData"></dialogBillDataf>
   </div>
 </template>
 
@@ -543,7 +543,7 @@ import {
 } from '@/api/business'
 import { loggerBillData } from '@/api/log'
 import { titleChooseList, deptChooseList } from '@/api'
-import dialogBillData from './components/dialogBillData'
+import dialogBillDataf from './components/dialogBillData'
 const pre = {
   title: [],
 }
@@ -558,7 +558,7 @@ export default {
   },
   components: {
     List,
-    dialogBillData,
+    dialogBillDataf,
   },
   mixins: [
     mixin([
@@ -752,7 +752,15 @@ export default {
         query: {
           pageSize: 10,
           currentNum: 1,
-          businessRel: this.$store.state.user.orgId + 'ZX',
+          businessRel:
+            this.type == 'CONSULT'
+              ? this.$store.state.user.orgId + 'ZX'
+              : this.type == 'REPEAT_CLINIC'
+              ? this.$store.state.user.orgId + 'FZ'
+              : this.type == 'CARRYON_PRESC'
+              ? this.$store.state.user.orgId + 'XF'
+              : '',
+          bizType: this.type,
         },
         columns: {
           index: {
@@ -829,7 +837,7 @@ export default {
         searchType: 0,
         bizType: this.type,
       }
-      this.$_fetchTableData(orgConfigList)
+      // this.$_fetchTableData(orgConfigList)
     },
   },
   async beforeRouteEnter(to, from, next) {
@@ -857,29 +865,28 @@ export default {
       return str
     },
     handleClick({ name, $slots }) {
-      this.$router.push({
-        path: this.$route.path,
-        query: {
-          activeName: name,
-        },
-      })
+      console.log(name)
+      // this.$router.push({
+      //   path: this.$route.path,
+      //   query: {
+      //     activeName: name,
+      //   },
+      // })
 
       if (['rule', 'VIDEO', 'GRAPHIC'].includes(name)) {
         this.fetchRule({
           bizType: this.type,
           ...(name !== 'rule' ? { bizWay: name } : {}),
         })
-        return
       }
 
       if (this[name]?.tableData.list.length > 0) {
         this.$nextTick(() => {
           $slots.default?.[0].componentInstance?.doLayout?.()
         })
-        return
       }
 
-      this.table.tableData.list.length || this.$_fetchTableData(name)
+      this.$_fetchTableData(name)
     },
 
     async handleChange(state, { configId }, index) {
@@ -912,7 +919,6 @@ export default {
       const list = await deptChooseList({ tree: false })
 
       this.dept = list
-      console.log(this.dept)
 
       // const deptIds = this.form.deptIds
 
@@ -936,7 +942,6 @@ export default {
       //           .filter(item => item)[0],
       //   )
       // }
-      console.log(this.form.deptIds)
     },
     /**
      *
@@ -965,11 +970,19 @@ export default {
           },
       )
     },
-
+    //新增业务
     async add(row) {
       if (!row) {
         this.isAdd = true
-        this.form.configId = ''
+        this.form = {
+          bizType: this.type,
+          bizWays: [],
+          name: '',
+          titleIds: [],
+          deptIds: [],
+          priceDto: [],
+          state: 1,
+        }
         return
       }
 
@@ -1127,7 +1140,7 @@ export default {
   margin-right: 10px;
 }
 .accountWrap {
-  padding: 0;
+  padding: 0 !important;
   .account_main {
     padding: 10px;
   }

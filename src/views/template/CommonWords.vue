@@ -15,12 +15,14 @@
           title="确定删除吗？"
           @confirm="handleDel([row.id])"
         >
-          <el-button slot="reference" type="text">删除</el-button>
+          <el-button slot="reference" style="color: #fe5578;" type="text"
+            >删除</el-button
+          >
         </el-popconfirm>
       </template>
 
       <template v-slot:footertool>
-        <el-button type="primary" size="mini" @click="dialog.visible = true">
+        <el-button type="primary" @click="dialog.visible = true">
           新增常用语
         </el-button>
 
@@ -31,7 +33,6 @@
         >
           <el-button
             slot="reference"
-            size="mini"
             :disabled="!tableData.multipleSelection.length"
           >
             批量删除
@@ -106,6 +107,8 @@ export default {
         pageSize: 10,
         dateType: 0,
         searchType: 0,
+        field: '',
+        sorted: '',
       },
 
       dialog: {
@@ -232,3 +235,12 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+::v-deep .table-wrap .cell {
+  font-size: 16px;
+}
+::v-deep .el-table .cell.el-tooltip {
+  font-size: 14px;
+  padding-left: 6px;
+}
+</style>

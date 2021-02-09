@@ -116,6 +116,8 @@
                 <el-date-picker
                   :offset="-220"
                   v-model="values[keys.date.start]"
+                  ref="dataPicker"
+                  @focus="clearBtnTap"
                   clearable
                   :type="data.time ? 'daterange' : 'datetimerange'"
                   :format="data.time ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss'"
@@ -388,13 +390,26 @@ export default {
     this.hiddenPopover = () => {
       this.isOpen = false
     }
-
     document.body.addEventListener('click', this.hiddenPopover)
   },
   beforeDestroy() {
     document.body.removeEventListener('click', this.hiddenPopover)
   },
   methods: {
+    clearBtnTap() {
+      this.$nextTick(() => {
+        // 点击清空按钮弹层不收起
+        let prevBtn = document.querySelector(
+          '.el-picker-panel__footer .el-button.el-picker-panel__link-btn.el-button--text.el-button--mini',
+        )
+        console.log(prevBtn)
+        if (prevBtn) {
+          prevBtn.addEventListener('click', () => {
+            this.$refs.dataPicker.focus()
+          })
+        }
+      })
+    },
     isArray,
     setDefault(cacheValue, isClear) {
       this.need2Split = {
@@ -548,9 +563,13 @@ export default {
 
 <style lang="scss">
 @import '~@/styles/_variables.scss';
-$select-width: 100px;
+$select-width: 110px;
 
 .c__filter {
+  .el-input__inner,
+  .el-range-input {
+    font-size: 16px;
+  }
   .prepend-select {
     width: $select-width;
   }
@@ -564,12 +583,14 @@ $select-width: 100px;
       border-top-right-radius: 0;
       border-bottom-right-radius: 0;
       border-right-color: transparent;
+      font-size: 16px;
     }
 
     & + .el-input__inner {
       width: calc(100% - #{$select-width});
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
+      font-size: 16px;
     }
   }
 
@@ -585,7 +606,7 @@ $select-width: 100px;
 
   label {
     padding-right: 16px;
-    font-size: 14px;
+    font-size: 16px;
     color: #646464;
   }
 }
@@ -620,6 +641,11 @@ $select-width: 100px;
     display: inline-block;
     margin-right: 10px;
     width: 5em;
+    font-size: 16px;
+  }
+  .el-input__inner,
+  .el-button--small {
+    font-size: 16px;
   }
 }
 
@@ -628,13 +654,13 @@ $select-width: 100px;
   align-items: center;
   position: relative;
   padding-left: 80px;
-
+  font-size: 16px;
   .item-label {
     display: inline-block;
     margin-right: 10px;
     width: 5em;
     white-space: nowrap;
-    font-size: 14px;
+    font-size: 16px;
   }
 }
 </style>

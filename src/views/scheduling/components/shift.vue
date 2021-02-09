@@ -591,7 +591,7 @@ export default {
       height: 100%;
       .shSpandara {
         // margin-left: 48px;
-        padding: 12px 30px 0 26px;
+        padding: 12px 30px 0 50px;
         span {
           display: inline-block;
           width: 14.2857%;
@@ -621,6 +621,7 @@ export default {
         height: 100%;
       }
       .el-calendar__body {
+        padding: 0px 0px 20px 35px;
         margin-top: 10px;
         overflow-y: auto;
         padding-bottom: 0;
@@ -739,6 +740,7 @@ export default {
     // height: 60px;
     border-bottom: 1px solid #ccc;
     padding: 10px 10px;
+    margin: 4px 0;
     .time {
       color: #333;
       text-align: center;
@@ -776,7 +778,7 @@ export default {
   justify-content: center;
   // padding: 8px 25px 8px 100px;
   align-items: center;
-  margin: -10px 0 8px 0;
+  margin: -10px 0 -3px 0;
 }
 ::v-deep.el-switch {
   margin-left: 20px;

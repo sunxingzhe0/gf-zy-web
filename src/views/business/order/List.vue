@@ -35,6 +35,8 @@ export default {
         pageSize: 10,
         timeType: 0,
         searchType: 0,
+        field: 'create_time',
+        sorted: 'desc',
       },
 
       columns: {
@@ -51,6 +53,7 @@ export default {
               ? '慢病续方'
               : ''
           },
+          minWidth: 100,
         },
         wayType: {
           formatter(row) {
@@ -62,16 +65,22 @@ export default {
               ? '电话'
               : ''
           },
+          minWidth: 100,
         },
         age: {
           formatter(row) {
             return row.age + '岁'
           },
         },
+        deptName: { hidden: true },
+        titleName: { hidden: true },
+        doctorName: { hidden: true },
+        memberName: { minWidth: 100 },
         payFee: {
           formatter(row) {
             return currency(row.payFee, '¥', 2)
           },
+          minWidth: 100,
         },
         orderStatus: {
           formatter(row) {
@@ -99,6 +108,7 @@ export default {
               ? '已关闭'
               : ''
           },
+          minWidth: 100,
         },
         createTime: {
           minWidth: 160,
@@ -205,3 +215,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.el-button--mini {
+  font-size: 14px;
+}
+</style>

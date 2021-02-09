@@ -54,7 +54,9 @@
       v-if="prescription.status === 'REJECTED'"
     >
       <span>驳回原因：</span>
-      <span class="prescription-rejection-text">{{ prescription.reason }}</span>
+      <span class="prescription-rejection-text"
+        >{{ prescription.reason }}123</span
+      >
     </div>
     <div class="prescription-item-body" :class="{ scroll: scene }">
       <div class="prescription-table">

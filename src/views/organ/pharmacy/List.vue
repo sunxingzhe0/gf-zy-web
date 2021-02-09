@@ -51,11 +51,8 @@
         <el-button type="text" @click="drugs(row)">{{ row.drugNum }}</el-button>
       </template>
       <template v-slot:footertool>
-        <el-button size="mini" type="primary" @click="add()"
-          >新增药房</el-button
-        >
+        <el-button type="primary" @click="add()">新增药房</el-button>
         <el-button
-          size="mini"
           plain
           type="primary"
           @click="
@@ -66,7 +63,7 @@
         >
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="add(row)">修改</el-button>
+        <el-button type="text" @click="add(row)">修改</el-button>
       </template>
     </List>
     <el-dialog
@@ -174,8 +171,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer is-center">
-        <el-button size="mini" @click="isAdd = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="submit">确 定</el-button>
+        <el-button @click="isAdd = false">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
     <!-- 批量导入 -->
@@ -391,6 +388,16 @@ export default {
         // },
         sale: {
           minWidth: 120,
+        },
+
+        name: {
+          minWidth: 100,
+        },
+        address: {
+          minWidth: 100,
+        },
+        id: {
+          minWidth: 100,
         },
       },
     }

@@ -156,7 +156,7 @@ export default {
       component: () => import('@/views/setUp/journal/index'),
       name: 'journal',
       meta: {
-        title: '日志设置',
+        title: '日志管理',
         roles: [
           'DOC_WEB_SET_UP_LOG_MANAGEMENT',
           'DRUG_STORE_SET_UP',

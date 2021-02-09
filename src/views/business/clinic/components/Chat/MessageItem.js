@@ -117,7 +117,7 @@ export default Vue.extend({
       case 'IMAGE':
         return (
           <div class="message__wrap image__wrap">
-            <el-image fit="cover" src={this.FILE_URL(props.body)}></el-image>
+            <el-image fit="fill" src={this.FILE_URL(props.body)}></el-image>
           </div>
         )
 

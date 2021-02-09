@@ -7,7 +7,7 @@
       :tableData="tableData"
     >
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="info(row.orderId)">
+        <el-button type="text" @click="info(row.orderId)">
           查看
         </el-button>
       </template>
@@ -205,17 +205,26 @@ export default {
         op: {
           hidden: true,
         },
+
+        createTime: { minWidth: 120 },
+        doctorName: { minWidth: 120 },
+        memberName: { minWidth: 120 },
+
         bizType: {
           prop: 'slot_bizType',
+          minWidth: 120,
         },
         wayType: {
           prop: 'slot_wayType',
+          minWidth: 120,
         },
         orderStatus: {
           prop: 'slot_orderStatus',
+          minWidth: 120,
         },
         payFee: {
           prop: 'slot_payFee',
+          minWidth: 120,
         },
       },
     }

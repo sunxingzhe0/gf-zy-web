@@ -58,7 +58,6 @@ export default {
           meta: {
             title: '列表',
             activeMenu: '/business/prescription',
-            keepAlive: true,
           },
         },
         {

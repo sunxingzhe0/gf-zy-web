@@ -15,12 +15,20 @@
           title="确定删除吗？"
           @confirm="handleDel([row.tempId])"
         >
-          <el-button slot="reference" type="text">删除</el-button>
+          <el-button slot="reference" style="color: #fe5578;" type="text"
+            >删除</el-button
+          >
         </el-popconfirm>
       </template>
 
       <template v-slot:footertool>
-        <el-button type="primary" size="mini" @click="dialog.visible = true">
+        <el-button
+          type="primary"
+          @click="
+            dialog.visible = true
+            dialog.activeName = 'mainSuit'
+          "
+        >
           新增病历
         </el-button>
 
@@ -33,7 +41,6 @@
         >
           <el-button
             slot="reference"
-            size="mini"
             :disabled="!tableData.multipleSelection.length"
           >
             批量删除
@@ -56,6 +63,7 @@
           :model="dialog.model"
           :rules="rules"
           label-width="auto"
+          class="formWrap"
         >
           <el-form-item label="模板名称" prop="tempName">
             <el-input
@@ -85,7 +93,7 @@
               v-for="{ label, prop } in textarea"
               :key="prop"
               :label="label"
-              :name="label"
+              :name="prop"
             ></el-tab-pane>
 
             <template v-for="{ label, prop } in textarea">
@@ -105,6 +113,8 @@
                   v-model="dialog.model[prop]"
                   :maxlength="'主诉' === label ? '20' : 3000"
                   show-word-limit
+                  :ref="prop"
+                  @focus="inputFocus(prop)"
                 >
                 </el-input>
               </el-form-item>
@@ -115,11 +125,10 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="mini" @click="dialog.visible = false">
+          <el-button @click="dialog.visible = false">
             取消
           </el-button>
           <el-button
-            size="mini"
             type="primary"
             :loading="dialog.loading"
             @click="submit('form')"
@@ -174,7 +183,7 @@ export default {
       dialog: {
         loading: false,
         visible: false,
-        activeName: '主诉',
+        activeName: 'mainSuit',
         disabling: true,
         model: {
           tempName: '',
@@ -232,7 +241,7 @@ export default {
           prop: 'slot_gender',
         },
         fixed: {
-          minWidth: 100,
+          width: 140,
         },
       }
     },
@@ -255,6 +264,7 @@ export default {
     },
 
     async hadnleEdit({ tempId: templateId }) {
+      this.dialog.activeName = 'mainSuit'
       this.dialog.visible = true
       this.dialog.loading = true
 
@@ -290,15 +300,23 @@ export default {
         this.dialog.disabling = false
       })
     }, */
+    inputFocus(prop) {
+      console.log(prop)
+      this.dialog.activeName = prop
+    },
 
     handleTabClick({ name }) {
-      this.dialogNode =
-        this.dialogNode || document.querySelector('.mr-template__dialog')
+      // this.dialogNode =
+      //   this.dialogNode || document.querySelector('.mr-template__dialog')
 
-      this.dialogNode
-        .querySelector(`#${name}`)
-        ?.scrollIntoView({ behavior: 'smooth' })
-      this.dialog.activeName = name
+      // this.dialogNode
+      //   .querySelector(`#${name}`)
+      //   ?.scrollIntoView({ behavior: 'smooth' })
+      // this.dialog.activeName = name
+      // console.log(this.$refs[name])
+      this.$nextTick(() => {
+        this.$refs[name][0].focus()
+      })
     },
 
     /* visibilityChanged(isVisible, entry, key) {
@@ -337,11 +355,22 @@ export default {
       this.dialog.activeName = '主诉'
       this.dialog.model.tempId = ''
     },
+    //滚动事件
+    handelScroll() {
+      console.log(123)
+    },
   },
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
+.formWrap {
+  ::v-deep .el-tabs__header.is-left {
+    position: sticky;
+    top: 8vh;
+    z-index: 9999;
+  }
+}
 .mr-template__dialog {
   .el-tabs--left,
   .el-tabs--right {
@@ -351,5 +380,12 @@ export default {
     position: sticky;
     top: 0;
   }
+}
+::v-deep .table-wrap .cell {
+  font-size: 16px;
+}
+::v-deep .el-table .cell.el-tooltip {
+  font-size: 14px;
+  padding-left: 6px;
 }
 </style>

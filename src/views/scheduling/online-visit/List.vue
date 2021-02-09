@@ -23,7 +23,6 @@
       </template>
       <template v-slot:fixed="{ row }">
         <el-button
-          size="mini"
           type="text"
           @click="
             info(

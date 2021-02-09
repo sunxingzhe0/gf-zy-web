@@ -81,11 +81,16 @@ export default {
     getlist() {
       if (
         checkPermission(['ORG_WEB_MECHANISM']) &&
-        checkPermissionNum(['ORG_WEB', 'DRUG_STORE', 'DRUG_DOC', 'DOC_WEB']) ==
-          1
+        checkPermissionNum([
+          'ORG_WEB',
+          'DRUG_STORE',
+          'DRUG_DOC',
+          'DOC_WEB',
+          'ZY_ORG_ORG',
+        ]) == 1
       ) {
         let list = [...this.permission_routes]
-        console.log(list)
+
         if (list.length > 0) {
           for (let i = 0; i < list.length; i++) {
             if (list[i].name == 'organ') {
@@ -99,6 +104,7 @@ export default {
           }
         }
         this.permissionRoutes = list
+        console.log(list)
         this.$router.push(list[0].path)
       } else {
         this.permissionRoutes = [...this.permission_routes]

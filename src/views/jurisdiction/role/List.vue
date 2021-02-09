@@ -8,7 +8,7 @@
     >
       <template v-slot:slot_accountNum="{ row }">
         <router-link
-          class="el-button el-button--text el-button--mini"
+          class="el-button el-button--text"
           :to="{ path: '/jurisdiction/account/list', query: { id: row.id } }"
         >
           {{ row.accountNum }}
@@ -27,10 +27,7 @@
       </template>
 
       <template v-slot:fixed="{ row }">
-        <router-link
-          class="el-button el-button--text el-button--mini"
-          :to="`edit/${row.id}`"
-        >
+        <router-link class="el-button el-button--text" :to="`edit/${row.id}`">
           修改
         </router-link>
 
@@ -51,10 +48,7 @@
       </template>
 
       <template v-slot:footertool>
-        <router-link
-          class="el-button el-button--primary el-button--mini"
-          to="add"
-        >
+        <router-link class="el-button el-button--primary" to="add">
           新增角色
         </router-link>
       </template>

@@ -109,6 +109,11 @@ export default {
             return `￥${row.payPrice}`
           },
         },
+        reportNo: { minWidth: 100 },
+        itemName: { minWidth: 100 },
+        userName: { minWidth: 100 },
+        applyDoc: { minWidth: 100 },
+        reportDoc: { minWidth: 100 },
       }
     },
   },

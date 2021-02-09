@@ -13,7 +13,8 @@
               {{ item }}
             </div>
           </div>
-          <el-button type="text" slot="reference">{{ row.orderNum }}</el-button>
+          <!-- <el-button type="text" slot="reference" >{{ row.orderNum }}</el-button> -->
+          <span class="orderNumspan" slot="reference">{{ row.orderNum }}</span>
         </el-popover>
         <!-- <el-tooltip placement="top">
           <div slot="content">
@@ -25,11 +26,7 @@
         </el-tooltip> -->
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button
-          size="mini"
-          type="text"
-          @click="info(row.doctorId, row.deptId)"
-        >
+        <el-button type="text" @click="info(row.doctorId, row.deptId)">
           查看
         </el-button>
       </template>
@@ -149,6 +146,7 @@ export default {
         orderNum: {
           label: '排班时段',
           prop: 'slot_nurseId',
+          minWidth: 120,
         },
         fixed: {
           minWidth: 60,
@@ -176,5 +174,8 @@ export default {
 <style lang="scss" scoped>
 .dialog-footer {
   text-align: center;
+}
+.orderNumspan {
+  color: #646464;
 }
 </style>

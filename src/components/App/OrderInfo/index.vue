@@ -36,12 +36,12 @@
         </div>
       </div>
       <div class="app-info-item">
-        <div class="app-info-label">订单类型</div>
+        <!-- <div class="app-info-label">订单类型</div>
         <div class="app-info-value">
           <span>{{ orderType[orderInfo.orderType] }}</span>
           [<span>{{ wayType[orderInfo.wayType] }}</span
           >]
-        </div>
+        </div> -->
       </div>
     </div>
     <template v-if="orderInfo.evaluate && orderInfo.evaluate.rating">

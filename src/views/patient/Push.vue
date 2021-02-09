@@ -35,17 +35,19 @@
         <el-row class="view__content">
           <el-col>
             <span>推送对象</span>
-            {{ dialog.dialogDatas.name }}
+            <span>{{ dialog.dialogDatas.name }}</span>
           </el-col>
 
-          <el-col>
+          <el-col class="content-text">
             <span>推送内容</span>
-            {{ dialog.dialogDatas.content }}
+            <p>
+              {{ dialog.dialogDatas.content }}
+            </p>
           </el-col>
 
           <el-col>
             <span>推送时间</span>
-            {{ dialog.dialogDatas.pushTime }}
+            <span>{{ dialog.dialogDatas.pushTime }}</span>
           </el-col>
         </el-row>
       </el-scrollbar>
@@ -161,8 +163,19 @@ export default {
   created() {
     this.$route.params?.name && (this.name = this.$route.params?.name)
     console.log(this.name, '得到的筛选参数')
+    if (!this.name) {
+      this.pushList()
+      return
+    }
+    //筛选
+    this.query.searchKeywords = this.name
+    this.pushList()
   },
   methods: {
+    //列表数据
+    async pushList() {
+      this.tableData = await pushList(this.query)
+    },
     async resolveSortChange(index, { id }) {
       console.log(index, id)
       this.$message({
@@ -184,20 +197,33 @@ export default {
       if (val) this.isLoading = false
     },
   },
-  async mounted() {
-    if (!this.name) {
-      return
-    }
-    //筛选
-    const res = await pushList({
-      ...this.query,
-      name: this.name,
-    })
-    this.tableData = res
-  },
 }
 </script>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '@/styles/_modules-detail.scss';
+.el-dialog__header {
+  padding-bottom: 0;
+}
+::v-deep .el-dialog__body {
+  padding: 0 20px !important;
+  color: #666;
+  .view__content {
+    .el-col {
+      min-height: 36px;
+    }
+    .content-text {
+      display: flex;
+      p {
+        margin: 0;
+        flex: 1;
+        letter-spacing: 0.1em;
+        line-height: 24px;
+      }
+    }
+    span {
+      color: #6d6d6d;
+    }
+  }
+}
 </style>

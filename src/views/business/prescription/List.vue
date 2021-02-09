@@ -13,29 +13,25 @@
         <span>￥{{ row.prescriptionPrice }}</span>
       </template>
       <template v-slot:fixed="{ row }">
-        <router-link
-          class="el-button el-button--text el-button--mini"
-          :to="`detail/${row.id}`"
-        >
+        <router-link class="el-button el-button--text" :to="`detail/${row.id}`">
           查看
         </router-link>
         <router-link
           v-if="row.status == 'REJECTED'"
-          class="el-button el-button--text el-button--mini"
+          class="el-button el-button--text"
           :to="{ path: `edit/${row.id}`, query: { copyId: row.id } }"
         >
           复制
         </router-link>
         <el-button
           v-if="row.status == 'PENDING_REVIEW'"
-          size="mini"
           type="text"
           @click="action('back', row.id)"
         >
           撤回
         </el-button>
         <router-link
-          class="el-button el-button--text el-button--mini"
+          class="el-button el-button--text"
           v-if="row.status == 'DRAFT'"
           :to="`edit/${row.id}`"
         >
@@ -43,7 +39,6 @@
         </router-link>
         <el-button
           v-if="row.status == 'DRAFT' && row.number"
-          size="mini"
           type="text"
           @click="action('submit', row.id)"
         >
@@ -190,6 +185,7 @@ export default {
         index: {
           hidden: true,
         },
+        number: { minWidth: 100 },
         prescriptionNo: {
           prop: 'slot_prescriptionNo',
           minWidth: 120,
@@ -202,12 +198,13 @@ export default {
         },
         auditTime: {
           label: '开方时间',
+          minWidth: 120,
         },
         createTime: {
           minWidth: 160,
         },
         fixed: {
-          minWidth: 120,
+          minWidth: 140,
         },
         memberSex: {
           formatter: (row, col, cell) => {
@@ -223,16 +220,20 @@ export default {
           formatter: (row, col, cell) => {
             return serviceModeMap[cell]
           },
+          minWidth: 100,
         },
+        memberName: { minWidth: 100 },
         serviceType: {
           formatter: (row, col, cell) => {
             return serviceTypeMap[cell]
           },
+          minWidth: 100,
         },
         status: {
           formatter: (row, col, cell) => {
             return statusMap[cell]
           },
+          minWidth: 100,
         },
       }
     },

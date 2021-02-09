@@ -31,7 +31,7 @@
     </div>
     <div>
       <el-row :gutter="10">
-        <el-col v-if="active == 1" :lg="8" :md="8" :sm="4">
+        <el-col v-if="active == 1" :lg="7" :md="8" :sm="4">
           <el-scrollbar class="height100 box-shadow">
             <div class="min-height staff">
               <el-input
@@ -80,11 +80,14 @@
                         :size="60"
                         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
                       ></el-avatar> -->
-                      <div class="name">{{ item.name }}</div>
-                      <div class="des">
-                        {{ item.titleName }} {{ item.hospName }}
+                      <div class="name">
+                        {{ item.name }} {{ item.titleName }}
                       </div>
+                      <!-- <div class="des">
+                       
+                      </div> -->
                       <div class="des">{{ item.deptName }}</div>
+                      <div class="des">{{ item.hospName }}</div>
                     </div>
                   </el-col>
                 </el-row>
@@ -92,7 +95,7 @@
             </div>
           </el-scrollbar>
         </el-col>
-        <el-col :lg="8" :md="4" :sm="6">
+        <el-col :lg="7" :md="4" :sm="6">
           <el-scrollbar class="height100 box-shadow">
             <div class="min-height staff">
               <div class="staffName" v-show="active == 0">
@@ -100,10 +103,12 @@
               </div>
               <div class="staffName" v-show="active == 1">
                 <div>{{ selectDoctor.name || '员工姓名' }}</div>
-                <span
-                  >{{ selectDoctor.titleName || '' }}
+                <span>
+                  {{ selectDoctor.deptName || '' }}
+                  {{ selectDoctor.deptName ? '|' : '' }}
                   {{ selectDoctor.hospName || '' }}
-                  {{ selectDoctor.deptName || '' }}</span
+                  {{ selectDoctor.titleName ? '|' : '' }}
+                  {{ selectDoctor.titleName }}</span
                 >
               </div>
               <div class="planTime">
@@ -197,7 +202,7 @@
           </el-scrollbar>
         </el-col>
         <el-col
-          :lg="active == 0 ? 16 : 8"
+          :lg="active == 0 ? 16 : 10"
           :md="active == 0 ? 8 : 12"
           :sm="active == 0 ? 12 : 12"
         >
@@ -220,7 +225,7 @@
                 <!-- 工作时段 -->
                 <template v-for="(item, index) in workTimeList">
                   <el-col :span="active == 0 ? 6 : 8" :key="index">
-                    <div class="timeset flex-between">
+                    <div class="timeset">
                       <div class="time">
                         {{ item.timeRange }}
                       </div>

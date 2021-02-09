@@ -2,7 +2,7 @@
   <section class="view__card">
     <h3 class="view__title">实名信息</h3>
     <el-row class="view__content">
-      <el-col :md="3" class="is-right">
+      <!-- <el-col :md="3" class="is-right">
         <span>姓名</span>
       </el-col>
       <el-col :md="5">{{ info.name }}</el-col>
@@ -21,7 +21,11 @@
       <el-col :md="3" class="is-right">
         <span>身份证号</span>
       </el-col>
-      <el-col :md="5">{{ info.idCard }}</el-col>
+      <el-col :md="5">{{ info.idCard }}</el-col> -->
+      <span class="isRight">姓名: {{ info.name }}</span>
+      <span>性别: {{ info.sex === 1 ? '男' : '女' }}</span>
+      <span>手机号: {{ info.phone || '--' }}</span>
+      <span>身份证号: {{ info.idCard }}</span>
     </el-row>
 
     <h3 class="view__title">基本信息</h3>
@@ -49,106 +53,118 @@
     </el-row>
 
     <el-row class="view__content short_margin">
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>账号类型</span>
-      </el-col>
-      <el-col :md="5">
-        {{
-          info.type === 'DOCTOR'
-            ? '医生'
-            : info.type === 'DRUGER'
-            ? '药师'
-            : info.type === 'NURSE'
-            ? '护士'
-            : info.type === 'OTHER'
-            ? '其他'
-            : ''
-        }}
+        <span>
+          {{
+            info.type === 'DOCTOR'
+              ? '医生'
+              : info.type === 'DRUGER'
+              ? '药师'
+              : info.type === 'NURSE'
+              ? '护士'
+              : info.type === 'OTHER'
+              ? '其他'
+              : ''
+          }}
+        </span>
       </el-col>
 
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>登录账号</span>
+        <span>{{ info.account }}</span>
       </el-col>
-      <el-col :md="5">{{ info.account }}</el-col>
 
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>任职医院</span>
+        <span>{{ orgName }}</span>
       </el-col>
-      <el-col :md="5">{{ orgName }}</el-col>
-    </el-row>
-
-    <el-row class="view__content short_margin">
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>工号</span>
+        <span>{{ info.workNo }}</span>
       </el-col>
-      <el-col :md="5">{{ info.workNo }}</el-col>
-      <el-col :md="3" class="is-right">
-        <span>科室</span>
-      </el-col>
-      <el-col :md="5">{{
-        info.deptInfo
-          .map(item => {
-            return item.name
-          })
-          .join(',')
-      }}</el-col>
-      <el-col :md="3" class="is-right">
-        <span>默认科室</span>
-      </el-col>
-      <el-col :md="5">{{ info.defDeptName }}</el-col>
     </el-row>
 
     <el-row class="view__content short_margin">
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
+        <span>科室</span>
+        <span>{{
+          info.deptInfo
+            .map(item => {
+              return item.name
+            })
+            .join(',')
+        }}</span>
+      </el-col>
+      <el-col :md="6" class="is-right">
+        <span>默认科室</span>
+        <span>{{ info.defDeptName }}</span>
+      </el-col>
+      <el-col :md="6" class="is-right">
         <span>职称</span>
+        <span>{{ info.titleInfo }}</span>
       </el-col>
-      <el-col :md="5">{{ info.titleInfo }}</el-col>
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>职务</span>
+        <span>
+          {{ getdutyType(info.dutyType) }}
+        </span>
       </el-col>
-      <el-col :md="5">{{ getdutyType(info.dutyType) }}</el-col>
-      <el-col :md="3" class="is-right">
+    </el-row>
+
+    <!-- <el-row class="view__content short_margin">
+      <el-col :md="6" class="is-right">
         <span>药房</span>
-      </el-col>
-      <el-col :md="5">{{
+        <span>{{
         info.storeInfo
           .map(item => {
             return item.name
           })
           .join(',')
-      }}</el-col></el-row
-    >
+      }}</span>
+      </el-col></el-row
+    > -->
 
     <el-row class="view__content short_margin">
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
+        <span>药房</span>
+        <span>{{
+          info.storeInfo
+            .map(item => {
+              return item.name
+            })
+            .join(',')
+        }}</span>
+      </el-col>
+      <el-col :md="6" class="is-right">
         <span>从业年限</span>
+        <span>{{ info.workHistory }}</span>
       </el-col>
-      <el-col :md="5">{{ info.workHistory }}</el-col>
 
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>执业号</span>
+        <span>{{ info.workerCode }}</span>
       </el-col>
-      <el-col :md="5">{{ info.workerCode }}</el-col>
 
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>是否本院</span>
+        <span>{{ info.inHospital ? '是' : '否' }}</span>
       </el-col>
-      <el-col :md="5">{{ info.inHospital ? '是' : '否' }}</el-col>
     </el-row>
 
     <el-row class="view__content short_margin">
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>是否推荐</span>
+        <span>{{ info.recommend ? '是' : '否' }}</span>
       </el-col>
-      <el-col :md="5">{{ info.recommend ? '是' : '否' }}</el-col>
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>明星科室</span>
+        <span>{{ info.star ? '是' : '否' }}</span>
       </el-col>
-      <el-col :md="5">{{ info.star ? '是' : '否' }}</el-col>
-      <el-col :md="3" class="is-right">
+      <el-col :md="6" class="is-right">
         <span>邮箱</span>
+        <span>{{ info.mail }}</span>
       </el-col>
-      <el-col :md="5">{{ info.mail }}</el-col>
     </el-row>
 
     <h3 class="view__title">资格证书</h3>
@@ -263,9 +279,7 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="visible = false">
-            取消
-          </el-button>
+          <el-button size="small" @click="visible = false"> 取消 </el-button>
           <el-button
             size="small"
             type="primary"
@@ -368,9 +382,9 @@ export default {
 .view__content {
   font-size: 14px;
   color: #646464;
-  padding: 10px 0;
+  padding: 4px 0;
   .is-right {
-    min-height: 16px;
+    min-height: 6px;
     span {
       display: inline-block;
       white-space: nowrap;
@@ -384,10 +398,17 @@ export default {
   margin: 0;
 }
 </style>
-<style lang="scss">
+<style lang="scss" scoped>
 .view__content {
+  display: flex;
   .el-col {
     min-height: 1px;
+  }
+  span {
+    flex: 1;
+  }
+  .isRight {
+    margin-left: 20px;
   }
 }
 </style>

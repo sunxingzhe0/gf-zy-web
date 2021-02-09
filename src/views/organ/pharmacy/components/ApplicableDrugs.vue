@@ -61,6 +61,18 @@ export default {
         commonName: {
           minWidth: 100,
         },
+        basicUnitText: {
+          minWidth: 120,
+        },
+        regularUnitText: {
+          minWidth: 120,
+        },
+        //是否拆零
+        split: {
+          formatter(row) {
+            return row.split ? '是' : '否'
+          },
+        },
         retailPrice: {
           prop: 'slot_retailPrice',
         },

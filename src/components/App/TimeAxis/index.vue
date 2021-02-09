@@ -5,7 +5,7 @@
       :class="{ active: index == isActive }"
       v-for="(val, index) in tiemDatas"
       :key="index"
-      @click="activeChange(index)"
+      @click="activeChange(index, val)"
     >
       <span>{{ val }}</span>
       <div class="circular">
@@ -16,11 +16,18 @@
 </template>
 
 <script>
+/**
+ * @author xingzhesun
+ * @name   TimeAxis
+ * @desc   时间轴
+ * @props  tiemDatas          Array       时间轴数据
+ * @emit   changeTime        选中时间
+ */
 export default {
   props: {
     tiemDatas: {
       type: Array,
-      default: [],
+      // default: [],
     },
   },
   data() {
@@ -29,8 +36,10 @@ export default {
     }
   },
   methods: {
-    activeChange(index) {
+    activeChange(index, val) {
       this.isActive = index
+      console.log(val)
+      this.$emit('changeTime', val)
     },
   },
 }
@@ -38,13 +47,13 @@ export default {
 
 <style lang="scss" scoped>
 .timeList {
-  width: 1400px;
+  width: 100%;
   display: flex;
   color: #7f7f7f;
   margin-bottom: 40px;
   .group {
-    flex: 1;
-    // width: 120px;
+    // flex: 1;
+    width: 120px;
     height: 46px;
     display: flex;
     justify-content: center;

@@ -1,19 +1,34 @@
 <template>
-  <el-row :gutter="10" type="flex" align="middle">
-    <!-- <el-col :span="4">
+  <div>
+    <el-input
+      style="width: 103px;"
+      v-model.lazy.trim="values[0]"
+      clearable
+      size="mini"
+      @change="$emit('change', values)"
+      @keyup.native="keyupEvent($event, values[0], 0)"
+    >
+    </el-input>
+    <span style="margin: 0 6px;">-</span>
+    <el-input
+      style="width: 103px;"
+      v-model.lazy.trim="values[1]"
+      clearable
+      size="mini"
+      @change="$emit('change', values)"
+      @keyup.native="keyupEvent($event, values[1], 1)"
+    ></el-input>
+  </div>
+  <!-- <el-row :gutter="10" type="flex" align="middle">
+    <el-col :span="4">
       <el-link :underline="false" @click="resolveClear">不限</el-link>
-    </el-col> -->
-    <el-col :span="6">
-      <el-input
-        v-model.lazy.trim="values[0]"
-        clearable
-        size="mini"
-        @change="$emit('change', values)"
-        @keyup.native="keyupEvent($event, values[0], 0)"
-      >
-      </el-input>
     </el-col>
-    <el-col :span="6">
+
+    <el-col :span="5">
+
+    </el-col>
+    <el-col :span="1">-</el-col>
+    <el-col :span="5">
       <el-input
         v-model.lazy.trim="values[1]"
         clearable
@@ -22,7 +37,7 @@
         @keyup.native="keyupEvent($event, values[1], 1)"
       ></el-input>
     </el-col>
-  </el-row>
+  </el-row> -->
 </template>
 
 <script>

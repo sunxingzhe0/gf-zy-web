@@ -202,3 +202,16 @@ export function informationList(params) {
     params,
   })
 }
+
+/**
+ * 医生申请查看就诊记录
+ * @param {String} medicalId --就诊记录ID
+ * @param {String} patientId --就诊人ID
+ */
+export function applyAuthByDocWeb(data) {
+  return request({
+    url: '/api/v1/archive/applyAuthByDocWeb',
+    method: 'post',
+    data,
+  })
+}

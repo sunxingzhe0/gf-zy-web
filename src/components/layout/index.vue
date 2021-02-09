@@ -164,7 +164,7 @@ export default {
 }
 </style>
 
-<style lang="scss">
+<style lang="scss" scoped>
 @import '~@/styles/_variables.scss';
 // fix css style bug in open el-dialog
 /* .el-popup-parent--hidden {

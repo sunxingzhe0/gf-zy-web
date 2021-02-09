@@ -21,29 +21,22 @@
         </div>
       </template>
       <template v-slot:footertool>
-        <el-button size="mini" type="primary" @click="info('add')">
+        <el-button type="primary" @click="info('add')">
           新增公告
         </el-button>
       </template>
       <template v-slot:fixed="{ row }">
         <el-button
-          size="mini"
           type="text"
           @click="info('detail', row.id)"
           v-if="row.releaseState"
         >
           查看
         </el-button>
-        <el-button
-          size="mini"
-          type="text"
-          @click="send(row.id)"
-          v-if="!row.releaseState"
-        >
+        <el-button type="text" @click="send(row.id)" v-if="!row.releaseState">
           发布
         </el-button>
         <el-button
-          size="mini"
           type="text"
           @click="info('edit', row.id)"
           v-if="!row.releaseState"
@@ -51,7 +44,6 @@
           修改
         </el-button>
         <el-button
-          size="mini"
           type="text"
           style="color: #f74a4a;"
           @click="del(row.id)"
@@ -120,6 +112,7 @@ export default {
         index: {
           hidden: true,
         },
+        createTime: { minWidth: 100 },
         id: {
           hidden: true,
         },
@@ -127,7 +120,7 @@ export default {
           prop: 'slot_title',
         },
         fixed: {
-          width: 120,
+          width: 200,
         },
         seeDesc: {
           prop: 'slot_seeDesc',

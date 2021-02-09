@@ -109,7 +109,7 @@ export default {
           hidden: true,
         },
         fixed: {
-          minWidth: 60,
+          minWidth: 80,
         },
         totalFee: {
           formatter(row) {

@@ -46,11 +46,8 @@
         }}</el-button>
       </template> -->
       <template v-slot:footertool>
-        <el-button size="mini" type="primary" @click="add(false)"
-          >新增职称</el-button
-        >
+        <el-button type="primary" @click="add(false)">新增职称</el-button>
         <el-button
-          size="mini"
           plain
           type="primary"
           @click="
@@ -61,7 +58,7 @@
         >
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="add(row)">修改</el-button>
+        <el-button type="text" @click="add(row)">修改</el-button>
       </template>
     </List>
     <el-dialog
@@ -92,8 +89,8 @@
         </el-form-item>
       </el-form>
       <div slot="footer" class="dialog-footer is-center">
-        <el-button size="mini" @click="isAdd = false">取 消</el-button>
-        <el-button size="mini" type="primary" @click="submit">确 定</el-button>
+        <el-button @click="isAdd = false">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </div>
     </el-dialog>
 
@@ -299,6 +296,9 @@ export default {
     // 新增职称
     add(row) {
       this.isAdd = true
+      this.$nextTick(() => {
+        this.$refs.ruleForm.clearValidate()
+      })
       if (row) {
         this.form.name = row.name
         this.form.state = row.state
@@ -421,5 +421,13 @@ export default {
       display: none;
     }
   }
+}
+
+::v-deep .table-wrap .cell {
+  font-size: 16px;
+}
+::v-deep .el-table .cell.el-tooltip {
+  font-size: 14px;
+  padding-left: 6px;
 }
 </style>

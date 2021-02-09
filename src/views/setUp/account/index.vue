@@ -61,7 +61,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .accountWrap {
-  padding: 0;
+  padding: 0 !important;
   .account_main {
     padding: 50px;
   }

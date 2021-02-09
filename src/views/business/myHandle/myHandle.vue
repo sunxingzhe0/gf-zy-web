@@ -458,4 +458,7 @@ export default {
     color: #fa838f;
   }
 }
+.el-button--mini {
+  font-size: 14px;
+}
 </style>

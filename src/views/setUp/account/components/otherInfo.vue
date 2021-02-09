@@ -19,6 +19,8 @@
           :autosize="{ minRows: 6, maxRows: 12 }"
           placeholder="请输入"
           v-model="form.intro"
+          maxlength="1000"
+          show-word-limit
         ></el-input>
       </el-form-item>
       <el-form-item label="执业经历" prop="practiceInfo">
@@ -32,6 +34,8 @@
           :autosize="{ minRows: 6, maxRows: 12 }"
           placeholder="请输入"
           v-model="form.practiceInfo"
+          maxlength="1000"
+          show-word-limit
         ></el-input>
       </el-form-item>
 
@@ -46,6 +50,8 @@
           :autosize="{ minRows: 6, maxRows: 12 }"
           placeholder="请输入"
           v-model="form.academicInfo"
+          maxlength="1000"
+          show-word-limit
         ></el-input>
       </el-form-item>
 

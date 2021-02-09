@@ -17,8 +17,13 @@ export default {
   },
   created() {
     console.log(this.$route.params, '路由参数')
-    this.medicalId = this.$route.params.medicalId
+    this.medicalId = this.$route.query.medicalId
   },
+  // beforeRouteLeave(to, from, next) {
+  //   // 设置下一个路由的 meta
+  //   to.meta.keepAlive = true // 详情 缓存，不刷新
+  //   next()
+  // },
 }
 </script>
 

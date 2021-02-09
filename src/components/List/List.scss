@@ -11,4 +11,21 @@
   > .c__tool {
     padding: 15px 0 0 0;
   }
+ 
+  .table-wrap .cell{
+    font-size: 16px;
+    color: #666666;
+    
+font-weight: bold;
+  }
+  .el-table .cell.el-tooltip {
+    font-size: 14px;
+    
+font-weight: 500;
+color: #333333;
+    // padding-left: 6px;
+  }
+  .el-table .cell{
+    line-height: 18px;
+  }
 }
