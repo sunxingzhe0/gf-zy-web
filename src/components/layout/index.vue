@@ -176,8 +176,8 @@ export default {
 .page-component__scroll {
   height: calc(100vh - #{$app-header-height} - 5px);
 
-  > .el-scrollbar__wrap {
-    overflow-x: hidden;
+  ::v-deep > .el-scrollbar__wrap {
+    overflow-x: hidden !important;
   }
 }
 

@@ -531,7 +531,7 @@ export default {
         seq: parseInt(e),
       })
       this.$message.success('操作成功！')
-      this.$_fetchTableData(getDepList)
+      this.$_fetchTableData()
     },
     // 排序 - 子科室
     async handleSort(bool, id) {
@@ -540,7 +540,7 @@ export default {
         id: id,
       })
       this.$message.success('操作成功！')
-      this.$_fetchTableData(getDepList)
+      this.$_fetchTableData()
     },
     handleImageSuccess(res) {
       this.form.photo = res
@@ -622,7 +622,7 @@ export default {
             await editDept({
               ...this.form,
             })
-            this.$_fetchTableData(getDepList)
+            this.$_fetchTableData()
             this.isAdd = false
             this.$message.success('操作成功!')
             this.submitLoading = false
@@ -630,7 +630,7 @@ export default {
             await addDept({
               ...this.form,
             })
-            this.$_fetchTableData(getDepList)
+            this.$_fetchTableData()
             this.isAdd = false
             this.$message.success('操作成功!')
             this.submitLoading = false
@@ -648,7 +648,7 @@ export default {
         id: row.id,
         state: row.recommend,
       })
-      this.$_fetchTableData(getDepList)
+      this.$_fetchTableData()
       this.$message.success(row.recommend ? '科室推荐成功!' : '已取消科室推荐')
     },
     // 变更启用状态
@@ -657,7 +657,7 @@ export default {
         id: row.id,
         state: row.state,
       })
-      this.$_fetchTableData(getDepList)
+      this.$_fetchTableData()
       this.$message.success(row.state ? '科室启用成功!' : '科室禁用成功')
       //变更后重新获取可选父级列表(变更父级状态)
       if (row.level == 1) {

@@ -20,6 +20,38 @@
       >
         <template slot-scope="scope">
           <template v-if="item.component">
+            <el-tooltip
+              class="item"
+              effect="dark"
+              :content="scope.row[item.props]"
+              placement="top"
+              v-if="
+                item.props === 'specimenPartName' || item.props === 'partIds'
+              "
+            >
+              <component
+                :is="item.component"
+                :disabled="disabled"
+                :remote="item.remote"
+                :multiple="item.multiple"
+                :component="item.component"
+                :filterable="item.filterable"
+                v-model="scope.row[item.props]"
+                :placeholder="item.placeholder"
+                :key="scope.row.type + item.props"
+                :remote-method="item['remote-method']"
+                @change="chanegHandler($event, item.props)"
+              >
+                <template v-if="item.component === 'el-select'">
+                  <el-option
+                    v-for="(it, i) in options[item.props]"
+                    :key="item.props + '-' + i"
+                    :label="it.label"
+                    :value="it.value"
+                  ></el-option>
+                </template>
+              </component>
+            </el-tooltip>
             <component
               :is="item.component"
               :disabled="disabled"
@@ -31,8 +63,8 @@
               :placeholder="item.placeholder"
               :key="scope.row.type + item.props"
               :remote-method="item['remote-method']"
-              collapse-tags
               @change="chanegHandler($event, item.props)"
+              v-else
             >
               <template v-if="item.component === 'el-select'">
                 <el-option
@@ -44,6 +76,7 @@
               </template>
             </component>
           </template>
+          <!-- <template v-else-if="true"></template> -->
           <template v-else>
             <span v-if="item.props === 'price' && scope.row[item.props]"
               >¥</span
@@ -921,8 +954,9 @@ export default {
     }
   }
   .el-select__tags {
-    max-width: 116px !important;
-
+    // max-width: 116px !important;
+    display: flex;
+    flex-wrap: nowrap;
     .el-select__input {
       width: 0 !important;
       margin: 0 !important;
@@ -938,7 +972,7 @@ export default {
     }
     .el-tag:first-child .el-select__tags-text {
       display: inline-block;
-      max-width: 76%;
+      max-width: 100%;
       overflow: hidden;
       text-overflow: ellipsis;
       vertical-align: bottom;

@@ -17,9 +17,10 @@ export default {
   render(h, context) {
     const { icon, title } = context.props
     const vnodes = []
-
+    console.log(icon, '图标')
     if (icon) {
       vnodes.push(
+        // <el-image></el-image>,
         <svg-icon style={{ color: variables.primary }} icon-class={icon} />,
       )
     }

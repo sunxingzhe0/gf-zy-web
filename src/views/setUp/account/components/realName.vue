@@ -116,7 +116,7 @@ export default {
       this.name = res.name
 
       this.phone = res.phone
-        ? res.phone.replace(res.phone.substring(3, 7), '****')
+        ? res.phone.substr(0, 3) + '****' + res.phone.substr(-4)
         : '-'
       this.sex = res.sex
       this.idCard = res.idCard

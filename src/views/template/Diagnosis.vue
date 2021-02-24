@@ -58,13 +58,19 @@
             新增模板
           </el-button>
 
-          <el-popconfirm
+          <!-- <el-popconfirm
             style="margin-left: 10px;"
             @confirm="onConfirmRemoveItem"
             title="确定删除吗？"
+          > -->
+          <el-button
+            slot="reference"
+            @click="onConfirmRemoveItem()"
+            size="mini"
+            type="info"
+            >删除</el-button
           >
-            <el-button slot="reference" size="mini" type="info">删除</el-button>
-          </el-popconfirm>
+          <!-- </el-popconfirm> -->
         </div>
         <div class="handle-right">
           <el-pagination
@@ -322,11 +328,33 @@ export default {
         return
       }
       const data = this.selectItem
-      deleteDiagTemp(data).then(() => {
-        this.$message.success('删除成功')
-        this.getTableDataList()
-        this.$router.go(0)
+      this.$confirm('确定删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       })
+        .then(async () => {
+          await deleteDiagTemp(data)
+          this.tableData.length === 1 &&
+            this.page.pageNum > 1 &&
+            this.query.pageNum--
+          this.getTableDataList()
+          this.$message({
+            type: 'success',
+            message: '完成',
+            showClose: true,
+          })
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     },
     // 点击表格一行
     rowClickItem(row) {

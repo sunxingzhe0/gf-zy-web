@@ -1,10 +1,18 @@
 <template>
   <div class="app-info">
     <BlockTitle>{{ title }}</BlockTitle>
-    <div class="app-info-row">
+    <div class="app-info-row doctor">
       <div class="app-info-item">
         <div class="app-info-label">开方医生</div>
-        <div class="app-info-value">{{ prescriptionInfo.doctorName }}</div>
+        <div class="app-info-value">
+          {{ prescriptionInfo.doctorName }}
+        </div>
+        <div class="app-info-value">
+          {{ prescriptionInfo.auditUserTitle }}
+        </div>
+        <div class="app-info-value">
+          {{ prescriptionInfo.deptName }}
+        </div>
       </div>
       <div class="app-info-item">
         <div class="app-info-label">药品数量</div>
@@ -74,3 +82,10 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+.doctor {
+  .app-info-value {
+    flex: initial;
+  }
+}
+</style>

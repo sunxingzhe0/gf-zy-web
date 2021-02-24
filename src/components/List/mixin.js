@@ -26,6 +26,7 @@ function getFetchListFunction(active, config) {
 }
 
 export default function (options) {
+  console.log(options)
   const config = Array.prototype.concat(options)
   return Vue.extend({
     name: 'ListMixin',

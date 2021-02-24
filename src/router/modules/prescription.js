@@ -10,7 +10,7 @@ export default {
   alwaysShow: true,
   meta: {
     title: '处方',
-    icon: 'sidebar-prescription',
+    icon: 'sidebar-prescriptio',
     roles: ['DRUG_DOC_PRESCRIPTION'],
   },
   children: [
@@ -26,7 +26,7 @@ export default {
       children: [
         {
           path: 'list',
-          component: () => import('@/views/prescription/List.vue'),
+          component: () => import('@/views/prescription/PendingList.vue'),
           props: { type: 'PENDING_REVIEW' },
           meta: {
             title: '列表',

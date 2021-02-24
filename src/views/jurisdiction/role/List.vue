@@ -35,15 +35,14 @@
           style="margin-left: 10px;"
           title="确定删除吗？"
         > -->
-        <el-button
+        <div
           @click="open(row)"
           v-if="row.accountNum == 0"
-          slot="reference"
+          class="danger el-button el-button--text"
           type="text"
-          size="mini"
         >
           删除
-        </el-button>
+        </div>
         <!-- </el-popconfirm> -->
       </template>
 
@@ -135,7 +134,7 @@ export default {
       })
     },
     open(row) {
-      this.$confirm('是否删除', '提示', {
+      this.$confirm('是否删除？', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning',

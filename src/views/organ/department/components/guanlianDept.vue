@@ -69,7 +69,7 @@ export default {
       query: {
         pageSize: 10,
         currentNum: 1,
-        pid: '1',
+        // pid: '1',
       },
       columns: {
         seq: {

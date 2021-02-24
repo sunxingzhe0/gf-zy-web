@@ -86,14 +86,15 @@
   }
 }
 .prescription-item-body {
-  overflow: hidden;
+  overflow: hidden !important;
   margin-top: 15px;
   position: relative;
   border: 1px solid #e6e6e6;
 }
-.scroll {
-  overflow: auto;
+.scroll:hover {
+  overflow: auto !important;
 }
+
 .prescription-table {
   min-width: 1200px;
   .checkbox {

@@ -26,48 +26,42 @@
         <el-button type="info" @click="Refresh">刷新</el-button>
       </el-col>
     </el-row>
-
+    <h3 class="view__title">评价均分TOP8</h3>
     <el-row class="view__content">
-      <el-col :span="4" style="margin: 0 30px 0 10px;" class="mycol">
-        <span>业务类型：</span>
-        <el-select placeholder="全部" v-model="arrayS" @change="meter">
-          <el-option label="全部" value=""></el-option>
-          <el-option label="在线咨询" value="CONSULT"></el-option>
-          <el-option label="在线复诊" value="REPEAT_CLINIC"></el-option>
-          <el-option label="慢病续方" value="CARRYON_PRESC"></el-option>
-        </el-select>
+      <el-col :span="16">
+        <span>业务类型</span>
+        <el-radio-group v-model="arrayS" @change="meter">
+          <el-radio-button
+            v-for="_ in typeList"
+            :key="_.value"
+            :label="_.value"
+            >{{ _.label }}</el-radio-button
+          >
+        </el-radio-group>
+        <span style="margin-left: 20px;">排名方式</span>
+        <el-radio-group v-model="department" @change="meter">
+          <el-radio-button v-for="_ in branch" :key="_.id" :label="_.id">{{
+            _.name
+          }}</el-radio-button>
+        </el-radio-group>
       </el-col>
-
-      <el-col :span="4" class="mycol">
-        <span>排名方式：</span>
-        <el-select v-model="department" @change="meter">
-          <el-option
-            v-for="item in branch"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          ></el-option>
-        </el-select>
+      <el-col :span="8" class="is-right">
+        <el-radio-group v-model="typeDate" @change="meBts">
+          <el-radio-button
+            v-for="(_, index) in ['按日', '按周', '按月']"
+            :key="_"
+            :label="index + 1"
+            >{{ _ }}</el-radio-button
+          >
+        </el-radio-group>
       </el-col>
-      <el-col>
-        <div class="sortF">
-          <p>评级均分</p>
-          <el-radio-group v-model="typeDate" @change="meBts">
-            <el-radio-button
-              v-for="(_, index) in ['按日', '按周', '按月']"
-              :key="_"
-              :label="index + 1"
-              >{{ _ }}</el-radio-button
-            >
-          </el-radio-group>
-        </div>
+      <el-col :span="24">
+        <span>评级均分</span>
         <div class="chart" ref="chart" style="margin-left: 50px;"></div>
       </el-col>
-
       <el-col>
         <span>全部排名</span>
       </el-col>
-
       <el-col>
         <el-table
           :data="tableData"
@@ -205,7 +199,24 @@ export default {
       typeDate: 1,
 
       tableData: [], //机构端排名
-      taRIW: [], //业务类型
+      typeList: [
+        {
+          label: '全部',
+          value: '',
+        },
+        {
+          label: '在线咨询',
+          value: 'CONSULT',
+        },
+        {
+          label: '在线复诊',
+          value: 'REPEAT_CLINIC',
+        },
+        {
+          label: '慢病续方',
+          value: 'CARRYON_PRESC',
+        },
+      ],
     }
   },
   created() {
@@ -329,9 +340,10 @@ export default {
           },
         },
         grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
+          left: '1%',
+          right: '3%',
+          bottom: '6%',
+          top: '5%',
           containLabel: true,
         },
         xAxis: [
@@ -368,7 +380,7 @@ export default {
 
 .view__statistics-comment {
   .chart {
-    height: 450px;
+    height: 400px;
   }
 }
 .sortF {

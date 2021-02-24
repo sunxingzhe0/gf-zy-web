@@ -142,7 +142,7 @@ function Socket(url = process.env.VUE_APP_WSS_URL) {
 
 Socket.prototype.connect = function (url = this.url) {
   if (!navigator.onLine || !store.state.user.socketToken) return
-  clearInterval(this.reconnectTimer)
+  clearTimeout(this.reconnectTimer)
   this.reconnectTimer = null
 
   this.socket = new WebSocket(url)
@@ -170,7 +170,6 @@ Socket.prototype.connect = function (url = this.url) {
 
   this.socket.addEventListener('error', event => {
     console.log('WebSocket error observed:', event)
-    this.reconnect()
   })
 
   this.socket.addEventListener('close', event => {
@@ -183,12 +182,9 @@ Socket.prototype.connect = function (url = this.url) {
 
 Socket.prototype.reconnect = function () {
   if (this.reconnectTimer) return
-  this.reconnectTimer = setInterval(() => {
+  this.reconnectTimer = setTimeout(() => {
     if (store.state.user.socketToken) {
       this.connect(process.env.VUE_APP_WSS_URL)
-    } else {
-      clearInterval(this.reconnectTimer)
-      this.reconnectTimer = null
     }
   }, 3000)
 }

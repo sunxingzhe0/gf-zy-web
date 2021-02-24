@@ -56,8 +56,10 @@
 
     .svg-icon {
       margin-right: 16px;
-      font-size: 16px;
+      font-size: 20px;
       vertical-align: middle;
+      /*   width: 20%;
+      height: 100%; */
     }
 
     .el-menu {
@@ -71,7 +73,8 @@
     .el-submenu__title {
       font-size: 16px;
       font-weight: 500;
-      color: #1A1A1A  !important;&:hover {
+      color: #1a1a1a !important;
+      &:hover {
         background-color: $menuHover !important;
       }
     }
@@ -87,10 +90,12 @@
 
     & .nest-menu .el-submenu > .el-submenu__title,
     & .el-submenu .el-menu-item {
-      color: #333333 !important;
+      color: #666666 !important;
       min-width: $sideBarWidth !important;
       background-color: $subMenuBg !important;
-
+      &.is-active {
+        color: $subMenuActiveText !important;
+      }
       &:hover {
         background-color: $subMenuHover !important;
       }

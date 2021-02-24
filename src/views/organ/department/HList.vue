@@ -166,7 +166,22 @@
               :key="item.id"
               :label="item.name"
               :value="item.id"
+              :disabled="!item.state"
             >
+              <span style="float: left;" v-if="!item.state">{{
+                item.name
+              }}</span>
+              <span
+                style="
+                  float: right;
+                  color: #8492a6;
+                  font-size: 13px;
+                  margin-right: 20px;
+                "
+                v-if="!item.state"
+                class="selctedIcon"
+                >已禁用</span
+              >
             </el-option>
           </el-select>
         </el-form-item>
@@ -510,7 +525,8 @@ export default {
         tree: false,
       })
       console.log(res, '*****')
-      this.innerDept = res.filter(item => item.state)
+      this.innerDept = res
+      // this.innerDept = res.filter(item => item.state)
     },
     // 排序 - 父科室
     async confirm(e, id) {
@@ -636,13 +652,21 @@ export default {
           ? true
           : false
       const isLt2M = file.size / 1024 / 1024 < 2
+      const isModel =
+        file.name.indexOf('互联网科室导入模板') > -1 ? true : false
       if (!isExcal) {
         this.$message.error('上传excal只能是 excal 格式 !')
+        this.importDialog.sonListS = []
       }
       if (!isLt2M) {
         this.$message.error('上传文件大小不能超过 2 MB !')
+        this.importDialog.sonListS = []
       }
-      return isExcal && isLt2M
+      if (!isModel) {
+        this.$message.error('请上传正确的模板！')
+        this.importDialog.sonListS = []
+      }
+      return isExcal && isLt2M && isModel
     },
     //上传的文件是否删除
     beforeRemove(file) {
@@ -716,4 +740,9 @@ export default {
 //   font-size: 14px;
 //   padding-left: 6px;
 // }
+::v-deep .selctedIcon {
+  &::after {
+    display: none;
+  }
+}
 </style>

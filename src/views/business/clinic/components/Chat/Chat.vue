@@ -1118,6 +1118,7 @@ export default {
   .vue-recycle-scroller.ready .vue-recycle-scroller__item-view.demo {
     will-change: initial;
     transform: initial !important;
+    top: 54px;
   }
   .begin-work {
     position: absolute;

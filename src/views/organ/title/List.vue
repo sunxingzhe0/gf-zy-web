@@ -18,7 +18,7 @@
       <template v-slot:slot_doctorNum="{ row }">
         <router-link
           v-if="row.doctorNum != 0"
-          class="el-button el-button--text el-button--mini"
+          class="el-button el-button--text"
           :to="{
             path: '/jurisdiction/account/list',
             query: {
@@ -28,7 +28,7 @@
         >
           {{ row.doctorNum }}
         </router-link>
-        <p v-else>{{ row.doctorNum }}</p>
+        <span v-else>{{ row.doctorNum }}</span>
       </template>
       <template v-slot:slot_state="{ row }">
         <el-switch

@@ -81,13 +81,18 @@
                         src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
                       ></el-avatar> -->
                       <div class="name">
-                        {{ item.name }} {{ item.titleName }}
+                        {{ item.name }}
                       </div>
-                      <!-- <div class="des">
-                       
-                      </div> -->
-                      <div class="des">{{ item.deptName }}</div>
-                      <div class="des">{{ item.hospName }}</div>
+                      <div class="des">
+                        {{ item.titleName || '' }}
+                        {{ item.titleName ? '|' : '' }}
+                        {{ item.deptName || '' }}
+                        {{ item.hospName ? '|' : '' }}
+                        {{ item.hospName }}
+                      </div>
+
+                      <!-- <div class="des">{{ item.hospName }}</div>
+                      <div class="des">{{ item.deptName }}</div> -->
                     </div>
                   </el-col>
                 </el-row>
@@ -104,11 +109,11 @@
               <div class="staffName" v-show="active == 1">
                 <div>{{ selectDoctor.name || '员工姓名' }}</div>
                 <span>
-                  {{ selectDoctor.deptName || '' }}
-                  {{ selectDoctor.deptName ? '|' : '' }}
-                  {{ selectDoctor.hospName || '' }}
+                  {{ selectDoctor.titleName || '' }}
                   {{ selectDoctor.titleName ? '|' : '' }}
-                  {{ selectDoctor.titleName }}</span
+                  {{ selectDoctor.hospName || '' }}
+                  {{ selectDoctor.deptName ? '|' : '' }}
+                  {{ selectDoctor.deptName }}</span
                 >
               </div>
               <div class="planTime">
@@ -555,10 +560,10 @@ export default {
   margin-bottom: 10px;
 }
 .height100 {
-  height: calc(100vh - 191px);
+  height: calc(100vh - 160px);
 }
 .min-height {
-  height: calc(100vh - 192px);
+  height: calc(100vh - 160px);
   padding: 30px;
   padding-bottom: 0;
 }

@@ -32,85 +32,83 @@
     <el-row class="view__content">
       <el-col>
         <span>业务类型</span>
-        <el-select placeholder="全部" v-model="lsitB" @change="getList">
-          <el-option label="全部" value=""></el-option>
-          <el-option label="在线咨询" value="CONSULT"></el-option>
-          <el-option label="在线复诊" value="REPEAT_CLINIC"></el-option>
-          <el-option label="慢病续方" value="CARRYON_PRESC"></el-option>
-        </el-select>
+        <el-radio-group v-model="lsitB" @change="getList">
+          <el-radio-button
+            v-for="_ in typeList"
+            :key="_.value"
+            :label="_.value"
+            >{{ _.label }}</el-radio-button
+          >
+        </el-radio-group>
       </el-col>
 
       <el-col>
-        <el-row :gutter="20">
-          <el-col :md="14">
-            <div class="datas">
-              <div
-                v-for="{ title, type, value } in datas"
-                :key="title"
-                class="datas-box-wrap"
-                :class="type"
-              >
-                <div>
-                  <svg-icon :icon-class="`statistics-${type}`" />
-                  <span class="info">{{ title }}</span>
-                  <strong class="primary" v-if="type === 'amount'">
-                    ¥{{ value || '0.00' }}
-                  </strong>
-                  <strong class="primary" v-else>
-                    {{ value || 0 }}
-                  </strong>
-                </div>
+        <div class="datas-wdth">
+          <div class="datas">
+            <div
+              v-for="{ title, type, value } in datas"
+              :key="title"
+              class="datas-box-wrap"
+              :class="type"
+            >
+              <div>
+                <svg-icon :icon-class="`statistics-${type}`" />
+                <span class="info">{{ title }}</span>
+                <strong class="primary" v-if="type === 'amount'">
+                  ¥{{ value || '0.00' }}
+                </strong>
+                <strong class="primary" v-else>
+                  {{ value || 0 }}
+                </strong>
               </div>
             </div>
-          </el-col>
-          <el-col :md="8">
-            <div class="totaClass">
-              <div class="total">
-                <div
-                  class="trapezoid"
-                  v-for="(item, index) in ['浏览', '下单', '付款']"
-                  :key="item"
-                >
-                  <span v-if="index == 0">
-                    <img src="@/assets/liulan.png" alt="" />
-                  </span>
-                  <span v-if="index == 1">
-                    <img src="@/assets/xiadan.png" alt="" />
-                  </span>
-                  <span v-if="index == 2">
-                    <img src="@/assets/fukuan.png" alt="" />
-                  </span>
-                  <span class="spans">{{ item }}</span>
+          </div>
+        </div>
+        <div class="totaClass">
+          <div class="total">
+            <div
+              class="trapezoid"
+              v-for="(item, index) in ['浏览', '下单', '付款']"
+              :key="item"
+            >
+              <span v-if="index == 0">
+                <img src="@/assets/liulan.png" alt="" />
+              </span>
+              <span v-if="index == 1">
+                <img src="@/assets/xiadan.png" alt="" />
+              </span>
+              <span v-if="index == 2">
+                <img src="@/assets/fukuan.png" alt="" />
+              </span>
+              <span class="spans">{{ item }}</span>
 
-                  <span v-if="index == 0" class="indClsx">
-                    {{ listC.viewNum }}%
-                  </span>
-                  <span v-if="index == 1" class="btnInde">
-                    {{ listC.payRates }}%
-                  </span>
-                  <span v-if="index == 2" class="payment">
-                    {{ listC.finalRates }}%
-                  </span>
-                </div>
-
-                <div class="cogi">
-                  <img src="@/assets/cogi.png" alt="" />
-                </div>
-                <div class="mapng">
-                  <img src="@/assets/mall.png" alt="" />
-                </div>
-                <div class="mall">
-                  <img src="@/assets/mall.png" alt="" />
-                </div>
-              </div>
-              <div class="cogiPng">
-                <p class="mabos">下单转化率</p>
-                <p class="clgbox">付款转化率</p>
-                <p class="mabang">付款转化率</p>
-              </div>
+              <span v-if="index == 0" class="orderRates">
+                {{ listC.orderRates }}%
+              </span>
+              <span v-if="index == 1" class="payRates">
+                {{ listC.payRates }}%
+              </span>
+              <span v-if="index == 2" class="finalRates">
+                {{ listC.finalRates }}%
+              </span>
             </div>
-          </el-col>
-        </el-row>
+
+            <div class="cogi">
+              <img src="@/assets/cogi.png" alt="" />
+            </div>
+            <div class="mapng">
+              <img src="@/assets/mall.png" alt="" />
+            </div>
+            <div class="mall">
+              <img src="@/assets/mall.png" alt="" />
+            </div>
+          </div>
+          <div class="cogiPng">
+            <p class="mabos">下单转化率</p>
+            <p class="clgbox">成交转化率</p>
+            <p class="mabang">付款转化率</p>
+          </div>
+        </div>
       </el-col>
 
       <el-col>
@@ -120,17 +118,19 @@
 
     <h3 class="view__title">订单与金额TOP5</h3>
     <el-row class="view__content">
-      <el-col :md="18">
+      <el-col :md="16">
         <span>业务类型</span>
-        <el-select placeholder="全部" v-model="arrayS" @change="getListS">
-          <el-option label="全部" value=""></el-option>
-          <el-option label="在线咨询" value="CONSULT"></el-option>
-          <el-option label="在线复诊" value="REPEAT_CLINIC"></el-option>
-          <el-option label="慢病续方" value="CARRYON_PRESC"></el-option>
-        </el-select>
+        <el-radio-group v-model="arrayS" @change="getListS">
+          <el-radio-button
+            v-for="_ in typeList"
+            :key="_.value"
+            :label="_.value"
+            >{{ _.label }}</el-radio-button
+          >
+        </el-radio-group>
       </el-col>
 
-      <el-col :md="4" class="is-right">
+      <el-col :md="8" class="is-right">
         <el-radio-group v-model="type" @change="getListS">
           <el-radio-button
             v-for="(_, index) in ['订单数', '订单金额']"
@@ -280,6 +280,24 @@ export default {
       })),
 
       tableData: [],
+      typeList: [
+        {
+          label: '全部',
+          value: '',
+        },
+        {
+          label: '在线咨询',
+          value: 'CONSULT',
+        },
+        {
+          label: '在线复诊',
+          value: 'REPEAT_CLINIC',
+        },
+        {
+          label: '慢病续方',
+          value: 'CARRYON_PRESC',
+        },
+      ],
     }
   },
 
@@ -455,9 +473,10 @@ export default {
           ],
         },
         grid: {
-          left: '3%',
+          left: '1%',
           right: '4%',
           bottom: '8%',
+          top: '10%',
           containLabel: true,
         },
         toolbox: {
@@ -569,7 +588,7 @@ export default {
 @import '@/styles/statisticsA.scss';
 .view__statistics-order {
   .chart {
-    height: 450px;
+    height: 350px;
   }
 
   .datas {
@@ -579,43 +598,6 @@ export default {
     grid-gap: 20px;
   }
 
-  .datas-box-wrap {
-    position: relative;
-    border: 1px solid #ccc;
-
-    > div {
-      // display: flex;
-      // flex-direction: column;
-      // justify-content: space-around;
-      // position: absolute;
-      position: relative;
-      padding: 20px;
-      width: 100%;
-      height: 138px;
-
-      word-break: break-word;
-      overflow: hidden;
-
-      > * {
-        position: relative;
-        z-index: 1;
-      }
-
-      strong {
-        display: block;
-        font-size: 17px;
-      }
-
-      .svg-icon {
-        position: absolute;
-        right: -10px;
-        bottom: -10px;
-        color: $--color-info-light;
-        width: 50%;
-        height: 70%;
-      }
-    }
-  }
   .spans {
     margin: 0 65px;
   }

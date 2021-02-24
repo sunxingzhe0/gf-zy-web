@@ -10,15 +10,9 @@
       <template v-slot:fixed="{ row }">
         <el-button type="text" @click="hadnleEdit(row)">修改</el-button>
 
-        <el-popconfirm
-          style="margin-left: 10px;"
-          title="确定删除吗？"
-          @confirm="handleDel([row.tempId])"
+        <el-button @click="handleDel([row.tempId])" class="danger" type="text"
+          >删除</el-button
         >
-          <el-button slot="reference" style="color: #fe5578;" type="text"
-            >删除</el-button
-          >
-        </el-popconfirm>
       </template>
 
       <template v-slot:footertool>
@@ -32,20 +26,14 @@
           新增病历
         </el-button>
 
-        <el-popconfirm
-          style="margin-left: 10px;"
-          title="确定删除吗？"
-          @confirm="
+        <el-button
+          @click="
             handleDel(tableData.multipleSelection.map(({ tempId }) => tempId))
           "
+          :disabled="!tableData.multipleSelection.length"
         >
-          <el-button
-            slot="reference"
-            :disabled="!tableData.multipleSelection.length"
-          >
-            批量删除
-          </el-button>
-        </el-popconfirm>
+          批量删除
+        </el-button>
       </template>
     </List>
 
@@ -276,15 +264,35 @@ export default {
     },
 
     async handleDel(ids) {
-      await deleteEtcDiseaseTemp({ templateId: ids.join(',') })
-
-      this.$message({
-        type: 'success',
-        message: '完成',
-        showClose: true,
+      this.$confirm('确定删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       })
+        .then(async () => {
+          await deleteEtcDiseaseTemp({ templateId: ids.join(',') })
 
-      this.$_fetchTableData()
+          this.tableData.list.length === 1 &&
+            this.query.currentNum > 1 &&
+            this.query.currentNum--
+
+          this.$_fetchTableData()
+          this.$message({
+            type: 'success',
+            message: '完成',
+            showClose: true,
+          })
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     },
 
     /* handleOpened() {

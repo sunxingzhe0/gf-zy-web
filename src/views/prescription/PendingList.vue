@@ -5,24 +5,179 @@
       :filter="filter"
       :columns="columns"
       :tableData="tableData"
+      showSelection
     >
       <template v-slot:slot_prescriptionPrice="{ row }">
         <span>￥{{ row.prescriptionPrice }}</span>
+      </template>
+      <template v-slot:footertool>
+        <el-button
+          v-show="'PENDING_REVIEW' === type"
+          size="mini"
+          type="primary"
+          :disabled="!tableData.multipleSelection.length"
+          @click="
+            handleAudit(
+              tableData.multipleSelection.map(({ id }) => id),
+              'PASSED',
+            )
+          "
+        >
+          批量通过
+        </el-button>
+        <el-button
+          v-show="'PENDING_REVIEW' === type"
+          size="mini"
+          plain
+          type="primary"
+          :disabled="!tableData.multipleSelection.length"
+          @click="
+            handleAudit(
+              tableData.multipleSelection.map(({ id }) => id),
+              'REJECTED',
+            )
+          "
+        >
+          批量驳回
+        </el-button>
       </template>
 
       <template v-slot:fixed="{ row }">
         <router-link class="el-button el-button--text" :to="`detail/${row.id}`">
           查看
         </router-link>
+
+        <el-button
+          v-show="'PENDING_REVIEW' === type"
+          type="text"
+          @click="handleAudit([row.id], 'PASSED')"
+        >
+          通过
+        </el-button>
+
+        <el-button
+          v-show="'PENDING_REVIEW' === type"
+          type="text"
+          @click="handleAudit([row.id], 'REJECTED')"
+        >
+          驳回
+        </el-button>
       </template>
     </List>
+
+    <el-dialog
+      title="驳回原因"
+      :visible.sync="dialog.visible"
+      :close-on-click-modal="false"
+      custom-class="component__dialog"
+      append-to-body
+      @open="handleDialogOpen"
+    >
+      <el-scrollbar>
+        <el-form
+          :model="dialog.model"
+          :rules="rules"
+          ref="ruleForm"
+          label-width="auto"
+        >
+          <el-form-item label="选择模板">
+            <el-select
+              v-model="dialog.model.value"
+              filterable
+              style="width: 100%;"
+              placeholder="请选择驳回原因模板"
+              @change="dialog.model.reason = $event"
+            >
+              <el-option
+                v-for="{ id, content } in dialog.options"
+                :key="id"
+                :label="content"
+                :value="content"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item prop="reason" label="原因">
+            <el-input
+              type="textarea"
+              placeholder="请输入"
+              v-model="dialog.model.reason"
+              :autosize="{ minRows: 6, maxRows: 6 }"
+              maxlength="100"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button
+              type="primary"
+              size="mini"
+              plain
+              :disabled="!dialog.model.reason"
+              :loading="dialog.pedding"
+              @click="handleAddTemplate(dialog.model.reason)"
+            >
+              设为模板
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </el-scrollbar>
+
+      <div slot="footer" class="is-center">
+        <el-button size="mini" @click="dialog.visible = false">取 消</el-button>
+        <el-button
+          size="mini"
+          type="primary"
+          :loading="dialog.pedding"
+          @click="submit('ruleForm')"
+        >
+          确 定
+        </el-button>
+      </div>
+    </el-dialog>
+    <!-- 认证相关 -->
+    <el-dialog
+      title="认证提示"
+      :visible.sync="hasAuthShow"
+      width="30%"
+      :close-on-click-modal="false"
+    >
+      <div class="hasAuthBox">
+        <span v-if="!hasExamine && hasAuth"
+          >您还没有实名认证，请扫码前往移动端完成实名认证。</span
+        >
+        <span v-if="!hasAuth && hasExamine"
+          >您还没有资质认证，请扫码前往移动端完成资质认证认证。</span
+        >
+        <span v-if="!hasExamine && !hasAuth"
+          >您还没有实名和资质认证，请扫码前往移动端完成资质认证。</span
+        >
+        <img :src="erImg" class="MobileImg" />
+        <span class="tips">*认证完毕后请关闭弹框并刷新页面。</span>
+      </div>
+
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="hasAuthShow = false">取 消</el-button>
+        <el-button type="primary" @click="hasAuthShow = false">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import { List, mixin } from '@/components'
+import { invalidFieldSetFocus } from '@/utils'
+
 import { titleChooseList, deptChooseList } from '@/api'
-import { webPageRpList } from '@/api/prescription'
+import {
+  webPageRpList,
+  operateRp,
+  pageRefuse,
+  saveRefuse,
+} from '@/api/prescription'
+import { miniImg } from '@/api/setup'
+
 const pre = {
   title: [],
   dept: [],
@@ -261,7 +416,7 @@ export default {
           hidden: this.$route.path === '/prescription/pending/list',
         },
         fixed: {
-          minWidth: 80,
+          minWidth: 200,
         },
         memberName: {
           minWidth: 90,
@@ -312,6 +467,110 @@ export default {
       pre.dept.length ? pre.dept : deptChooseList({ tree: false }),
     ])
     next()
+  },
+  methods: {
+    // 获取实名制二维码
+    async getminiImg() {
+      const res = await miniImg({})
+      this.erImg = res
+    },
+    async handleAudit(ids, statusType, reason) {
+      if (!this.hasExamine || !this.hasAuth) {
+        this.hasAuthShow = true
+        this.getminiImg()
+      } else {
+        if ('REJECTED' === statusType && !reason) {
+          this.dialog.ids = ids
+          this.dialog.statusType = statusType
+          this.dialog.visible = true
+          return
+        }
+
+        if ('PASSED' === statusType) {
+          this.$confirm('是否确认操作?', '提示', {
+            confirmButtonText: '确定',
+            cancelButtonText: '取消',
+            type: 'warning',
+          }).then(async () => {
+            this.passFnc(ids, statusType, reason)
+          })
+        } else {
+          this.passFnc(ids, statusType, reason)
+        }
+      }
+    },
+    async passFnc(ids, statusType, reason) {
+      let reasonId = this.dialog.options.filter(
+        item => item.content == reason,
+      )[0]?.id
+
+      await Promise.all(
+        ids.map(id => operateRp({ id, statusType, reason, reasonId })),
+      )
+
+      this.$message({
+        type: 'success',
+        message: '完成',
+        showClose: true,
+      })
+      this.$_fetchTableData(webPageRpList)
+    },
+    async handleDialogOpen() {
+      this.dialog.model = {
+        value: '',
+        reason: '',
+      }
+      this.dialog.options = this.dialog.options.length
+        ? this.dialog.options
+        : await pageRefuse({ currentNum: 1, pageSize: 9999 }).then(({ list }) =>
+            list.map(({ id, content }) => ({ id, content })),
+          )
+    },
+
+    async handleAddTemplate(content) {
+      if (
+        this.dialog.options.some(
+          item => item.content == this.dialog.model.reason,
+        )
+      ) {
+        this.$message({
+          type: 'error',
+          message: '此模板无需再次设置',
+          showClose: true,
+        })
+        return false
+      }
+      this.dialog.pedding = true
+      this.dialog.options.push({
+        id: await saveRefuse({ content }).finally(() =>
+          setTimeout(() => (this.dialog.pedding = false), 200),
+        ),
+        content,
+      })
+
+      this.$message({
+        type: 'success',
+        message: '完成',
+        showClose: true,
+      })
+    },
+
+    submit(formName) {
+      this.$refs[formName].validate(async (valid, invalidFields) => {
+        if (valid) {
+          this.dialog.pedding = true
+          await this.handleAudit(
+            this.dialog.ids,
+            this.dialog.statusType,
+            this.dialog.model.reason,
+          ).finally(() => setTimeout(() => (this.dialog.pedding = false), 200))
+          this.dialog.visible = false
+          this.$_fetchTableData(webPageRpList)
+        } else {
+          invalidFieldSetFocus(this.$refs[formName], invalidFields)
+        }
+      })
+    },
   },
 }
 </script>

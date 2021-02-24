@@ -7,11 +7,7 @@
       :tableData="tableData"
     >
       <template v-slot:fixed="{ row }">
-        <div
-          class="operation"
-          @click="handleEdit(row.id)"
-          :style="{ display: 'block' }"
-        >
+        <div class="el-button el-button--text" @click="handleEdit(row.id)">
           修改
         </div>
       </template>

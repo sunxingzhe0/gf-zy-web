@@ -65,7 +65,7 @@
         <div class="text">{{ user.workHistory || '-' }}</div>
       </el-form-item>
       <el-form-item label="邮箱">
-        <div class="text" v-if="user.mail">{{ user.mail || '-' }}</div>
+        <div class="text">{{ user.mail || '-' }}</div>
       </el-form-item>
     </el-form>
   </div>

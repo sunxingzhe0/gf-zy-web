@@ -211,6 +211,7 @@ export function webarchiveList(params) {
     url: '/api/v1/archive/webMedicalList',
     method: 'get',
     params,
+    timeout: 60000, //偶发性超时延长
   })
 }
 

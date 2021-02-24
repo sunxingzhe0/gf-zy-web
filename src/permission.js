@@ -44,7 +44,11 @@ const getUrlParams = function () {
   const index = url.indexOf('?')
   const params = {}
   if (index !== -1) {
-    const queryStr = url.substring(index + 1)
+    let queryStr = url.substring(index + 1)
+    const hashIndex = queryStr.indexOf('#')
+    if (hashIndex !== -1) {
+      queryStr = queryStr.substring(0, hashIndex)
+    }
     queryStr.split('&').forEach(item => {
       const arr = item.split('=')
       params[arr[0]] = arr[1]
@@ -64,14 +68,20 @@ const genGetPath = function (item) {
 
 export const authGuard = async function () {
   let asyncRoutes = []
+  let params = getUrlParams()
+  if (params.code && params.attrs) {
+    params.type = params.attrs.split('@')
+    await store.dispatch('user/codeLogin', params)
+    await store.dispatch('user/getInfo')
+    location.href = '/'
+  }
   router.beforeEach(async (to, from, next) => {
     // start progress bar
     NProgress.start()
     const hasToken = getToken()
-    const params = getUrlParams()
     // set page title
     document.title = getPageTitle(to.meta.title)
-    // determine whether the user has logged in
+    // 优先检查code
     if (hasToken) {
       if (to.path === '/login') {
         // if is logged in, redirect to the home page
@@ -83,14 +93,17 @@ export const authGuard = async function () {
         // console.log(hasRoles)
         if (hasRoles) {
           if (to.path === '/404') {
-            let root = from.path.match(/\/.*?\//)[0]
-            root = root.substring(0, root.length - 1)
-            let route = asyncRoutes.find(item => item.path === root)
-            console.log(route)
-            if (route) {
-              const path = genGetPath(route)
-              next(path)
-            } else {
+            try {
+              let root = from.path.match(/\/.*?\//)[0]
+              root = root.substring(0, root.length - 1)
+              let route = asyncRoutes.find(item => item.path === root)
+              if (route) {
+                const path = genGetPath(route)
+                next(path)
+              } else {
+                next()
+              }
+            } catch (e) {
               next()
             }
           } else {
@@ -128,12 +141,6 @@ export const authGuard = async function () {
           }
         }
       }
-    } else if (params.code && params.attrs) {
-      params.type = params.attrs.split('@')
-      delete params.attrs
-      await store.dispatch('user/codeLogin', params)
-      await store.dispatch('user/getInfo')
-      next({ path: '/' })
     } else {
       /* has no token*/
 

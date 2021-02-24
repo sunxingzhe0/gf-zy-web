@@ -49,16 +49,7 @@
                     style="max-width: 110px;"
                     v-model="tableData[scoped.$index].prefixName"
                   ></el-input>
-                  <el-form-item
-                    :prop="'tableData.' + scoped.$index + '.diagnosisName'"
-                    :rules="[
-                      {
-                        required: true,
-                        message: '诊断病名不能为空',
-                        trigger: ['blur', 'change'],
-                      },
-                    ]"
-                  >
+                  <el-form-item>
                     <el-select
                       remote
                       :style="{
@@ -70,6 +61,11 @@
                       reserve-keyword
                       :loading="loading"
                       placeholder="请输入"
+                      :class="
+                        isSubmit && !tableData[scoped.$index].diagnosisName
+                          ? 'redBorder'
+                          : ''
+                      "
                       value-key="diagnosisCode"
                       :remote-method="searchDiagnosis"
                       v-model="tableData[scoped.$index].diagnosisName"
@@ -187,7 +183,11 @@
                       isChild(scoped.row.indexCode)
                     "
                   >
-                    <el-button type="text" icon="icon el-icon-rank"></el-button>
+                    <el-button
+                      type="text"
+                      @click="iscascaderKey = true"
+                      icon="icon el-icon-rank"
+                    ></el-button>
 
                     <div
                       style="
@@ -208,6 +208,7 @@
                         style="position: relative; left: -30px;"
                         :props="{ value: 'indexCode', children: 'childDtos' }"
                         :options="moveData"
+                        :key="scoped.row.indexCode"
                         @change="
                           moveChange($event, scoped.row.indexCode, scoped.row)
                         "
@@ -296,6 +297,8 @@ export default {
   data() {
     this.userId = store.state.user.userId
     return {
+      iscascaderKey: false,
+      isSubmit: false, // 提交验证
       dynamicValidateForm: {
         diagnosisName: '',
       },
@@ -334,6 +337,7 @@ export default {
         this.loadDiagnosis()
       }
     },
+    moveData() {},
     draftList: {
       handler(val) {
         if (this.template) {
@@ -393,6 +397,7 @@ export default {
       }, 30)
 
       this.moveData = data
+      this.iscascaderKey = false
       console.log(this.moveData)
     },
     // 判断元素是否有子元素
@@ -406,7 +411,9 @@ export default {
       })
       return chilnum > 0 ? false : true
     },
+
     moveFocus(e, indexCode) {
+      console.log(e)
       if (e) {
         this.getAllClassify()
         console.log(indexCode)
@@ -419,13 +426,15 @@ export default {
           }
         })
       }
+      this.iscascaderKey = true
     },
     // 选中改变
     changeRadio(row, index) {
       console.log(row, index)
     },
+    // 移动诊断
     moveChange(e, indexCode, row) {
-      console.log(e, indexCode)
+      console.log(e, indexCode, '000000')
       let thisindex = null
       let moveIndex = null
       let parent = null
@@ -437,7 +446,9 @@ export default {
           parent = item.indexCode
         }
         if (e[1]) {
-          if (item.indexCode == e[1]) {
+          console.log(item.indexCode, '-----')
+          if (item.indexCode === e[1]) {
+            console.log(index)
             moveIndex = index
           }
         } else {
@@ -452,6 +463,8 @@ export default {
         }
       })
       let thisData = this.tableData[thisindex]
+      console.log(thisindex, moveIndex, parent)
+
       if (moveIndex == thisindex) {
         this.tableData.splice(thisindex, 1, {
           parent: parent,
@@ -468,14 +481,18 @@ export default {
           diagnosisName: thisData.diagnosisName,
           suffixName: thisData.suffixName,
         })
-        this.tableData.splice(thisindex, 1)
+        if (moveIndex < thisindex) {
+          this.tableData.splice(thisindex + 1, 1)
+        } else {
+          this.tableData.splice(thisindex, 1)
+        }
       }
-
       row.move = []
       this.getAllClassify()
     },
 
     async loadDiagnosis() {
+      this.isSubmit = false
       const clinicList = this.isMedical
         ? this.draftList
         : await findDiagnosisInClinic({ orderId: this.orderId })
@@ -747,9 +764,17 @@ export default {
           type: 'warning',
         },
       ).then(async () => {
-        this.$refs.addForm.validate(valid => {
-          console.log(valid)
+        this.isSubmit = true
+        let isname = 0
+        this.tableData.forEach(item => {
+          if (!item.diagnosisName) {
+            isname++
+          }
         })
+        if (isname > 0) {
+          this.$message.error('诊断病名不能为空')
+          return
+        }
         const { params, data } = this.confirm()
         await submitDiagnosis(params, data)
 
@@ -820,5 +845,10 @@ export default {
 // }
 .el-table td div {
   margin: 0 10px;
+  .redBorder {
+    ::v-deep .el-input__inner {
+      border-color: $--color-danger;
+    }
+  }
 }
 </style>

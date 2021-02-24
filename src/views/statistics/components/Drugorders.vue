@@ -27,31 +27,9 @@
         <el-button type="info" @click="Refresh">刷新</el-button>
       </el-col>
     </el-row>
-
+    <h3 class="view__title">药品销量TOP10</h3>
     <el-row class="view__content">
-      <el-col :span="4" style="margin: 0 30px 0 700px;" class="mycol">
-        <span>业务类型：</span>
-        <el-select placeholder="全部" v-model="arrayS" @change="mideLis">
-          <el-option label="全部" value=""></el-option>
-          <el-option label="在线咨询" value="CONSULT"></el-option>
-          <el-option label="在线复诊" value="REPEAT_CLINIC"></el-option>
-          <el-option label="慢病续方" value="CARRYON_PRESC"></el-option>
-        </el-select>
-      </el-col>
-
-      <el-col :span="4" class="mycol">
-        <span>排名方式：</span>
-        <el-select v-model="depchLisb" @change="hadleChange">
-          <el-option label="全部" value=""></el-option>
-          <el-option
-            v-for="item in roomBsub"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          ></el-option>
-        </el-select>
-      </el-col>
-      <el-col>
+      <el-col :span="8">
         <div class="sortF">
           <el-radio-group v-model="saleSbaov" @change="hadleySca">
             <el-radio-button
@@ -62,9 +40,35 @@
             >
           </el-radio-group>
         </div>
+      </el-col>
+      <el-col :span="16" style="text-align: right;">
+        <span>业务类型：</span>
+        <el-select
+          placeholder="全部"
+          class="mycol"
+          style="margin-right: 20px;"
+          v-model="arrayS"
+          @change="mideLis"
+        >
+          <el-option label="全部" value=""></el-option>
+          <el-option label="在线咨询" value="CONSULT"></el-option>
+          <el-option label="在线复诊" value="REPEAT_CLINIC"></el-option>
+          <el-option label="慢病续方" value="CARRYON_PRESC"></el-option>
+        </el-select>
+        <span>排名方式：</span>
+        <el-select v-model="depchLisb" class="mycol" @change="hadleChange">
+          <el-option label="全部" value=""></el-option>
+          <el-option
+            v-for="item in roomBsub"
+            :key="item.id"
+            :label="item.name"
+            :value="item.id"
+          ></el-option>
+        </el-select>
+      </el-col>
+      <el-col :span="24">
         <div class="chart" ref="chart" style="margin-left: 50px;"></div>
       </el-col>
-
       <el-col>
         <span>全部排名</span>
         <el-radio-group v-model="type" @change="hadleySca">
@@ -328,9 +332,10 @@ export default {
           },
         },
         grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
+          left: '1%',
+          right: '3%',
+          bottom: '6%',
+          top: '4%',
           containLabel: true,
         },
         xAxis: [
@@ -367,7 +372,7 @@ export default {
 
 .view__statistics-comment {
   .chart {
-    height: 450px;
+    height: 400px;
   }
 }
 // .sortF {
@@ -382,6 +387,6 @@ export default {
 //   position: relative;
 // }
 .mycol {
-  width: 300px;
+  max-width: calc(100% - 95px);
 }
 </style>

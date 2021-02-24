@@ -54,9 +54,7 @@
       v-if="prescription.status === 'REJECTED'"
     >
       <span>驳回原因：</span>
-      <span class="prescription-rejection-text"
-        >{{ prescription.reason }}123</span
-      >
+      <span class="prescription-rejection-text">{{ prescription.reason }}</span>
     </div>
     <div class="prescription-item-body" :class="{ scroll: scene }">
       <div class="prescription-table">
@@ -339,14 +337,14 @@
 @author         qiang
 @name           PrescriptionItem
 @desc           处方项
-@props          
+@props
                 index         当前处方索引
                 scene         场景['', 'template', 'drugList', 'detail']
                 operate       当前操作['','temp', 'adjust', 'group', 'unGroup', 'delete', 'submit']
                 template      是否处方模板
                 prescription  处方信息
                 footerShow    是否显示footer信息
-@emit           
+@emit
                 update
                   {type: update} 更新
                   {type: copy, index: index} 复制
@@ -366,6 +364,9 @@ import { TableHeader, ColumnWidth, DrugItem, ValidateKeys } from '../constant'
 
 export default {
   props: {
+    iscancel: {
+      type: Boolean,
+    },
     // 场景
     scene: {
       type: String,
@@ -399,6 +400,7 @@ export default {
   },
   data() {
     return {
+      oldTableData: [],
       status: {
         DRAFT: '草稿',
         PASSED: '已通过',
@@ -480,6 +482,7 @@ export default {
   },
   methods: {
     watchHandler(newVal) {
+      console.log('更新')
       let rpDrugList = newVal.rpDrugList || []
       rpDrugList = rpDrugList.map(item => ({
         ...item,
@@ -491,6 +494,7 @@ export default {
         edit: this.scene === 'drugList',
         totalUnits: this.computedTotalUnit(item),
       }))
+      this.oldTableData = JSON.parse(JSON.stringify(rpDrugList))
       if (
         newVal.status === 'DRAFT' &&
         this.scene !== 'detail' &&
@@ -525,6 +529,7 @@ export default {
     },
     // 计算组class
     computedGroupClass() {
+      console.log('计算class')
       this.tableData = this.tableData.map((item, index, arr) => {
         const prevGroupId = this.tableData[index - 1]?.groupId
         const rowClass = item.groupId && item.groupId === prevGroupId
@@ -551,9 +556,9 @@ export default {
         it.key === 'operate' && this.operate ? 'operate-disabled' : '',
       ]
     },
-    /* 
+    /*
       @desc   保存验证
-      @params 
+      @params
               index         number|undefined    单项|全部
               checkSave     boolean             检查是否保存
     */
@@ -635,8 +640,12 @@ export default {
         }
         case 'total': {
           const _item = array.findItem(item.totalUnits, 'value', item.totalUnit)
-          if (_item) return item.total + _item.label
-          break
+          if (_item) {
+            return item.total + _item.label
+          } else {
+            return item.total + item.totalUnitText
+          }
+          // break
         }
         case 'treatment': {
           const _item = array.findItem(
@@ -963,6 +972,7 @@ export default {
     },
     // 编辑药品 => 获取病房列表
     editItem(index) {
+      this.$emit('editUpdate', 'edit')
       const { receivePharmacyOptions } = this.tableData[index]
       if (!receivePharmacyOptions.length) {
         this.searchPharmacys(index)
@@ -1019,6 +1029,8 @@ export default {
       }
       this.tableData = tableData
       this.savePrescription()
+      //移动后告诉父组件
+      this.$emit('editUpdate', 'edit')
     },
     // 全选药品
     checkedAll(val) {
@@ -1054,6 +1066,7 @@ export default {
           type: 'warning',
         })
         if (confirm === 'confirm') {
+          this.$emit('editUpdate', 'edit')
           this.tableData.splice(input, 1)
           if (this.scene === 'drugList') return
           if (this.scene === 'template') return
@@ -1097,6 +1110,7 @@ export default {
     async savaHandler(index) {
       console.log(this)
       if (this.validate(index)) return
+      this.$emit('editUpdate', 'edit')
       if (this.shouldMerge()) {
         const confirm = await this.$confirm(
           '该药品接收方不一致，保存后将自动调方，是否确认？',
@@ -1250,6 +1264,14 @@ export default {
           }
           return item
         })
+      }
+    },
+    iscancel(val) {
+      if (val) {
+        const len = JSON.parse(JSON.stringify(this.oldTableData)).length
+        this.tableData = JSON.parse(JSON.stringify(this.oldTableData))
+        this.tableData.push(Object.assign({}, DrugItem, { seq: len }))
+        console.log(this.tableData, '更新后的数据')
       }
     },
   },

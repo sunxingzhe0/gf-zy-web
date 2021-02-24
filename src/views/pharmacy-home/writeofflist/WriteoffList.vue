@@ -7,8 +7,8 @@
       :tableData="tableData"
     >
       <template v-slot:fixed="{ row }">
-        <div class="operation" @click="showMore(row.orderId)">
-          <div class="watch">查看</div>
+        <div class="el-button el-button--text" @click="showMore(row.orderId)">
+          查看
         </div>
       </template>
     </List>

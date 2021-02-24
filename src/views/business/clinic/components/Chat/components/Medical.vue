@@ -690,7 +690,7 @@ export default {
     text-overflow: ellipsis;
   }
   .el-submenu__title {
-    width: 258px;
+    width: 235px;
   }
   .el-submenu__title,
   .el-radio__label {

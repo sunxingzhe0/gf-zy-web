@@ -5,6 +5,7 @@
     class="c__right-panel"
     :class="{ disable: !activation, min: !show }"
     view-class="infinite-wrapper"
+    v-loading="isLoading"
   >
     <div class="minus">
       <el-button
@@ -251,6 +252,7 @@ export default {
 
   data() {
     return {
+      isLoading: false,
       patient: {},
       initWidth: (localStorage.getItem('r_panel_width') || '200') + 'px',
       distance: Infinity,
@@ -330,13 +332,18 @@ export default {
     async fetchData() {
       this.distance = 100
       this.identifier++
+      this.isLoading = true
       this.patient = await patientInfo({ orderId: this.orderId })
+      setTimeout(() => {
+        this.isLoading = false
+      }, 200)
     },
     updateListStatus(medicalId) {
       const index = this.seeDoctor.list.findIndex(item => item.id === medicalId)
       if (index !== -1) this.$set(this.seeDoctor.list[index], 'open', true)
     },
     async infiniteHandler($state) {
+      this.isLoading = true
       const res = await webarchiveList({
         currentNum: this.seeDoctor.currentNum++,
         pageSize: this.seeDoctor.pageSize,
@@ -346,6 +353,9 @@ export default {
       })
       this.seeDoctor.total = res.total
       this.seeDoctor.list.push(...res.data)
+      setTimeout(() => {
+        this.isLoading = false
+      }, 200)
       if (res.data && res.data.length === this.seeDoctor.pageSize) {
         $state.loaded()
       } else {

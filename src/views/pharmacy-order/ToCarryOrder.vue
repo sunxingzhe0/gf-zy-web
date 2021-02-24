@@ -7,11 +7,13 @@
       :tableData="tableData"
     >
       <template v-slot:fixed="{ row }">
-        <div class="operation">
-          <router-link :to="`/order/tocarryorder/orderdetail?id=${row.orderId}`"
-            ><div class="watch">查看</div></router-link
-          >
-          <div class="writeOff" @click="showMore(row.orderId)">核销</div>
+        <router-link
+          class="el-button el-button--text"
+          :to="`/order/tocarryorder/orderdetail?id=${row.orderId}`"
+          >查看</router-link
+        >
+        <div class="el-button el-button--text" @click="showMore(row.orderId)">
+          核销
         </div>
       </template>
     </List>
@@ -273,6 +275,9 @@ export default {
         },
         createTime: {
           minWidth: 160,
+        },
+        fixed: {
+          minWidth: 140,
         },
         memberName: { minWidth: 120 },
 

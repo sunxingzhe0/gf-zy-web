@@ -256,18 +256,22 @@
           :sm="6"
           :lg="6"
           :xl="3"
-          style="text-align: right;"
+          style="text-align: right; float: right;"
           v-if="alwaysShowBtn"
         >
           <el-button
             type="primary"
             size="small"
+            style="font-size: 16px; padding: 7px 15px;"
             @click="resolveEmitChange(), (isOpen = false)"
             >搜索</el-button
           >
-          <el-button size="small" @click="clearFilterData('inline')">{{
-            resetBtnText
-          }}</el-button>
+          <el-button
+            style="font-size: 16px; padding: 7px 15px;"
+            size="small"
+            @click="clearFilterData('inline')"
+            >{{ resetBtnText }}</el-button
+          >
         </el-col>
       </el-row>
     </el-col>
@@ -569,6 +573,7 @@ $select-width: 110px;
   .el-input__inner,
   .el-range-input {
     font-size: 16px;
+    color: #333 !important;
   }
   .prepend-select {
     width: $select-width;
@@ -584,6 +589,7 @@ $select-width: 110px;
       border-bottom-right-radius: 0;
       border-right-color: transparent;
       font-size: 16px;
+      color: #333;
     }
 
     & + .el-input__inner {
@@ -591,6 +597,7 @@ $select-width: 110px;
       border-top-left-radius: 0;
       border-bottom-left-radius: 0;
       font-size: 16px;
+      color: #333;
     }
   }
 
@@ -607,7 +614,7 @@ $select-width: 110px;
   label {
     padding-right: 16px;
     font-size: 16px;
-    color: #646464;
+    color: #666666;
   }
 }
 
@@ -646,6 +653,9 @@ $select-width: 110px;
   .el-input__inner,
   .el-button--small {
     font-size: 16px;
+  }
+  .el-input__inner {
+    color: #333;
   }
 }
 

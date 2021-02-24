@@ -35,13 +35,20 @@
             style="display: inline-block;"
             action
             :show-file-list="false"
+            :disabled="platformAccount"
             accept="image/png, image/jpeg, image/gif, image/webp"
             :on-success="handleAvatarSuccess"
             :before-upload="beforeImageUpload"
             :http-request="httpRequest"
           >
-            <el-button size="small" type="primary">选择照片</el-button>
-            <el-button size="small" @click.stop="deleteAvatar" type="danger"
+            <el-button size="small" type="primary" :disabled="platformAccount"
+              >选择照片</el-button
+            >
+            <el-button
+              size="small"
+              @click.stop="deleteAvatar"
+              type="danger"
+              :disabled="platformAccount"
               >删除</el-button
             >
           </el-upload>
@@ -72,8 +79,9 @@
               <el-select
                 v-show="showSelect"
                 v-model="model.roleId"
-                filterable
+                :disabled="platformAccount"
                 multiple
+                filterable
               >
                 <el-option
                   v-for="{ name, id } in roles"
@@ -87,6 +95,7 @@
                 v-show="!showSelect"
                 icon="el-icon-plus"
                 type="text"
+                :disabled="platformAccount"
                 @click="showSelect = true"
               >
                 添加
@@ -179,7 +188,10 @@
 
           <el-col :md="12">
             <el-form-item label="工号" prop="workNo">
-              <el-input v-model="model.workNo"></el-input>
+              <el-input
+                v-model="model.workNo"
+                :disabled="platformAccount"
+              ></el-input>
             </el-form-item>
           </el-col>
 
@@ -272,7 +284,11 @@
         label-width="120px"
       >
         <el-form-item label="姓名" prop="name">
-          <el-input v-model="model.name" v-show="!model.idCard"></el-input>
+          <el-input
+            v-model="model.name"
+            v-show="!model.idCard"
+            :disabled="platformAccount"
+          ></el-input>
           <span v-show="model.idCard">{{ model.name }}</span>
         </el-form-item>
 
@@ -281,6 +297,7 @@
             style="width: 100%;"
             v-model="model.sex"
             v-show="!model.idCard"
+            :disabled="platformAccount"
           >
             <el-option label="女" :value="0"></el-option>
             <el-option label="男" :value="1"></el-option>
@@ -294,6 +311,7 @@
           <el-input
             v-model="model.prestoreIdCard"
             v-show="!model.idCard"
+            :disabled="platformAccount"
           ></el-input>
           <span v-show="model.idCard">{{ model.idCard }}</span>
         </el-form-item>
@@ -303,6 +321,7 @@
           @click="clear('idCard')"
           v-show="model.idCard"
           class="reset_btn"
+          :disabled="platformAccount"
         >
           重置
         </el-button>
@@ -326,6 +345,7 @@
           <el-input
             v-show="!model.phone"
             v-model="model.prestorePhone"
+            :disabled="platformAccount"
           ></el-input>
           <span v-show="model.phone">{{ model.phone }}</span>
         </el-form-item>
@@ -335,6 +355,7 @@
           @click="clear('phone')"
           v-show="model.phone"
           class="reset_btn"
+          :disabled="platformAccount"
         >
           重置
         </el-button>
@@ -380,6 +401,7 @@
                 v-model="model.deptId"
                 filterable
                 multiple
+                :disabled="platformAccount"
                 @change="setDefaultDept"
               >
                 <el-option
@@ -398,6 +420,7 @@
                 style="width: 100%;"
                 v-model="model.defDeptId"
                 filterable
+                :disabled="platformAccount"
               >
                 <el-option
                   v-for="{ id, name } in dept4default"
@@ -415,6 +438,7 @@
                 style="width: 100%;"
                 v-model="model.titleId"
                 filterable
+                :disabled="platformAccount"
               >
                 <el-option
                   v-for="{ id, name } in pre.title"
@@ -451,6 +475,7 @@
                 style="width: 100%;"
                 v-model="model.dutyType"
                 filterable
+                :disabled="platformAccount"
               >
                 <el-option
                   v-for="{ value, label } in post"
@@ -1290,6 +1315,9 @@ export default {
     },
     dept4default() {
       return pre.dept.filter(({ id }) => this.model.deptId.includes(id))
+    },
+    platformAccount() {
+      return this.model.source === 'MH'
     },
   },
   async beforeRouteEnter(to, from, next) {

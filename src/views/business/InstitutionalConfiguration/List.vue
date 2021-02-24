@@ -744,7 +744,7 @@ export default {
             minWidth: 160,
           },
           fixed: {
-            minWidth: 90,
+            minWidth: 140,
           },
         },
       },

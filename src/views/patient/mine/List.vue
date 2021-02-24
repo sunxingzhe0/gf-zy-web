@@ -5,7 +5,7 @@
       :filter="filter"
       :columns="columns"
       :tableData="tableData"
-      :bats="[{}]"
+      :showSelection="isShowBtn"
     >
       <!-- 批量推送按钮 -->
       <template v-slot:footertool v-if="isShowBtn">
@@ -84,7 +84,6 @@
         >
       </template>
     </List>
-
     <!-- 推送内容弹出层 -->
     <el-dialog
       :title="dialog.isBat ? '批量推送' : `推送对象 - ${dialog.user}`"
@@ -148,6 +147,7 @@ export default {
   ],
   data() {
     return {
+      isShowcheck: [],
       //是否显示机构端按钮
       isShowBtn: true,
       //端类型
@@ -157,7 +157,7 @@ export default {
         pageSize: 10,
         timeType: 1,
         searchType: 0,
-        sourceType: this.$store.state.user.platform === 'ORG_WEB' ? 1 : 0,
+        sourceType: this.$route.path === '/patient/patientTube/list' ? 1 : 0,
       },
 
       dialog: {
@@ -177,6 +177,7 @@ export default {
     }
   },
   created() {
+    console.log('初始化')
     this.clientType = this.$store.state.user.platform
     this.$route.path === '/patient/patientTube/list' && (this.isShowBtn = false)
   },
@@ -411,7 +412,7 @@ export default {
     gotoInfo(row) {
       this.$router.push({
         path:
-          this.clientType === 'ORG_WEB'
+          this.$route.path === '/patient/patientTube/list'
             ? '/patient/patientTube/detail'
             : '/patient/mine/detail',
         query: {
@@ -442,9 +443,12 @@ export default {
       console.log(to.path, '---跳转的路由')
       if (to.path === '/patient/patientTube/list') {
         this.isShowBtn = false
+        this.query.sourceType = 1
+        // this.fetchList()
         this.delPush()
       } else if (to.path === '/patient/mine/list') {
-        this.fetchList()
+        this.query.sourceType = 0
+        // this.fetchList()
         this.isShowBtn = true
       }
     },

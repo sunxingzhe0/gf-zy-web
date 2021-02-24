@@ -107,7 +107,12 @@
             @reloadConversationList="fetchConversationList"
           />
         </el-tab-pane>
-        <el-tab-pane label="就诊档案" name="treatmentRecord" lazy>
+        <el-tab-pane
+          class="archives"
+          label="就诊档案"
+          name="treatmentRecord"
+          lazy
+        >
           <div
             v-if="archives.length == 0"
             style="margin: 240px 0; color: #999;"
@@ -482,7 +487,7 @@ $header-height: 80px;
 }
 
 .view__clinic {
-  min-width: 1200px;
+  // min-width: 1200px;
   color: #666;
 
   > * + * {
@@ -565,9 +570,13 @@ $header-height: 80px;
       z-index: 1000;
     }
   }
+  .archives {
+    overflow: auto;
+  }
   .iframeWa {
     border: none;
     height: calc(100vh - 157px);
+    overflow-y: scroll;
   }
   .c__chat {
     margin: -15px;

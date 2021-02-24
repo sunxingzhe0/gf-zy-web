@@ -113,6 +113,7 @@ export default {
   methods: {
     async getData() {
       this.rpInfo = await prescription.preDetailInfo({ rpId: this.id })
+      console.log(this.rpInfo, '详情=========')
       this.orderId = this.rpInfo.orderId
       this.getOrderInfo()
     },

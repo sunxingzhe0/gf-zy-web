@@ -15,7 +15,7 @@
         <el-button type="text" @click="add(row)">
           修改
         </el-button>
-        <el-button style="color: #f74949;" type="text" @click="del(row.id)">
+        <el-button class="danger" type="text" @click="del(row.id)">
           删除
         </el-button>
       </template>

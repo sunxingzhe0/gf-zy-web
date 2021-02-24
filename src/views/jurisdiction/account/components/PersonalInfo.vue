@@ -2,6 +2,22 @@
   <section class="view__card">
     <h3 class="view__title">实名信息</h3>
     <el-row class="view__content">
+      <el-col :md="6">
+        <span>姓名</span>
+        {{ info.name }}
+      </el-col>
+      <el-col :md="6">
+        <span>性别</span>
+        {{ info.sex === 1 ? '男' : '女' }}
+      </el-col>
+      <el-col :md="6">
+        <span>手机号</span>
+        {{ info.phone || '-' }}
+      </el-col>
+      <el-col :md="6">
+        <span>身份证号</span>
+        {{ info.idCard || '-' }}
+      </el-col>
       <!-- <el-col :md="3" class="is-right">
         <span>姓名</span>
       </el-col>
@@ -22,93 +38,84 @@
         <span>身份证号</span>
       </el-col>
       <el-col :md="5">{{ info.idCard }}</el-col> -->
-      <span class="isRight">姓名: {{ info.name }}</span>
+      <!-- <span>姓名: {{ info.name }}</span>
       <span>性别: {{ info.sex === 1 ? '男' : '女' }}</span>
       <span>手机号: {{ info.phone || '--' }}</span>
-      <span>身份证号: {{ info.idCard }}</span>
+      <span>身份证号: {{ info.idCard }}</span> -->
     </el-row>
 
     <h3 class="view__title">基本信息</h3>
 
     <el-row class="view__content">
-      <el-col :md="3" class="is-right">
-        <span>头像</span>
-      </el-col>
-      <el-col :md="21">
-        <el-image fit="cover" :src="FILE_URL(info.avatar)" class="avatar_round">
-          <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
-        </el-image>
-
-        <!-- <el-avatar
-          style="vertical-align: top;"
-          :size="100"
-          :src="FILE_URL(info.avatar)"
-        >
-          <i
-            class="el-icon-user-solid"
-            style="font-size: 30px; color: #fff; line-height: inherit;"
-          ></i>
-        </el-avatar> -->
+      <el-col :span="24">
+        <div class="flex">
+          <span>头像</span>
+          <el-image
+            fit="cover"
+            :src="FILE_URL(info.avatar)"
+            class="avatar_round"
+          >
+            <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
+          </el-image>
+        </div>
       </el-col>
     </el-row>
 
     <el-row class="view__content short_margin">
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>账号类型</span>
-        <span>
-          {{
-            info.type === 'DOCTOR'
-              ? '医生'
-              : info.type === 'DRUGER'
-              ? '药师'
-              : info.type === 'NURSE'
-              ? '护士'
-              : info.type === 'OTHER'
-              ? '其他'
-              : ''
-          }}
-        </span>
+
+        {{
+          info.type === 'DOCTOR'
+            ? '医生'
+            : info.type === 'DRUGER'
+            ? '药师'
+            : info.type === 'NURSE'
+            ? '护士'
+            : info.type === 'OTHER'
+            ? '其他'
+            : ''
+        }}
       </el-col>
 
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>登录账号</span>
-        <span>{{ info.account }}</span>
+        {{ info.account || '-' }}
       </el-col>
 
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>任职医院</span>
-        <span>{{ orgName }}</span>
+        {{ orgName || '-' }}
       </el-col>
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>工号</span>
-        <span>{{ info.workNo }}</span>
+        {{ info.workNo || '-' }}
       </el-col>
     </el-row>
 
     <el-row class="view__content short_margin">
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>科室</span>
-        <span>{{
+        {{
           info.deptInfo
             .map(item => {
               return item.name
             })
             .join(',')
-        }}</span>
+        }}
       </el-col>
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>默认科室</span>
-        <span>{{ info.defDeptName }}</span>
+        {{ info.defDeptName || '-' }}
       </el-col>
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>职称</span>
-        <span>{{ info.titleInfo }}</span>
+        {{ info.titleInfo || '-' }}
       </el-col>
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>职务</span>
-        <span>
-          {{ getdutyType(info.dutyType) }}
-        </span>
+
+        {{ getdutyType(info.dutyType) || '-' }}
       </el-col>
     </el-row>
 
@@ -126,81 +133,95 @@
     > -->
 
     <el-row class="view__content short_margin">
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>药房</span>
-        <span>{{
+
+        {{
           info.storeInfo
             .map(item => {
               return item.name
             })
             .join(',')
-        }}</span>
+        }}
       </el-col>
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>从业年限</span>
-        <span>{{ info.workHistory }}</span>
+        {{ info.workHistory || '-' }}
       </el-col>
 
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>执业号</span>
-        <span>{{ info.workerCode }}</span>
+        {{ info.workerCode || '-' }}
       </el-col>
 
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>是否本院</span>
-        <span>{{ info.inHospital ? '是' : '否' }}</span>
+        {{ info.inHospital ? '是' : '否' }}
       </el-col>
     </el-row>
 
     <el-row class="view__content short_margin">
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>是否推荐</span>
-        <span>{{ info.recommend ? '是' : '否' }}</span>
+        {{ info.recommend ? '是' : '否' }}
       </el-col>
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>明星科室</span>
-        <span>{{ info.star ? '是' : '否' }}</span>
+        {{ info.star ? '是' : '否' }}
       </el-col>
-      <el-col :md="6" class="is-right">
+      <el-col :md="6">
         <span>邮箱</span>
-        <span>{{ info.mail }}</span>
+        {{ info.mail || '-' }}
       </el-col>
     </el-row>
 
     <h3 class="view__title">资格证书</h3>
     <el-row class="view__content short_margin">
       <template v-for="{ type, certNo, fileId } in info.certs">
-        <el-col :key="`label_${type}`" :md="3" class="is-right">
-          <span>
-            {{
-              type === 'DRUG'
-                ? '药师资格证'
-                : type === 'PHYS_QUAL'
-                ? '医师资格证'
-                : type === 'DOCTOR_QUAL'
-                ? '医师执业证'
-                : type === 'NURSE'
-                ? '护士执业证'
-                : type === 'TECH'
-                ? '专业技术资格证'
-                : ''
-            }}
-          </span>
-        </el-col>
-        <el-col :key="`value_${type}`" :md="5" style="padding-left: 15px;">
-          {{ certNo }}
-        </el-col>
-        <el-col
-          :key="`image_${type}`"
-          :md="{ offset: 3, span: 20 }"
-          style="padding-left: 15px;"
-        >
-          <div class="image-wrap">
+        <el-col :key="`label_${type}`" :span="6">
+          <div>
+            <span>
+              {{
+                type === 'DRUG'
+                  ? '药师资格证'
+                  : type === 'PHYS_QUAL'
+                  ? '医师资格证'
+                  : type === 'DOCTOR_QUAL'
+                  ? '医师执业证'
+                  : type === 'NURSE'
+                  ? '护士执业证'
+                  : type === 'TECH'
+                  ? '专业技术资格证'
+                  : ''
+              }}
+            </span>
+            <span class="cerNospan">{{ certNo }}</span>
+          </div>
+          <!-- <div class="image-wrap">
             <el-image
               v-for="_ in fileId"
               :key="_"
               style="width: 220px; height: 130px;"
               :src="FILE_URL(_)"
+              :preview-src-list="fileId.map(FILE_URL)"
+              fit="cover"
+            ></el-image>
+          </div> -->
+        </el-col>
+        <!-- <el-col :key="`value_${type}`" :md="5" style="padding-left: 15px;">
+          {{ certNo }}
+        </el-col> -->
+        <el-col
+          :key="`image_${type}`"
+          :md="{ offset: 1, span: 20 }"
+          style="padding-left: 30px;"
+        >
+          <div class="image-wrap">
+            <el-image
+              v-for="_ in fileId"
+              :key="_"
+              :src="FILE_URL(_)"
+              style="width: 220px; height: 130px;"
               :preview-src-list="fileId.map(FILE_URL)"
               fit="cover"
             ></el-image>
@@ -211,35 +232,30 @@
 
     <h3 class="view__title">其他信息</h3>
     <el-row class="view__content">
-      <el-col :md="3" class="is-right">
-        <span>个人简介</span>
+      <el-col :span="24">
+        <div class="otherInfo">
+          <span>个人简介</span>
+          <div class="info">{{ info.intro }}</div>
+        </div>
       </el-col>
-      <el-col :md="21" tag="p" style="margin-top: 0;">{{ info.intro }}</el-col>
-    </el-row>
-    <el-row class="view__content">
-      <el-col :md="3" class="is-right">
-        <span>执业经历</span>
+      <el-col :span="24">
+        <div class="otherInfo">
+          <span>执业经历</span>
+          <div class="info">{{ info.practiceInfo }}</div>
+        </div>
       </el-col>
-      <el-col :md="21" tag="p" style="margin-top: 0;">{{
-        info.practiceInfo
-      }}</el-col>
-    </el-row>
-    <el-row class="view__content">
-      <el-col :md="3" class="is-right">
-        <span>学术经历</span>
+      <el-col :span="24">
+        <div class="otherInfo">
+          <span>学术经历</span>
+          <div class="info">{{ info.academicInfo }}</div>
+        </div>
       </el-col>
-      <el-col :md="21" tag="p" style="margin-top: 0;">{{
-        info.academicInfo
-      }}</el-col>
-    </el-row>
-
-    <el-row class="view__content">
-      <el-col :md="3" class="is-right">
-        <span>执业范围</span>
+      <el-col :span="24">
+        <div class="otherInfo">
+          <span>执业范围</span>
+          <div class="info">{{ info.practiceArea }}</div>
+        </div>
       </el-col>
-      <el-col :md="21" tag="p" style="margin-top: 0;">{{
-        info.practiceArea
-      }}</el-col>
     </el-row>
 
     <EditFooter
@@ -361,8 +377,8 @@ export default {
 
 <style lang="scss" scoped>
 @import '@/styles/_variables.scss';
-
-::v-deep .sticky-footer {
+@import '@/styles/_modules-detail.scss';
+::v-deep.sticky-footer {
   position: sticky;
   bottom: 0;
   margin: -30px 0 0 0;
@@ -381,34 +397,36 @@ export default {
 }
 .view__content {
   font-size: 14px;
-  color: #646464;
+  color: #1a1a1a;
   padding: 4px 0;
-  .is-right {
-    min-height: 6px;
-    span {
-      display: inline-block;
-      white-space: nowrap;
-      width: 80px;
-      text-align: left;
-      margin-right: 0px;
-    }
+  padding-left: 40px;
+  span {
+    display: inline-block;
+    white-space: nowrap;
+    width: 80px;
+    text-align: left;
+    margin-right: 0px;
+    color: #666;
   }
 }
 .short_margin {
   margin: 0;
 }
-</style>
-<style lang="scss" scoped>
-.view__content {
-  display: flex;
-  .el-col {
-    min-height: 1px;
-  }
+.otherInfo {
+  position: relative;
+  padding-left: 80px;
   span {
-    flex: 1;
+    position: absolute;
+    left: 0;
+    color: #666;
   }
-  .isRight {
-    margin-left: 20px;
+  .info {
+    margin-bottom: 10px;
+    color: #1a1a1a;
   }
+}
+
+.cerNospan {
+  margin-left: 30px;
 }
 </style>

@@ -204,7 +204,7 @@ export default {
           minWidth: 160,
         },
         fixed: {
-          minWidth: 140,
+          minWidth: 190,
         },
         memberSex: {
           formatter: (row, col, cell) => {

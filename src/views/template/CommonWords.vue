@@ -10,15 +10,9 @@
       <template v-slot:fixed="{ row }">
         <el-button type="text" @click="hadnleEdit(row)">修改</el-button>
 
-        <el-popconfirm
-          style="margin-left: 10px;"
-          title="确定删除吗？"
-          @confirm="handleDel([row.id])"
+        <el-button class="danger" @click="handleDel([row.id])" type="text"
+          >删除</el-button
         >
-          <el-button slot="reference" style="color: #fe5578;" type="text"
-            >删除</el-button
-          >
-        </el-popconfirm>
       </template>
 
       <template v-slot:footertool>
@@ -26,18 +20,12 @@
           新增常用语
         </el-button>
 
-        <el-popconfirm
-          style="margin-left: 10px;"
-          title="确定删除吗？"
-          @confirm="handleDel(tableData.multipleSelection.map(_ => _.id))"
+        <el-button
+          @click="handleDel(tableData.multipleSelection.map(_ => _.id))"
+          :disabled="!tableData.multipleSelection.length"
         >
-          <el-button
-            slot="reference"
-            :disabled="!tableData.multipleSelection.length"
-          >
-            批量删除
-          </el-button>
-        </el-popconfirm>
+          批量删除
+        </el-button>
       </template>
     </List>
 
@@ -107,8 +95,8 @@ export default {
         pageSize: 10,
         dateType: 0,
         searchType: 0,
-        field: '',
-        sorted: '',
+        field: 'create_time',
+        sorted: 'desc',
       },
 
       dialog: {
@@ -190,19 +178,36 @@ export default {
       this.dialog.visible = true
     },
 
-    async handleDel(ids) {
-      await Promise.all(ids.map(id => delTemplate({ id })))
-
-      this.tableData.list.length === 1 &&
-        this.query.currentNum > 1 &&
-        this.query.currentNum--
-
-      this.$_fetchTableData()
-      this.$message({
-        type: 'success',
-        message: '完成',
-        showClose: true,
+    handleDel(ids) {
+      this.$confirm('确定删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
       })
+        .then(async () => {
+          await Promise.all(ids.map(id => delTemplate({ id })))
+
+          this.tableData.list.length === 1 &&
+            this.query.currentNum > 1 &&
+            this.query.currentNum--
+
+          this.$_fetchTableData()
+          this.$message({
+            type: 'success',
+            message: '完成',
+            showClose: true,
+          })
+          this.$message({
+            type: 'success',
+            message: '删除成功!',
+          })
+        })
+        .catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除',
+          })
+        })
     },
 
     submit(formName) {

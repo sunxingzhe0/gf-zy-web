@@ -40,9 +40,9 @@
 
           <el-col class="content-text">
             <span>推送内容</span>
-            <p>
+            <span class="texts">
               {{ dialog.dialogDatas.content }}
-            </p>
+            </span>
           </el-col>
 
           <el-col>
@@ -214,8 +214,8 @@ export default {
     }
     .content-text {
       display: flex;
-      p {
-        margin: 0;
+      .texts {
+        margin-top: 2px;
         flex: 1;
         letter-spacing: 0.1em;
         line-height: 24px;

@@ -5,7 +5,7 @@
     title="选择诊断模板"
     top="20px"
     width="1100px"
-    @open="fetchDiagList"
+    @open="fetchDiagList()"
   >
     <div class="container">
       <h3>历史诊断</h3>
@@ -13,6 +13,7 @@
         <el-date-picker
           v-model="date"
           type="daterange"
+          clearable
           range-separator="至"
           start-placeholder="开始日期"
           end-placeholder="结束日期"
@@ -32,13 +33,13 @@
         </el-checkbox>
         <div style="margin: 20px 0;">
           <span
-            v-for="(item, index) in [0, 3, 7]"
+            v-for="item in [1, 3, 7]"
             :key="item"
             class="date-tag"
-            :class="{ active: queryType === index }"
-            @click="selectDate(index)"
+            :class="{ active: queryType === item }"
+            @click="selectDate(item)"
           >
-            {{ item ? `近${item}天` : '今天' }}
+            {{ item !== 1 ? `近${item}天` : '今天' }}
           </span>
         </div>
       </div>
@@ -136,6 +137,7 @@
 
 <script>
 import { importDiagTemp } from '@/api/business'
+import moment from 'moment'
 export default {
   name: 'DiagnosisDialog',
   props: {
@@ -146,7 +148,7 @@ export default {
     return {
       visible: false,
       checked: false,
-      queryType: null,
+      queryType: 7,
       date: [],
       isIndeterminate: false,
       diagData: {
@@ -161,11 +163,18 @@ export default {
   },
   methods: {
     visibleToggle() {
+      this.date = [
+        moment().subtract(6, 'days').format('YYYYMMDD') + '000000',
+        moment().format('YYYYMMDD') + '235959',
+      ]
+      this.queryType = 7
       this.visible = !this.visible
     },
-    async fetchDiagList(param = {}) {
+    async fetchDiagList() {
+      console.log(this.date)
       const params = {
-        ...param,
+        startTime: this.date?.length > 0 ? this.date[0] : null,
+        endTime: this.date?.length > 0 ? this.date[1] : null,
         memberId: this.memberId,
         currentNum: 1,
         pageSize: 999,
@@ -206,19 +215,28 @@ export default {
         )
       })
     },
-    selectDateRange(options) {
-      const [startTime, endTime] = options || ['', '']
-
-      const params = {
-        startTime,
-        endTime,
+    selectDateRange() {
+      if (!this.date || this.date.length == 0) {
+        this.queryType = null
       }
-      this.fetchDiagList(params)
+      this.queryType = null
+      this.fetchDiagList()
     },
     selectDate(index) {
       const type = this.queryType === index ? null : index
       this.queryType = type
-      this.fetchDiagList({ type })
+      if (type) {
+        this.date = [
+          moment()
+            .subtract(index - 1, 'days')
+            .format('YYYYMMDD') + '000000',
+          moment().format('YYYYMMDD') + '235959',
+        ]
+      } else {
+        this.date = []
+      }
+
+      this.fetchDiagList()
     },
     toggleSelectAllTable() {
       this.isIndeterminate
@@ -290,8 +308,8 @@ export default {
 .date-tag {
   margin-right: 10px;
   padding: 4px 10px;
-  border: 1px solid #cbcbcb;
-  color: #cbcbcb;
+  border: 1px solid #ccc;
+  color: #666;
   cursor: pointer;
 
   &.active {

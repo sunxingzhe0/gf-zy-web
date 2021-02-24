@@ -245,12 +245,19 @@ export default {
 
       return arr.join(',')
     },
-    phone() {
+    /*  phone() {
       return this.$store.state.user.phone
         ? this.$store.state.user.phone.replace(
-            this.$store.state.user.phone.substring(4, 8),
+            this.$store.state.user.phone.substring(3, 7),
             '****',
           )
+        : '-'
+    }, */
+    phone() {
+      return this.$store.state.user.phone
+        ? this.$store.state.user.phone.substr(0, 3) +
+            '****' +
+            this.$store.state.user.phone.substr(-4)
         : '-'
     },
   },

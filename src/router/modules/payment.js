@@ -10,7 +10,7 @@ export default {
   alwaysShow: true,
   meta: {
     title: '缴费',
-    icon: 'statistics-amount',
+    icon: 'sidebar-amount',
     roles: ['ZY_ORG_PAY'],
   },
   children: [

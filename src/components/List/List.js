@@ -112,8 +112,9 @@ export default ({
       <el-table
         ref="table"
         size="mini"
-        height="74vh"
+        height="100%"
         class="table-wrap"
+        header-row-class-name="table-header"
         data={tableData.list}
         onSort-change={parent.$_sortChange}
         onCell-click={parent.$_handleCellClick}
@@ -142,7 +143,7 @@ export default ({
           <el-table-column
             type="index"
             label="序号"
-            width="80"
+            width="60"
           ></el-table-column>
         )}
 

@@ -13,21 +13,21 @@
           >
           <div
             v-if="row.orderStatus == 'WAIT_TAKE'"
-            class="writeOff"
+            class="el-button el-button--text"
             @click="handleSave(row.orderId)"
           >
             核销
           </div>
           <div
             v-if="row.orderStatus == 'WAIT_RECEIVE'"
-            class="writeOff"
+            class="el-button el-button--text"
             @click="sendGoods(row.orderId, '1')"
           >
             更新物流
           </div>
           <div
             v-if="row.orderStatus == 'WAIT_SEND'"
-            class="writeOff"
+            class="el-button el-button--text"
             @click="sendGoods(row.orderId, '2')"
           >
             发货

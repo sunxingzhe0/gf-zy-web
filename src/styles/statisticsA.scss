@@ -1,101 +1,159 @@
-.totaClass {
-    width: 500px;
-    height: 350px;
-    .total {
+.datas-wdth {
+  width: calc(100% - 500px - 20px);
+  float: left;
+  .datas-box-wrap {
+    position: relative;
+    border: 1px solid #ccc;
+    > div {
       position: relative;
-      width: 300px;
-      float: left;
-      .trapezoid {
-        display: flex;
-        align-items: center;
+      padding: 15px;
+      width: 100%;
+      height: 100px;
+      word-break: break-word;
+      overflow: hidden;
 
-        padding-left: 10%;
-        width: 300px;
-        height: 100px;
-        color: $--color-white;
-        > * {
-          position: absolute;
-          z-index: 999;
-        }
-        &::before {
-          position: absolute;
-          z-index: 33;
-          left: 0;
-          right: 0;
-          height: 0;
-          border-top: 100px solid $--color-primary;
-          border-right: 31px solid transparent;
-          content: '';
-        }
-        &:nth-child(2)::before {
-          width: 269px;
-          border-top-color: $--color-warning;
-        }
-        &:nth-child(3)::before {
-          width: 238px;
-          border-top-color: $--color-danger;
-        }
-        .indClsx {
-          position: absolute;
-          top: 166px;
-          left: 419px;
-          color: #000000;
-        }
-        .btnInde {
-          position: absolute;
-          top: 126px;
-          left: 300px;
-          color: #000000;
-        }
-        .payment {
-          position: absolute;
-          top: 212px;
-          left: 282px;
-          color: #000000;
-        }
-      }
-      .cogi {
-        img {
-          position: absolute;
-          top: 60px;
-          left: 244px;
-          z-index: 1;
-        }
-      }
-      .mall {
-        img {
-          position: absolute;
-          top: 88px;
-          left: 265px;
-          z-index: 1;
-        }
-      }
-      .mapng {
-        img {
-          position: absolute;
-          top: 178px;
-          left: 250px;
-          z-index: 1;
-        }
-      }
-    }
-    .cogiPng {
-      float: left;
-      .mabos {
-        z-index: 9999;
-        margin: 104px -4px 0px -9px;
+      > * {
         position: relative;
-        font-size: 16px;
+        z-index: 1;
       }
-      .clgbox {
-        z-index: 9999;
-        position: relative;
-        margin: 55px 2px 1px -23px;
+
+      strong {
+        display: block;
+        font-size: 17px;
       }
-      .mabang {
-        z-index: 9999;
-        position: relative;
-        margin: -76px 6px 12px 111px;
+
+      .svg-icon {
+        position: absolute;
+        right: -10px;
+        bottom: -10px;
+        color: $--color-info-light;
+        width: 50%;
+        height: 70%;
       }
     }
   }
+}
+.totaClass {
+  width: 500px;
+  height: 222px;
+  float: right;
+  .total {
+    position: relative;
+    width: 300px;
+    float: left;
+    .trapezoid {
+      display: flex;
+      align-items: center;
+
+      padding-left: 10%;
+      width: 300px;
+      height: 74px;
+      color: $--color-white;
+      > * {
+        position: absolute;
+        z-index: 999;
+      }
+      &::before {
+        position: absolute;
+        z-index: 33;
+        left: 0;
+        right: 0;
+        height: 0;
+        border-top: 74px solid $--color-primary;
+        border-right: 14px solid transparent;
+        content: '';
+        width: 280px;
+      }
+      &:nth-child(2)::before {
+        width: 266px;
+        border-top-color: $--color-warning;
+      }
+      &:nth-child(3)::before {
+        width: 252px;
+        border-top-color: $--color-danger;
+      }
+      .orderRates {
+        position: absolute;
+        top: 69px;
+        left: 290px;
+        color: #000000;
+        font-size: 12px;
+        width: 70px;
+        text-align: center;
+        line-height: 12px;
+      }
+      .finalRates {
+        position: absolute;
+        top: 115px;
+        left: 386px;
+        color: #000000;
+        font-size: 12px;
+        width: 80px;
+        text-align: center;
+        line-height: 12px;
+      }
+      .payRates {
+        position: absolute;
+        bottom: 51px;
+        left: 275px;
+        color: #000000;
+        font-size: 12px;
+        width: 70px;
+        text-align: center;
+        line-height: 12px;
+      }
+    }
+    .cogi {
+      img {
+        position: absolute;
+        top: 22px;
+        left: 255px;
+        z-index: 1;
+        height: 185px;
+      }
+    }
+    .mall {
+      img {
+        position: absolute;
+        top: 40px;
+        left: 275px;
+        z-index: 1;
+        height: 60px;
+      }
+    }
+    .mapng {
+      img {
+        position: absolute;
+        bottom: 32px;
+        left: 260px;
+        z-index: 1;
+        height: 60px;
+      }
+    }
+  }
+  .cogiPng {
+    float: left;
+    font-size: 12px;
+    height: 180px;
+    margin-top: 20px;
+    width: 40%;
+    position: relative;
+    z-index: 222;
+    line-height: 12px;
+    .mabos {
+      position: absolute;
+      left: -5px;
+      top: 24px;
+    }
+    .clgbox {
+      position: absolute;
+      left: 95px;
+      top: 66px;
+    }
+    .mabang {
+      position: absolute;
+      left: -20px;
+      bottom: 31px;
+    }
+  }
+}

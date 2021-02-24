@@ -25,7 +25,7 @@
       <!-- 操作 -->
       <template v-slot:fixed="{ row }">
         <div class="operation">
-          <div class="edit" @click="addNew(row)">修改</div>
+          <div class="el-button el-button--text" @click="addNew(row)">修改</div>
         </div>
       </template>
 

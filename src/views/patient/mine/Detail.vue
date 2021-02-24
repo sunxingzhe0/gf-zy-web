@@ -71,11 +71,12 @@
           :columns="service.columns"
           :tableData="service.tableData"
         >
+          <!-- 查看 -->
           <template v-slot:fixed="{ row }">
             <router-link
-              class="el-button el-button--text el-button--mini"
+              class="el-button el-button--text"
               :to="
-                clientType === 'ORG_WEB'
+                $route.path === '/patient/patientTube/detail/detail'
                   ? `/order/business/detail/${row.orderId}`
                   : `/business/order/detail/${row.orderId}`
               "
@@ -99,6 +100,7 @@
               sessionId,
               userId,
               orderId,
+              state,
             } in clinic.list"
             :key="clinicId"
           >
@@ -127,9 +129,9 @@
             >
               {{ title }}
             </div>
-            <!-- <div class="append" :class="{ close: state === '已结束' }">
+            <div class="append" :class="{ close: state !== '已结束' }">
               {{ state }}
-            </div> -->
+            </div>
           </li>
         </ul>
 
@@ -166,7 +168,10 @@
                 type="text"
                 @click="goRecordInfo({ medicalId, doctorId, patientId, open })"
                 >{{
-                  userId === doctorId || clientType === 'ORG_WEB' || open
+                  userId === doctorId ||
+                  clientType === 'ORG_WEB' ||
+                  open ||
+                  pathInfo
                     ? ''
                     : '申请'
                 }}查看</el-button
@@ -238,6 +243,8 @@ export default {
   ],
   data() {
     return {
+      //当前地址
+      pathInfo: '',
       //端类型
       clientType: '',
       isQuery: false,
@@ -300,6 +307,7 @@ export default {
             },
           },
         },
+        tableData: {},
       },
       //服务订单参数
       service: {
@@ -366,7 +374,13 @@ export default {
                 : ''
             },
           },
+          price: {
+            formatter(row) {
+              return '￥' + row.price
+            },
+          },
         },
+        tableData: {},
       },
       //诊室记录参数
       clinic: {
@@ -402,12 +416,21 @@ export default {
   async created() {
     this.init()
   },
+
   methods: {
     async init() {
+      this.pathInfo =
+        this.$route.path === '/patient/patientTube/detail/detail' ? true : false
       this.userId = this.$store.state.user.userId
       this.clientType = this.$store.state.user.platform
       this.getPatientInfo()
       this.clinicRoomList()
+      this.$nextTick(() => {
+        this.activeName = 'basicInfo'
+      })
+      //请求列表数据
+      this.getInformationList()
+      this.getOrderList()
       //先请求时间轴数据
       await this.getMedicalTimeGroup()
       this.medicalList()
@@ -432,6 +455,28 @@ export default {
       res.sex === 0 && (res.sex = '女')
       res.sex === 1 && (res.sex = '男')
       this.patientInfo = res
+    },
+    //获取基本资料列表
+    async getInformationList() {
+      //重新定义参数 页面缓存后data中参数未变  需要重新获取
+      const query = {
+        pageSize: 10,
+        patientId: this.$route.query.patientId, //患者进本信息id
+      }
+      const res = await informationList(query)
+      this.$set(this.basicInfo, 'tableData', res)
+    },
+    //获取服务订单列表
+    async getOrderList() {
+      const query = {
+        pageSize: 10,
+        dateType: 0,
+        searchType: 0,
+        patientId: this.$route.query.patientId,
+        sourceType: this.$store.state.user.platform === 'ORG_WEB' ? 1 : 0,
+      }
+      const res = await orderList(query)
+      this.$set(this.service, 'tableData', res)
     },
     //获取诊室记录列表
     async clinicRoomList() {
@@ -461,7 +506,6 @@ export default {
           currentNum: 1,
         },
       }
-      console.log(this.clinic)
     },
     //获取就诊记录列表
     async medicalList() {
@@ -472,7 +516,6 @@ export default {
         ...this.nowTime,
       })
       this.isQuery = false
-      console.log(res, '99-------')
       const { type } = types
       this.treat = {
         list: res.list.map(_ => ({
@@ -492,7 +535,6 @@ export default {
           currentNum: 1,
         },
       }
-      console.log(this.treat)
     },
     //诊室记录列表页码变化
     changePage(page) {
@@ -511,7 +553,7 @@ export default {
     gotoRoomInfo(row) {
       this.$router.push({
         path:
-          this.clientType === 'ORG_WEB'
+          this.$route.path === '/patient/patientTube/detail/detail'
             ? '/patient/patientTube/detail/roominfo'
             : '/patient/mine/detail/roominfo',
         query: {
@@ -524,17 +566,15 @@ export default {
     },
     //查看就诊记录详情
     async goRecordInfo(row) {
-      console.log(this.userId, '登录的id-----')
-      console.log(row.doctorId, '此项医生id-----')
-      console.log(row.medicalId, '入参-----')
       if (
         this.userId === row.doctorId ||
         this.clientType === 'ORG_WEB' ||
-        row.open
+        row.open ||
+        this.pathInfo
       ) {
         this.$router.push({
           path:
-            this.clientType === 'ORG_WEB'
+            this.$route.path === '/patient/patientTube/detail/detail'
               ? '/patient/patientTube/detail/recordInfo'
               : '/patient/mine/detail/recordInfo',
           query: {
@@ -542,7 +582,10 @@ export default {
           },
         })
       } else {
-        await applyAuthByDocWeb({ medicalId: row.medicalId, patientId: row.patientId })
+        await applyAuthByDocWeb({
+          medicalId: row.medicalId,
+          patientId: row.patientId,
+        })
         this.$alert('已发送查看申请!')
       }
     },
@@ -558,29 +601,43 @@ export default {
         }
       }
       this.nowTime = {
-        year: this.tiemDatas[0].substr(0, 4) || '',
-        month: this.tiemDatas[0].substr(5, 2) || '',
+        year: this.tiemDatas[0]?.substr(0, 4) || '',
+        month: this.tiemDatas[0]?.substr(5, 2) || '',
       }
-      console.log(this.tiemDatas, '时间轴-------')
-      console.log(this.nowTime, '默认时间-------')
       return true
     },
     //选中时间
     changeTime(data) {
       this.nowTime = {
-        year: data.substr(0, 4) || '',
-        month: data.substr(5, 2) || '',
+        year: data?.substr(0, 4) || '',
+        month: data?.substr(5, 2) || '',
       }
       this.medicalList()
     },
   },
-  mounted() {
-    console.log('--------------------')
+  activated() {
+    console.log(this.$_fetchTableData, '--------------------')
   },
+  //判断跳转来源是否缓存页面
   beforeRouteEnter(to, from, next) {
-    next(vm => {
-      vm.init()
+    const caches = [
+      '/order/business/detail',
+      '/patient/patientTube/detail/roominfo',
+      '/patient/patientTube/detail/recordInfo',
+      '/business/order/detail',
+      '/patient/mine/detail/roominfo',
+      '/patient/mine/detail/recordInfo',
+    ]
+    const cache = caches.find(item => {
+      return new RegExp(item).test(from.path)
     })
+    if (cache) {
+      next()
+    } else {
+      next(vm => {
+        vm.init()
+      })
+    }
   },
 }
 </script>
@@ -697,19 +754,20 @@ export default {
       }
 
       .append {
-        top: -60px;
-        right: -60px;
-        width: 120px;
-        height: 120px;
-        line-height: 200px;
-        border-radius: 50%;
-        text-align: center;
-        background: $--color-primary;
-        color: $--color-white;
-        transform: rotate(45deg);
+        right: 0;
+        width: 62px;
+        height: 20px;
+        background: #f2f2f2;
+        color: #999;
+        border-radius: 10px 0px 0px 10px;
+        font-size: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
 
         &.close {
-          background: $--color-info;
+          background: rgba(10, 178, 193, 0.1);
+          color: #0ab2c1;
         }
       }
 
@@ -719,6 +777,9 @@ export default {
 
       .el-button {
         align-self: flex-end;
+      }
+      .el-button--text {
+        font-size: 14px !important;
       }
     }
 

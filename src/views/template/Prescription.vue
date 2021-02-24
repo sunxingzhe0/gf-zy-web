@@ -56,6 +56,7 @@
             maxlength="20"
             style="width: 360px;"
             show-word-limit
+            @input="valueChange"
           ></el-input>
         </el-form-item>
 
@@ -70,6 +71,7 @@
             style="min-width: 360px;"
             :remote-method="searchDiagnosis"
             :loading="loading"
+            @change="valueChange"
           >
             <el-option
               v-for="item in options"
@@ -90,6 +92,7 @@
             maxlength="100"
             show-word-limit
             class="min_height_72"
+            @input="valueChange"
           ></el-input>
         </el-form-item>
 
@@ -97,8 +100,10 @@
           <PrescriptionItem
             scene="template"
             :operate="operate"
+            :iscancel="iscancel"
             ref="editPrescription"
             @operate="applyOperate"
+            @editUpdate="editUpdate"
             :prescription="{
               rpDrugList: model.rpDrugList,
               status: mode !== 'IMPORT' ? 'DRAFT' : '',
@@ -111,14 +116,17 @@
       </div>
 
       <div class="is-center" v-if="model.id && mode == 'EDIT'">
-        <el-button size="mini" @click="cancel"> 取消 </el-button>
+        <el-button size="mini" @click="cancel" :disabled="isDisabled">
+          {{ isChangeBtn ? '取消' : '恢复' }}
+        </el-button>
         <el-button
           type="primary"
           size="mini"
           :loading="pending"
           @click="submit('editForm')"
+          :disabled="isDisabled"
         >
-          确认
+          {{ isChangeBtn ? '确认' : '提交' }}
         </el-button>
       </div>
     </aside>
@@ -244,6 +252,12 @@ export default {
   mixins: [mixin({ fetchListFunction: webPageRpTemplateList })],
   data() {
     return {
+      //是否变化按钮
+      isChangeBtn: false,
+      //保存模板旧数据
+      oldModel: {},
+      isDisabled: true, //是否禁用取消按钮
+      iscancel: false, //是否撤回编辑内容
       operate: '', // 处方操作
       loading: false,
       options: [],
@@ -300,9 +314,19 @@ export default {
     },
   },
   methods: {
+    valueChange() {
+      this.isDisabled = false
+    },
+    editUpdate(type) {
+      console.log(type)
+      this.isDisabled = false
+      this.iscancel = false
+    },
     // 申请操作处方
     applyOperate(type) {
+      this.isDisabled = false
       this.operate = type
+      this.isChangeBtn = true
     },
     searchDiagnosis: debounce(function (query) {
       this.loading = true
@@ -332,24 +356,41 @@ export default {
       this.currentRow = val
     },
     async cancel(dialog) {
+      if (!this.isChangeBtn) {
+        this.model = JSON.parse(JSON.stringify(this.oldModel))
+      }
+      this.isChangeBtn = false
       const refsKey = this.dialog.visible ? 'prescription' : 'editPrescription'
       if (this.operate) {
+        //
         this.operate = ''
         this.$refs[refsKey].checkedAll(false)
         return
       }
-      if (dialog) {
+      if (dialog.visible) {
         this.dialog.visible = false
         return
       }
-      this.model = await singleRpTemplate({ id: this.model.id })
+      //撤销编辑
+      // this.model = this.oldModel
+      this.isDisabled = true
+      this.iscancel = true
+      this.$refs.editPrescription.watchHandler({
+        rpDrugList: this.model.rpDrugList,
+        status: this.mode !== 'IMPORT' ? 'DRAFT' : '',
+      })
       this.$message.success('已撤销编辑')
     },
     async handleRowClick(row, force = false) {
-      if (!force && this.model.id === row.id) return
+      this.row = JSON.parse(JSON.stringify(row))
+      // if (!force && this.model.id === row.id) return
       this.$refs.table.setCurrentRow(row)
       this.pending = true
-      this.model = await singleRpTemplate({ id: row.id })
+      const res = await singleRpTemplate({ id: row.id })
+      this.model = res
+      //保存原数据
+      this.oldModel = JSON.parse(JSON.stringify(res))
+      //
       await this.searchDiagnosis(this.model.icdName)
       setTimeout(() => (this.pending = false), 200)
     },
@@ -385,6 +426,7 @@ export default {
             this.groupHandler(refsKey)
             break
         }
+
         return
       }
       this.$refs[formName].validate(async (valid, invalidFields) => {
@@ -426,7 +468,8 @@ export default {
           }
           this.$message.success(isEdit ? '修改成功' : '新增成功')
           this.dialog.visible = false
-          await this.$_fetchTableData()
+          //确认修改后是否重新拉取数据
+          // await this.$_fetchTableData()
           if (!isEdit)
             this.handleRowClick(
               this.currentRow || this.tableData.list?.[0],
@@ -436,6 +479,7 @@ export default {
           invalidFieldSetFocus(this.$refs[formName], invalidFields)
         }
       })
+      this.isDisabled = true
     },
     delHandler(refsKey) {
       const _self = this
@@ -445,6 +489,7 @@ export default {
           if (action === 'confirm') {
             _self.$refs[refsKey].delHandler(() => {
               _self.cancel()
+              _self.isDisabled = false
             })
           }
         },
@@ -457,9 +502,9 @@ export default {
         type: 'warning',
         callback(action) {
           if (action === 'confirm') {
-            console.log(_self.$refs[refsKey], '--------')
             _self.$refs[refsKey].groupHandler(() => {
               _self.cancel()
+              _self.isDisabled = false
             })
           }
         },
@@ -503,7 +548,7 @@ export default {
     padding-bottom: 0;
     width: 40%;
     max-height: 600px;
-    overflow: scroll;
+    overflow: hidden;
     .c__filter > .el-col > .el-row > .el-col {
       margin: 0;
       width: 100%;
@@ -516,6 +561,9 @@ export default {
         width: 100%;
       }
     }
+  }
+  > .c__list:hover {
+    overflow: scroll;
   }
 
   > .edit {
@@ -533,7 +581,6 @@ export default {
       max-height: 600px;
       overflow: scroll;
     }
-
     > h3 {
       margin: 0 0 10px 0;
     }

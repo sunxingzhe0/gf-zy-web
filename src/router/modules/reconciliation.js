@@ -10,7 +10,7 @@ export default {
   alwaysShow: true,
   meta: {
     title: '对账',
-    icon: 'statistics-order',
+    icon: 'sidebar-order',
     roles: ['ZY_ORG_ACCOUNT_RECORD'],
   },
   children: [

@@ -202,6 +202,22 @@ export default {
     ...mapState('user', ['dept']),
   },
   methods: {
+    //总量单位处理
+    computedTotalUnit(item) {
+      const options = [
+        {
+          value: item.regularUnit,
+          label: item.regularUnitText,
+        },
+      ]
+      if (item.split) {
+        options.unshift({
+          value: item.basicUnit,
+          label: item.basicUnitText,
+        })
+      }
+      return options
+    },
     scrollTo(id) {
       let index = this.prescriptions.findIndex(item => {
         if (this.operate === 'temp' || !this.operate) {
@@ -409,9 +425,19 @@ export default {
         case 'copy': {
           this.loading = true
           const { rpDrugList } = this.prescriptions[event.index]
-          const drugs = rpDrugList.map(item =>
-            Object.assign({}, DrugItem, item),
-          )
+          const drugs = rpDrugList.map(item => {
+            item.totalUnits = this.computedTotalUnit(item)
+            //复制出来默认非编辑状态
+            item.edit = false
+            return Object.assign({}, DrugItem, item)
+          })
+          //添加空白药品
+          const len = drugs.length
+          if (len < 5) {
+            drugs.push(Object.assign({}, DrugItem))
+          }
+
+          //
           let index = this.$refs['prescription-item'].findIndex(item => {
             const tableData = item.tableData.filter(_item => !_item.unsaved)
             return !tableData.length
@@ -423,7 +449,9 @@ export default {
           setTimeout(() => {
             this.$refs['prescription-item'][index].tableData = drugs
             this.loading = false
+            this.clickHandler('save')
           })
+
           break
         }
         case 'delete':
