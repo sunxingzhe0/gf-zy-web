@@ -118,9 +118,9 @@ export function updateStatus(data) {
 // -------------------------------------诊断字典--------------------------------------------------------
 export const dispose = {
   /*
-  @name       webList      
-  @desc       处置字典列表        
-  @params     
+  @name       webList
+  @desc       处置字典列表
+  @params
               token: //token
               timeType:    // 时间类型 1创建时间 2预约执行时间
               startTime:    //开始时间，示例20200101123030
@@ -137,8 +137,8 @@ export const dispose = {
               currentNum:1    //当前页码
               pageSize:10    //每页数量
               field:create_time    //排序字段
-              sorted:DESC        //排序方向   
-  @return        
+              sorted:DESC        //排序方向
+  @return
   */
   webList(params) {
     return request({
@@ -148,12 +148,12 @@ export const dispose = {
     })
   },
   /*
-  @name       updateStatus     
-  @desc       修改处置字典状态   
-  @params      
+  @name       updateStatus
+  @desc       修改处置字典状态
+  @params
               "id":"B13686229E084762A87C9140D4ACF1E6", 处置单id
               "status":true 状态 true：启用，false：停用
-  @return        
+  @return
   */
   updateStatus(data) {
     return request({
@@ -183,7 +183,7 @@ export function importDrugExcel(data) {
   })
 }
 
-//下载导入模块
+//下载导入模板
 export function modularLexcel(params) {
   return downloadFile({
     url: `/api/v1/file/download/templates/${params}`,

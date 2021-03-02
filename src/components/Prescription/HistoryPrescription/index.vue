@@ -8,7 +8,7 @@
   >
     <div class="prescriptions-wrapper">
       <div>
-        <span style="margin-right: 15px;">时间段</span>
+        <span style="margin-right: 15px">时间段</span>
         <el-date-picker
           type="daterange"
           v-model="queryDate"
@@ -23,7 +23,7 @@
         <el-button
           plain
           type="primary"
-          style="margin-left: 10px;"
+          style="margin-left: 10px"
           @click="historicalFilterDateChange(1)"
         >
           今日
@@ -39,7 +39,7 @@
         <div
           v-for="item in rpList"
           :key="item.id"
-          style="padding-bottom: 5px; border-bottom: 1px dashed #e6e6e6;"
+          style="padding-bottom: 5px; border-bottom: 1px dashed #e6e6e6"
         >
           <el-collapse-item
             class="historical_collapse_item"

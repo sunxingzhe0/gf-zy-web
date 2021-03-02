@@ -96,20 +96,16 @@
           <el-avatar :src="FILE_URL(avatar)"></el-avatar>
         </el-col>
         <el-col :span="22">
-          <div style="display: flex;">
+          <div style="display: flex">
             <span class="info">{{ userName }}</span>
-            <el-tag style="margin-left: 10px;">{{ BizWayMap[bizWay] }}</el-tag>
-            <el-tag style="margin-left: 10px;">{{
-              BizTypeMap[bizType]
-            }}</el-tag>
+            <el-tag style="margin-left: 10px">{{ BizWayMap[bizWay] }}</el-tag>
+            <el-tag style="margin-left: 10px">{{ BizTypeMap[bizType] }}</el-tag>
 
-            <span class="info" style="margin-left: auto;">{{
-              createTime
-            }}</span>
+            <span class="info" style="margin-left: auto">{{ createTime }}</span>
           </div>
 
           <p>{{ content }}</p>
-          <div style="display: flex;">
+          <div style="display: flex">
             <el-rate
               :value="average * 1"
               disabled
@@ -146,14 +142,14 @@
               border-top: 1px solid #e6e6e6;
             "
           >
-            <span class="info" style="margin-right: 20px; min-width: 2em;">
+            <span class="info" style="margin-right: 20px; min-width: 2em">
               回复
             </span>
             {{ answerContent }}
 
             <span
               class="info"
-              style="margin-left: auto; min-width: 130px; text-align: right;"
+              style="margin-left: auto; min-width: 130px; text-align: right"
             >
               {{ answerTime }}
             </span>

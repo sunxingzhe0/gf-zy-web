@@ -214,14 +214,14 @@
         <el-col
           :key="`image_${type}`"
           :md="{ offset: 1, span: 20 }"
-          style="padding-left: 30px;"
+          style="padding-left: 30px"
         >
           <div class="image-wrap">
             <el-image
               v-for="_ in fileId"
               :key="_"
               :src="FILE_URL(_)"
-              style="width: 220px; height: 130px;"
+              style="width: 220px; height: 130px"
               :preview-src-list="fileId.map(FILE_URL)"
               fit="cover"
             ></el-image>

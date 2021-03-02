@@ -3,7 +3,7 @@
     <el-row>
       <el-col :md="18">
         <el-date-picker
-          style="margin-right: 10px;"
+          style="margin-right: 10px"
           type="daterange"
           :clearable="false"
           :picker-options="pickerOptions"

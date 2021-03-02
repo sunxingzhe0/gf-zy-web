@@ -14,7 +14,7 @@
               <el-tag
                 v-if="type.indexOf(item.value) > -1"
                 size="mini"
-                style="margin-right: 10px;"
+                style="margin-right: 10px"
                 :key="index"
                 :type="selectType.indexOf(item.value) > -1 ? '' : 'info'"
                 @click="typeTap(item)"

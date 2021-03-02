@@ -13,10 +13,10 @@
           @ready="onReady"
         ></ckeditor>
       </div>
-      <el-button @click="isEdit = false" style="margin-top: 20px;"
+      <el-button @click="isEdit = false" style="margin-top: 20px"
         >返 回</el-button
       >
-      <el-button type="primary" @click="submit" style="margin-top: 20px;"
+      <el-button type="primary" @click="submit" style="margin-top: 20px"
         >保 存</el-button
       >
     </div>

@@ -14,9 +14,7 @@
     </el-form-item>
 
     <el-form-item
-      v-for="(value, key) in (model.custom
-      ? model.customBiz
-      : defaultBiz)"
+      v-for="(value, key) in model.custom ? model.customBiz : defaultBiz"
       :key="key"
       :label="
         key === 'CONSULT'
@@ -26,9 +24,9 @@
           : '慢病续方'
       "
     >
-      <el-row :gutter="20" style="overflow: hidden;">
+      <el-row :gutter="20" style="overflow: hidden">
         <el-col
-          style="display: flex;"
+          style="display: flex"
           :md="8"
           v-for="(item, index) in value"
           :key="item.configId"
@@ -38,7 +36,7 @@
             v-model="item.state"
             :true-label="1"
             :false-label="0"
-            style="margin-right: 10px;"
+            style="margin-right: 10px"
           >
             {{
               item.bizWay === 'GRAPHIC'
@@ -54,11 +52,11 @@
           <el-form-item
             :prop="`customBiz.${key}.${index}.bizPrice`"
             :rules="rules.bizPrice"
-            style="margin-bottom: 22px;"
+            style="margin-bottom: 22px"
           >
             <el-input
               :disabled="!model.custom"
-              style="max-width: 80%; vertical-align: middle;"
+              style="max-width: 80%; vertical-align: middle"
               v-model="item.bizPrice"
             >
               <template v-slot:prepend>¥</template>

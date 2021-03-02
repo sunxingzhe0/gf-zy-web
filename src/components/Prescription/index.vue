@@ -91,9 +91,7 @@
     <div class="prescription-footer">
       <template v-if="operate">
         <el-button @click="cancel"> 取消 </el-button>
-        <el-button type="primary" @click="confirm">
-          确认
-        </el-button>
+        <el-button type="primary" @click="confirm"> 确认 </el-button>
       </template>
       <template v-else>
         <el-button

@@ -18,7 +18,7 @@
           <div>{{ deptName }}</div>
           <span>{{ hospName }}，共{{ memberNumber }}名员工</span>
         </div>
-        <div style="width: 208px; text-align: right;">
+        <div style="width: 208px; text-align: right">
           <el-switch
             v-model="state"
             :active-value="1"
@@ -52,7 +52,7 @@
               </el-input>
               <div
                 class="infinite-list"
-                style="padding-bottom: 20px;"
+                style="padding-bottom: 20px"
                 v-infinite-scroll="load"
               >
                 <el-row :gutter="15">
@@ -68,7 +68,7 @@
                       <el-image
                         :src="FILE_URL(item.picId)"
                         class="avatar_round"
-                        style="width: 60px; height: 60px;"
+                        style="width: 60px; height: 60px"
                       >
                         <img
                           slot="error"
@@ -127,14 +127,14 @@
                   >
                 </el-checkbox-group>
               </div>
-              <div class="planTime" style="padding-bottom: 2px;">
-                <div class="title" style="margin-bottom: 20px;">工作时段</div>
+              <div class="planTime" style="padding-bottom: 2px">
+                <div class="title" style="margin-bottom: 20px">工作时段</div>
                 <el-form
                   :model="form"
                   :rules="rules"
                   size="mini"
                   ref="form"
-                  style="min-width: 165px;"
+                  style="min-width: 165px"
                 >
                   <el-form-item prop="beginHour">
                     <el-input
@@ -185,9 +185,9 @@
               <div
                 class="planTime"
                 v-if="active == 0"
-                style="padding-bottom: 20px;"
+                style="padding-bottom: 20px"
               >
-                <div class="title" style="margin-bottom: 16px;">
+                <div class="title" style="margin-bottom: 16px">
                   医生排班规则
                 </div>
                 <el-radio-group v-model="radio">
@@ -195,7 +195,7 @@
                   <el-radio :label="1">自定义优先</el-radio>
                 </el-radio-group>
               </div>
-              <div style="margin-top: 30px;">
+              <div style="margin-top: 30px">
                 <el-button type="primary" size="small" @click="handleSave"
                   >保存</el-button
                 >

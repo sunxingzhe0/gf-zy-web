@@ -52,7 +52,7 @@
             <el-rate
               disabled
               show-text
-              style="display: inline-block;"
+              style="display: inline-block"
               :value="orderInfo.evaluate.rating"
               :texts="['不满意', '一般', '满意', '较满意', '非常满意']"
             ></el-rate>

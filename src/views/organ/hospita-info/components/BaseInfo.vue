@@ -23,7 +23,7 @@
           </el-image>
           <el-upload
             v-if="!disabled_"
-            style="margin-right: 10px;"
+            style="margin-right: 10px"
             class="upload-demo"
             :show-file-list="false"
             action
@@ -31,7 +31,7 @@
             :before-upload="beforeAvatarUpload"
             :http-request="httpRequest"
           >
-            <el-button type="primary" size="mini" style="margin-left: 20px;">
+            <el-button type="primary" size="mini" style="margin-left: 20px">
               {{ form.logo ? '更换' : '上传' }}
             </el-button>
           </el-upload>
@@ -59,7 +59,7 @@
             :before-upload="beforeAvatarUpload"
             :http-request="httpRequest"
           >
-            <el-button type="primary" size="mini" style="margin-left: 20px;">
+            <el-button type="primary" size="mini" style="margin-left: 20px">
               {{ form.picList[0] ? '更换' : '上传' }}
             </el-button>
             <!-- <div class="imgWrap flex-center">
@@ -88,7 +88,7 @@
           <el-select
             v-model="form.level"
             placeholder="请选择"
-            style="width: 400px;"
+            style="width: 400px"
             :disabled="disabled_"
           >
             <el-option
@@ -105,7 +105,7 @@
         <el-cascader
           :options="options"
           class="input"
-          style="margin-right: 10px;"
+          style="margin-right: 10px"
           v-model="selectedOptions"
           @change="addressChange"
           :disabled="disabled_"
@@ -122,7 +122,7 @@
       <el-form-item label="执业许可证" prop="options">
         <el-input
           class="input"
-          v-model="form.name"
+          v-model="form.cert"
           :disabled="disabled_"
         ></el-input>
       </el-form-item>
@@ -132,7 +132,7 @@
           :src="FILE_URL(form.certPic)"
           class="avatar"
           v-model="form.certPic"
-          style="width: 200px; height: 100px;"
+          style="width: 200px; height: 100px"
         />
         <el-upload
           :show-file-list="false"
@@ -141,13 +141,13 @@
           :on-success="handleAvatarSuccess"
           :before-upload="beforeAvatarUpload"
           :http-request="httpRequest"
-          style="display: inline-block; vertical-align: super;"
+          style="display: inline-block; vertical-align: super"
         >
           <el-button
             v-if="!disabled_"
             type="primary"
             size="mini"
-            style="margin-left: 10px;"
+            style="margin-left: 10px"
           >
             更换
           </el-button>
@@ -184,22 +184,13 @@
 import { regionData, CodeToText, TextToCode } from 'element-china-area-data'
 import { hosInfo, edithosInfo } from '@/api/department'
 import { uploadFile } from '@/api'
-
+import { jsonp } from 'vue-jsonp'
 export default {
   data() {
     return {
       disabled_: true,
       options: regionData,
       selectedOptions: [],
-      // form: {
-      //   logo: '',
-      //   imageUrl: '',
-      //   license: '',
-      //   name: '-',
-      //   city: '-',
-      //   address: '-',
-      //   info: '-',
-      // },
       form: {
         name: '',
         logo: '',
@@ -208,9 +199,12 @@ export default {
         city: '',
         area: '',
         address: '',
+        cert: '',
         certPic: [],
         intro: '',
         picList: [],
+        lat: '',
+        lng: '',
       },
       // 医院等级等次
       hosLevelList: [
@@ -257,8 +251,12 @@ export default {
       ],
       rules: {
         name: [
-          { required: true, trigger: 'blur' },
-          { max: 24, message: '长度 24 个字符以内', trigger: 'blur' },
+          { required: true, trigger: 'blur', message: '请填写机构名称' },
+          {
+            max: 24,
+            message: '长度 24 个字符以内',
+            trigger: 'blur',
+          },
         ],
         level: [{ required: true, trigger: 'blur', message: '请选择等级' }],
         address: [
@@ -349,10 +347,28 @@ export default {
       }
       return (isJPG || isPNG || isGIF || isWEBP) && isLt2M
     },
+    //获取经纬度
+    async getLocationdata() {
+      const KEY = 'CFCBZ-IUCY3-SX335-3RKAP-PKBFO-Y3F7F'
+      let url = 'https://apis.map.qq.com/ws/geocoder/v1/'
+      let res = await jsonp(url, {
+        key: KEY,
+        output: 'jsonp',
+        address:
+          this.form.province +
+          this.form.city +
+          this.form.area +
+          this.form.address,
+        region: this.form.province,
+      })
+      this.form.lat = res.result.location.lat
+      this.form.lng = res.result.location.lng
+    },
     // 提交
     submitForm() {
       this.$refs.ruleForm.validate(async valid => {
         if (valid) {
+          await this.getLocationdata()
           await edithosInfo({
             ...this.form,
           })

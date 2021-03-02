@@ -16,7 +16,7 @@
         <el-col :span="14">
           <span>时间段</span>
           <el-date-picker
-            style="width: calc(100% - 4em);"
+            style="width: calc(100% - 4em)"
             v-model="conversation.date"
             type="datetimerange"
             range-separator="至"
@@ -34,7 +34,7 @@
         <el-col :span="10">
           <span>患者姓名</span>
           <el-input
-            style="width: calc(100% - 5em - 10px);"
+            style="width: calc(100% - 5em - 10px)"
             v-model="conversation.query.search"
             placeholder="请输入"
           >
@@ -115,7 +115,7 @@
         >
           <div
             v-if="archives.length == 0"
-            style="margin: 240px 0; color: #999;"
+            style="margin: 240px 0; color: #999"
             class="is-center"
           >
             请在右侧点击请求查看患者档案

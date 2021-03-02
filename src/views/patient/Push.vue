@@ -16,7 +16,7 @@
         </template>
 
         <template v-slot:slot_gender="{ row }">
-          <span style="color: red;">{{ row.gender }}</span>
+          <span style="color: red">{{ row.gender }}</span>
         </template>
 
         <template v-slot:fixed="{ row }">

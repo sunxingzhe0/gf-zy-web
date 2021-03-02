@@ -2,7 +2,7 @@
   <section class="view__card">
     <List v-model="query" :columns="columns" :tableData="tableData">
       <template v-slot:slot_gender="{ row }">
-        <span style="color: red;">{{ row.gender }}</span>
+        <span style="color: red">{{ row.gender }}</span>
       </template>
 
       <!-- <template v-slot:fixed></template> -->

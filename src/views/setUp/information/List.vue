@@ -26,27 +26,21 @@
         ></el-switch>
       </template>
       <template v-slot:footertool>
-        <el-button type="primary" plain @click="del()">
-          批量删除
-        </el-button>
+        <el-button type="primary" plain @click="del()"> 批量删除 </el-button>
         <el-button type="primary" plain @click="stateChange('', false)">
           批量隐藏
         </el-button>
         <el-button type="primary" plain @click="stateChange('', true)">
           批量显示
         </el-button>
-        <el-button type="primary" @click="info('add')">
-          新增资讯
-        </el-button>
+        <el-button type="primary" @click="info('add')"> 新增资讯 </el-button>
       </template>
       <template v-slot:fixed="{ row }">
         <el-button type="text" @click="info('detail', row.id)">
           查看
         </el-button>
-        <el-button type="text" @click="info('edit', row.id)">
-          修改
-        </el-button>
-        <el-button type="text" style="color: #f74a4a;" @click="del([row.id])">
+        <el-button type="text" @click="info('edit', row.id)"> 修改 </el-button>
+        <el-button type="text" style="color: #f74a4a" @click="del([row.id])">
           删除
         </el-button>
       </template>

@@ -10,9 +10,9 @@
             <span> {{ business.memberSex === 0 ? '女' : '男' }}</span>
           </template>
           <template v-if="index === 1">
-            <span style="margin-right: 10px;">{{ business.deptName }}</span>
-            <span style="margin-right: 10px;">{{ business.titleName }}</span>
-            <span style="margin-right: 10px;">{{ business.orgName }}</span>
+            <span style="margin-right: 10px">{{ business.deptName }}</span>
+            <span style="margin-right: 10px">{{ business.titleName }}</span>
+            <span style="margin-right: 10px">{{ business.orgName }}</span>
           </template>
           <template v-if="index === 2">
             <span>擅长：{{ business.skilled }}</span>

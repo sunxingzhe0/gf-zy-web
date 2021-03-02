@@ -59,7 +59,7 @@
                 <component
                   filterable
                   class="input"
-                  style="width: 100%;"
+                  style="width: 100%"
                   :is="item.component"
                   :type="item.type || ''"
                   v-model="form[item.key]"
@@ -103,7 +103,7 @@
       >
         <el-form-item
           :label="item.pharmacyName"
-          style="padding-left: 50px; margin-bottom: 10px;"
+          style="padding-left: 50px; margin-bottom: 10px"
           v-for="(item, index) in changeStatusItem.drugPharmacyList"
           :key="index"
         >
@@ -138,7 +138,7 @@
       >
         <el-form-item prop="upload">
           <el-button size="small" type="primary" @click="download"
-            >下载导入模块</el-button
+            >下载导入模板</el-button
           >
           <el-upload
             class="upload-demo"

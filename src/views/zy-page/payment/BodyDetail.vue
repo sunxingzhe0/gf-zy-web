@@ -3,7 +3,7 @@
     <div class="orderTop">
       单据号：{{ infoData.billData }}
       <el-tag
-        style="margin-left: 10px; font-weight: nomal;"
+        style="margin-left: 10px; font-weight: nomal"
         size="mini"
         type="success"
         >已付款</el-tag
@@ -21,7 +21,7 @@
         <div><span>项目</span>{{ infoData.itemName }}</div>
         <div>
           <span>金额</span
-          ><b style="font-weight: normal; color: red;"
+          ><b style="font-weight: normal; color: red"
             >￥{{ parseFloat(infoData.payFee).toFixed(2) }}</b
           >
         </div>
@@ -30,7 +30,7 @@
       <div class="infoItem">
         <div v-if="infoData.refundFee">
           <span>{{ infoData.state == -1 ? '支付' : '退费' }}金额</span
-          ><b style="font-weight: normal; color: red;"
+          ><b style="font-weight: normal; color: red"
             >￥{{ parseFloat(infoData.payFee).toFixed(2) }}</b
           >
         </div>

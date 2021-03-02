@@ -138,7 +138,7 @@
         <TableFooterTool
           v-model="clinic.query"
           @change="changePage"
-          :total="clinic.list.length"
+          :total="clinic.total"
         />
       </el-tab-pane>
       <el-tab-pane label="就诊记录" name="treat" lazy>
@@ -183,7 +183,7 @@
         <TableFooterTool
           v-model="treat.query"
           @change="changePageHis"
-          :total="treat.list.length"
+          :total="treat.total"
         />
       </el-tab-pane>
       <el-tab-pane label="操作日志" name="log" lazy>
@@ -417,11 +417,19 @@ export default {
     this.init()
   },
 
+  watch: {
+    '$route.query.patientId'() {
+      if (!this.$route.query.patientId) return
+      this.basicInfo.query.patientId = this.$route.query.patientId
+      this.service.query.patientId = this.$route.query.patientId
+    },
+  },
   methods: {
     async init() {
       this.pathInfo =
         this.$route.path === '/patient/patientTube/detail/detail' ? true : false
       this.userId = this.$store.state.user.userId
+      console.log(this.userId, '用户id')
       this.clientType = this.$store.state.user.platform
       this.getPatientInfo()
       this.clinicRoomList()
@@ -464,6 +472,7 @@ export default {
         patientId: this.$route.query.patientId, //患者进本信息id
       }
       const res = await informationList(query)
+      res.done = true
       this.$set(this.basicInfo, 'tableData', res)
     },
     //获取服务订单列表
@@ -476,6 +485,7 @@ export default {
         sourceType: this.$store.state.user.platform === 'ORG_WEB' ? 1 : 0,
       }
       const res = await orderList(query)
+      res.done = true
       this.$set(this.service, 'tableData', res)
     },
     //获取诊室记录列表
@@ -487,6 +497,7 @@ export default {
       //数据处理
       const { orderType, wayType, status } = types
       this.clinic = {
+        total: res.total,
         list: res.list.map(_ => ({
           clinicId: _.clinicId,
           memberId: _.memberId,
@@ -504,6 +515,7 @@ export default {
         query: {
           pageSize: 10,
           currentNum: 1,
+          sourceType: this.$store.state.user.platform === 'ORG_WEB' ? 1 : 0,
         },
       }
     },
@@ -518,6 +530,7 @@ export default {
       this.isQuery = false
       const { type } = types
       this.treat = {
+        total: res.total,
         list: res.list.map(_ => ({
           medicalId: _.medicalId,
           datetime: _.visitDate,
@@ -533,11 +546,13 @@ export default {
         query: {
           pageSize: 10,
           currentNum: 1,
+          sourceType: this.$store.state.user.platform === 'ORG_WEB' ? 1 : 0,
         },
       }
     },
     //诊室记录列表页码变化
     changePage(page) {
+      console.log(page)
       this.clinic.query = {
         ...page,
       }

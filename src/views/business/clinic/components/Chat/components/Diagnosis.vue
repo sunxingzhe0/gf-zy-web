@@ -46,7 +46,7 @@
                 >
                   <el-input
                     placeholder="前缀"
-                    style="max-width: 110px;"
+                    style="max-width: 110px"
                     v-model="tableData[scoped.$index].prefixName"
                   ></el-input>
                   <el-form-item>
@@ -88,7 +88,7 @@
                   </el-form-item>
                   <el-input
                     placeholder="后缀"
-                    style="margin-left: 10px; max-width: 110px;"
+                    style="margin-left: 10px; max-width: 110px"
                     v-model="tableData[scoped.$index].suffixName"
                   ></el-input>
                 </div>
@@ -176,7 +176,7 @@
                 <!-- 移动诊断 -->
                 <el-tooltip content="移动诊断" placement="top" effect="light">
                   <div
-                    style="position: relative; display: inline-block;"
+                    style="position: relative; display: inline-block"
                     v-if="
                       mainDiagnosis != scoped.row.indexCode &&
                       scoped.row.diagnosisType &&
@@ -205,7 +205,7 @@
                         "
                         v-model="scoped.row.move"
                         size="mini"
-                        style="position: relative; left: -30px;"
+                        style="position: relative; left: -30px"
                         :props="{ value: 'indexCode', children: 'childDtos' }"
                         :options="moveData"
                         :key="scoped.row.indexCode"
@@ -222,7 +222,7 @@
                     type="text"
                     icon="icon el-icon-delete"
                     @click="del(scoped.$index)"
-                    style="color: red;"
+                    style="color: red"
                   ></el-button>
                 </el-tooltip>
                 <!-- <el-button

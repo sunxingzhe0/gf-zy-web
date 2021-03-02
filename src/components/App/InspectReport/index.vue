@@ -31,8 +31,8 @@
           </div>
         </template>
 
-        <div style="background: #f2f2f2; padding: 20px;">
-          <el-row style="line-height: 36px;">
+        <div style="background: #f2f2f2; padding: 20px">
+          <el-row style="line-height: 36px">
             <el-col :span="8"
               >检验项目：{{ item.labItemName || '暂无' }}</el-col
             >
@@ -50,7 +50,7 @@
           </el-row>
           <el-table
             :data="item.labInfoList"
-            style="width: 100%; margin-top: 10px;"
+            style="width: 100%; margin-top: 10px"
             border
           >
             <el-table-column type="name" label="检验项"> </el-table-column>

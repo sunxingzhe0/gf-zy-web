@@ -84,7 +84,7 @@
             <el-select
               v-model="dialog.model.value"
               filterable
-              style="width: 100%;"
+              style="width: 100%"
               placeholder="请选择驳回原因模板"
               @change="dialog.model.reason = $event"
             >

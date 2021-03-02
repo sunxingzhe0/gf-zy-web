@@ -72,12 +72,12 @@
           v-show="form.typeList.includes(cert.type)"
         >
           <el-input
-            style="width: 33%;"
+            style="width: 33%"
             v-model="cert.certNo"
             :placeholder="`请输入${certificateEnum[cert.type]}编号`"
           ></el-input>
           <div
-            style="margin-top: 10px;"
+            style="margin-top: 10px"
             v-for="(pic, _) in cert.fileId"
             :key="_"
           >
@@ -94,7 +94,7 @@
             ></el-image>
 
             <el-upload
-              style="display: inline-block; margin-left: 10px;"
+              style="display: inline-block; margin-left: 10px"
               :show-file-list="false"
               action="https://jsonplaceholder.typicode.com/posts/"
               accept="image/png, image/jpeg, image/gif, image/webp"
@@ -112,7 +112,7 @@
             </el-upload>
           </div>
 
-          <div style="margin-top: 10px;" v-if="!onlyShow">
+          <div style="margin-top: 10px" v-if="!onlyShow">
             <el-image
               style="
                 vertical-align: bottom;
@@ -126,7 +126,7 @@
             ></el-image>
 
             <el-upload
-              style="display: inline-block; margin-left: 10px;"
+              style="display: inline-block; margin-left: 10px"
               action
               :show-file-list="false"
               accept="image/png, image/jpeg, image/gif, image/webp"
@@ -418,7 +418,7 @@
       </el-form-item> -->
     </el-form>
 
-    <div style="padding-left: 140px;">
+    <div style="padding-left: 140px">
       <el-button
         type="primary"
         v-show="show1"
@@ -442,9 +442,7 @@
       <el-button type="primary" v-show="show2" @click="submitForm">
         提交
       </el-button>
-      <el-button type="" v-show="show2" @click="resetMsg">
-        取消
-      </el-button>
+      <el-button type="" v-show="show2" @click="resetMsg"> 取消 </el-button>
     </div>
   </div>
 </template>

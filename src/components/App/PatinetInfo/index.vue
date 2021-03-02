@@ -10,9 +10,7 @@
         <div class="app-info-label">性别</div>
         <div class="app-info-value" v-if="patient.sex === 1">男</div>
         <div class="app-info-value" v-if="patient.sex === 0">女</div>
-        <div class="app-info-value" v-if="patient.sex === null">
-          未知
-        </div>
+        <div class="app-info-value" v-if="patient.sex === null">未知</div>
       </div>
       <div class="app-info-item">
         <div class="app-info-label">年龄</div>

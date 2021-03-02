@@ -1,5 +1,5 @@
 <template>
-  <div class="view__card" style="padding-top: 60px;">
+  <div class="view__card" style="padding-top: 60px">
     <el-form :model="form" :rules="rules" ref="ruleForm" label-width="110px">
       <el-row>
         <el-col>
@@ -15,7 +15,7 @@
         </el-col>
         <el-col>
           <el-form-item label="发布对象" prop="type">
-            <div style="display: flex;">
+            <div style="display: flex">
               <el-select v-model="form.type" @change="typeChange">
                 <el-option label="角色" :value="0"></el-option>
                 <el-option label="机构" :value="1"></el-option>
@@ -43,7 +43,7 @@
               <div v-if="form.type == 0">
                 <el-select
                   v-model="form.depts"
-                  style="width: 220px;"
+                  style="width: 220px"
                   multiple
                   filterable
                   collapse-tags
@@ -63,7 +63,7 @@
               <div v-if="form.type == 1">
                 <el-select
                   v-model="form.organizes"
-                  style="width: 220px;"
+                  style="width: 220px"
                   multiple
                   filterable
                   collapse-tags
@@ -83,7 +83,7 @@
               <div v-if="form.type == 2">
                 <el-select
                   v-model="form.organizes"
-                  style="width: 220px;"
+                  style="width: 220px"
                   multiple
                   filterable
                   collapse-tags
@@ -105,11 +105,11 @@
           <el-form-item label="发布日期" prop="release">
             <el-radio-group v-model="form.release">
               <el-radio :label="1">立即发布</el-radio>
-              <el-radio :label="2" style="margin-right: 10px;" prop="date1"
+              <el-radio :label="2" style="margin-right: 10px" prop="date1"
                 >自定义发布时间
                 <el-date-picker
                   v-model="form.releaseTime"
-                  style="width: 175px; margin-right: 30px;"
+                  style="width: 175px; margin-right: 30px"
                   size="mini"
                   type="datetime"
                   placeholder="选择时间"

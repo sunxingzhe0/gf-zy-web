@@ -3,7 +3,7 @@
     <el-row>
       <el-col :md="18">
         <el-date-picker
-          style="margin-right: 10px;"
+          style="margin-right: 10px"
           type="daterange"
           :clearable="false"
           :picker-options="pickerOptions"
@@ -38,7 +38,7 @@
             >{{ _.label }}</el-radio-button
           >
         </el-radio-group>
-        <span style="margin-left: 20px;">排名方式</span>
+        <span style="margin-left: 20px">排名方式</span>
         <el-radio-group v-model="department" @change="meter">
           <el-radio-button v-for="_ in branch" :key="_.id" :label="_.id">{{
             _.name
@@ -57,7 +57,7 @@
       </el-col>
       <el-col :span="24">
         <span>评级均分</span>
-        <div class="chart" ref="chart" style="margin-left: 50px;"></div>
+        <div class="chart" ref="chart" style="margin-left: 50px"></div>
       </el-col>
       <el-col>
         <span>全部排名</span>
@@ -66,7 +66,7 @@
         <el-table
           :data="tableData"
           border
-          style="width: 100%;"
+          style="width: 100%"
           :header-cell-style="{ textAlign: 'center' }"
         >
           <el-table-column

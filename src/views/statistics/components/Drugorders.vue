@@ -4,7 +4,7 @@
     <el-row>
       <el-col :md="18">
         <el-date-picker
-          style="margin-right: 10px;"
+          style="margin-right: 10px"
           type="daterange"
           :clearable="false"
           :picker-options="pickerOptions"
@@ -41,12 +41,12 @@
           </el-radio-group>
         </div>
       </el-col>
-      <el-col :span="16" style="text-align: right;">
+      <el-col :span="16" style="text-align: right">
         <span>业务类型：</span>
         <el-select
           placeholder="全部"
           class="mycol"
-          style="margin-right: 20px;"
+          style="margin-right: 20px"
           v-model="arrayS"
           @change="mideLis"
         >
@@ -67,7 +67,7 @@
         </el-select>
       </el-col>
       <el-col :span="24">
-        <div class="chart" ref="chart" style="margin-left: 50px;"></div>
+        <div class="chart" ref="chart" style="margin-left: 50px"></div>
       </el-col>
       <el-col>
         <span>全部排名</span>
@@ -85,7 +85,7 @@
         <el-table
           :data="tableData"
           border
-          style="width: 100%;"
+          style="width: 100%"
           :header-cell-style="{ textAlign: 'center' }"
         >
           <el-table-column

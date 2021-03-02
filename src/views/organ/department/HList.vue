@@ -84,9 +84,7 @@
         </el-switch>
       </template>
       <template v-slot:footertool>
-        <el-button type="primary" @click="add()">
-          新增科室
-        </el-button>
+        <el-button type="primary" @click="add()"> 新增科室 </el-button>
         <el-button
           plain
           type="primary"
@@ -120,7 +118,7 @@
           <el-select
             v-model="form.pid"
             filterable
-            style="width: 100%;"
+            style="width: 100%"
             placeholder="暂无"
             @change="PdeptChange"
           >
@@ -130,11 +128,11 @@
               :label="item.name"
               :value="item.id"
             >
-              <span style="float: left;" v-if="!item.state">{{
+              <span style="float: left" v-if="!item.state">{{
                 item.name
               }}</span>
               <span
-                style="float: right; color: #8492a6; font-size: 13px;"
+                style="float: right; color: #8492a6; font-size: 13px"
                 v-if="!item.state"
                 >已禁用</span
               >
@@ -158,7 +156,7 @@
             v-model="form.deptInners"
             filterable
             multiple
-            style="width: 100%;"
+            style="width: 100%"
             placeholder="请选择"
           >
             <el-option
@@ -168,7 +166,7 @@
               :value="item.id"
               :disabled="!item.state"
             >
-              <span style="float: left;" v-if="!item.state">{{
+              <span style="float: left" v-if="!item.state">{{
                 item.name
               }}</span>
               <span
@@ -220,7 +218,7 @@
       >
         <el-form-item prop="upload">
           <el-button size="small" type="primary" @click="download"
-            >下载导入模块</el-button
+            >下载导入模板</el-button
           >
           <el-upload
             class="upload-demo"

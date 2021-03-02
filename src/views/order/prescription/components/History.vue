@@ -88,7 +88,7 @@
           <el-image
             v-for="(_, index) in parent.hisInfo.pic"
             :key="index"
-            style="width: 120px; height: 120px;"
+            style="width: 120px; height: 120px"
             :src="parent.FILE_URL(_)"
             fit="cover"
             :preview-src-list="[]"
@@ -110,7 +110,7 @@
           >痕迹查看</el-button
         >
       </el-col>
-      <el-col :span="24" style="padding-left: 60px;">
+      <el-col :span="24" style="padding-left: 60px">
         <el-card
           shadow="hover"
           v-for="(item, index) in parent.detailInfo.rpList"
@@ -118,7 +118,7 @@
         >
           <template v-slot:header>
             <b>处方号：{{ item.rpNo }}</b>
-            <el-row style="color: #666; font-size: 14px;">
+            <el-row style="color: #666; font-size: 14px">
               <el-col :md="8" :lg="2"
                 >数量:{{ item.contentList.length }}</el-col
               >
@@ -137,7 +137,7 @@
               </el-col>
             </el-row>
           </template>
-          <el-table :data="item.contentList" border style="width: 100%;">
+          <el-table :data="item.contentList" border style="width: 100%">
             <el-table-column type="index" label="序号" width="60">
             </el-table-column>
             <el-table-column prop="item.contentList.type" label="类型">
@@ -202,7 +202,7 @@
           </div>
         </template>
 
-        <div style="background: #f2f2f2; padding: 15px 20px 6px 20px;">
+        <div style="background: #f2f2f2; padding: 15px 20px 6px 20px">
           1
           <div class="portRight">
             <div class="miniTitle">报告时间</div>
@@ -361,9 +361,9 @@
           </div>
         </template>
 
-        <div style="background: #f2f2f2; padding: 20px;">
+        <div style="background: #f2f2f2; padding: 20px">
           1
-          <el-row style="line-height: 36px;">
+          <el-row style="line-height: 36px">
             <el-col :span="8">检验项目：{{ item.labItemName }}</el-col>
             <el-col :span="8">执行科室：{{ item.labDeptName }}</el-col>
             <el-col :span="8">申请日期：</el-col>
@@ -371,7 +371,7 @@
             <el-col :span="8">报告日期：{{ item.reportDtime }}</el-col>
             <el-col :span="8">报告医生：</el-col>
           </el-row>
-          <el-table :data="tableData" style="width: 100%; margin-top: 10px;">
+          <el-table :data="tableData" style="width: 100%; margin-top: 10px">
             <el-table-column type="name" label="检验项"> </el-table-column>
             <el-table-column prop="name" label="值"> </el-table-column>
             <el-table-column prop="address" label="单位"> </el-table-column>

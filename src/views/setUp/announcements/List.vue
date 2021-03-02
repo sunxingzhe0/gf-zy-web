@@ -21,9 +21,7 @@
         </div>
       </template>
       <template v-slot:footertool>
-        <el-button type="primary" @click="info('add')">
-          新增公告
-        </el-button>
+        <el-button type="primary" @click="info('add')"> 新增公告 </el-button>
       </template>
       <template v-slot:fixed="{ row }">
         <el-button
@@ -45,7 +43,7 @@
         </el-button>
         <el-button
           type="text"
-          style="color: #f74a4a;"
+          style="color: #f74a4a"
           @click="del(row.id)"
           v-if="!row.releaseState"
         >

@@ -63,7 +63,7 @@
       >
         <el-form-item prop="upload">
           <el-button size="small" type="primary" @click="download"
-            >下载导入模块</el-button
+            >下载导入模板</el-button
           >
           <el-upload
             class="upload-demo"
@@ -124,7 +124,7 @@
             placeholder="请选择"
             filterable
             multiple
-            style="width: 100%;"
+            style="width: 100%"
           >
             <el-option
               v-for="item in options"

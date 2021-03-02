@@ -18,7 +18,7 @@
           <el-col :span="8">
             <div class="itemTitle">下单人</div>
             <el-avatar
-              style="vertical-align: middle; margin-right: 15px;"
+              style="vertical-align: middle; margin-right: 15px"
               :src="FILE_URL(toSend.userAvatar)"
             ></el-avatar>
             <div class="itemContent">
@@ -56,7 +56,7 @@
         <el-table
           :data="toSend.contentList"
           border
-          style="width: 100%;"
+          style="width: 100%"
           class="tableList"
         >
           <el-table-column prop="index" label="序号" width="70" type="index">

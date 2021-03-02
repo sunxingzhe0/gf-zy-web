@@ -14,7 +14,7 @@
     <span>
       {{ $attrs.status == 'IN_TREAT' ? '离服务结束' : '离诊室自动关闭' }}还剩
     </span>
-    <span style="margin-left: 4px; color: #e45b5b;">{{ countDown }}</span>
+    <span style="margin-left: 4px; color: #e45b5b">{{ countDown }}</span>
   </div>
 </template>
 

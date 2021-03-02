@@ -108,7 +108,7 @@
         <el-form-item label="标题" prop="title">
           <el-input
             type="text"
-            style="width: 400px;"
+            style="width: 400px"
             placeholder="请输入内容"
             v-model="form.title"
             maxlength="24"

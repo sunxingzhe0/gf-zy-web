@@ -142,7 +142,7 @@
               filterable
               placeholder="请选择"
               v-show="addkeshi"
-              style="width: 100%;"
+              style="width: 100%"
             >
               <el-option
                 v-for="item in options"
@@ -151,11 +151,11 @@
                 :value="item.id"
                 :disabled="!item.state"
               >
-                <span style="float: left;" v-if="!item.state">{{
+                <span style="float: left" v-if="!item.state">{{
                   item.name
                 }}</span>
                 <span
-                  style="float: right; color: #8492a6; font-size: 13px;"
+                  style="float: right; color: #8492a6; font-size: 13px"
                   v-if="!item.state"
                   >已禁用</span
                 >
@@ -191,7 +191,7 @@
       >
         <el-form-item prop="upload">
           <el-button size="small" type="primary" @click="download"
-            >下载导入模块</el-button
+            >下载导入模板</el-button
           >
           <el-upload
             class="upload-demo"

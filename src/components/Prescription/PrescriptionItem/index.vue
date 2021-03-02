@@ -17,7 +17,7 @@
           审方时间：{{ prescription.auditTime }}
         </span>
         <span v-else> 创建时间：{{ prescription.createTime }} </span>
-        <span style="margin-left: 40px;">数量：{{ drugCount }}</span>
+        <span style="margin-left: 40px">数量：{{ drugCount }}</span>
       </div>
       <div class="prescription-option">
         <el-button
@@ -809,7 +809,10 @@ export default {
           if (delKeys.includes(p)) delete item[p]
         }
       })
-      if (this.prescription.status === 'DRAFT') {
+      if (
+        this.prescription.status === 'DRAFT' &&
+        this.prescription.template !== 'template'
+      ) {
         await apiPrescription.editRp({
           rpDrugList: data,
           id: this.prescription.id,

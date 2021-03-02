@@ -29,14 +29,19 @@
           size="mini"
           @click="delTemps"
           :disabled="!tableData.multipleSelection.length"
-          style="color: #666;"
+          style="color: #666"
         >
           批量删除
         </el-button>
       </template>
     </List>
 
-    <aside class="edit" :class="{ editable: editable }" v-loading="pending">
+    <aside
+      class="edit"
+      :class="{ editable: editable }"
+      v-loading="pending"
+      v-if="!dialog.visible"
+    >
       <h3 v-if="model.id">
         {{ mode === 'EDIT' ? '编辑' : mode === 'IMPORT' ? '查看' : '' }}处方模板
       </h3>
@@ -54,7 +59,7 @@
           <el-input
             v-model="model.name"
             maxlength="20"
-            style="width: 360px;"
+            style="width: 360px"
             show-word-limit
             @input="valueChange"
           ></el-input>
@@ -68,7 +73,7 @@
             remote
             reserve-keyword
             placeholder="请输入"
-            style="min-width: 360px;"
+            style="min-width: 360px"
             :remote-method="searchDiagnosis"
             :loading="loading"
             @change="valueChange"
@@ -106,6 +111,7 @@
             @editUpdate="editUpdate"
             :prescription="{
               rpDrugList: model.rpDrugList,
+              template: 'template',
               status: mode !== 'IMPORT' ? 'DRAFT' : '',
             }"
           ></PrescriptionItem>
@@ -131,94 +137,89 @@
       </div>
     </aside>
 
-    <el-dialog
-      title="新增处方模板"
-      :visible.sync="dialog.visible"
-      append-to-body
-      custom-class="component__dialog"
-      @opened="openDialog"
-      :close-on-click-modal="false"
+    <aside
+      v-else
+      class="edit"
+      :class="{ editable: editable }"
+      v-loading="pending"
     >
-      <el-scrollbar>
-        <el-form
-          ref="form"
-          :model="dialog.model"
-          :rules="rules"
-          size="mini"
-          label-width="auto"
-        >
-          <el-form-item label="模板名称" prop="name">
-            <el-input
-              v-model="dialog.model.name"
-              maxlength="20"
-              show-word-limit
-              style="width: 360px;"
-            ></el-input>
-          </el-form-item>
+      <h3>新增处方模板</h3>
+      <el-form
+        ref="form"
+        :model="dialog.model"
+        :rules="rules"
+        size="mini"
+        label-width="auto"
+      >
+        <el-form-item label="模板名称" prop="name">
+          <el-input
+            v-model="dialog.model.name"
+            maxlength="20"
+            show-word-limit
+            style="width: 360px"
+          ></el-input>
+        </el-form-item>
 
-          <el-form-item label="病种" prop="icdId">
-            <el-select
-              v-model="dialog.model.icdId"
-              filterable
-              remote
-              reserve-keyword
-              placeholder="请输入"
-              style="min-width: 360px;"
-              :remote-method="searchDiagnosis"
-              :loading="loading"
-            >
-              <el-option
-                v-for="item in options"
-                :key="item.diagnosisName"
-                :label="item.diagnosisName"
-                :value="item.id"
-              >
-              </el-option>
-            </el-select>
-          </el-form-item>
-
-          <el-form-item label="描述" prop="remark">
-            <el-input
-              type="textarea"
-              :autosize="{ minRows: 1, maxRows: 5 }"
-              placeholder="请输入内容"
-              v-model="dialog.model.remark"
-              maxlength="100"
-              show-word-limit
-              class="min_height_72"
-            ></el-input>
-          </el-form-item>
-
-          <el-form-item label="药品清单" prop="rpDrugList">
-            <PrescriptionItem
-              scene="template"
-              :operate="operate"
-              ref="prescription"
-              v-if="dialog.visible"
-              @operate="applyOperate"
-              :prescription="{
-                status: 'DRAFT',
-                rpDrugList: [],
-              }"
-            ></PrescriptionItem>
-          </el-form-item>
-        </el-form>
-      </el-scrollbar>
-
-      <template v-slot:footer>
-        <div class="is-center">
-          <el-button size="mini" @click="cancel(dialog)"> 取消 </el-button>
-          <el-button
-            type="primary"
-            size="mini"
-            :loading="dialog.pending"
-            @click="submit('form')"
+        <el-form-item label="病种" prop="icdId">
+          <el-select
+            v-model="dialog.model.icdId"
+            filterable
+            remote
+            reserve-keyword
+            placeholder="请输入"
+            style="min-width: 360px"
+            :remote-method="searchDiagnosis"
+            :loading="loading"
           >
-            确认
-          </el-button>
-        </div>
-      </template>
-    </el-dialog>
+            <el-option
+              v-for="item in options"
+              :key="item.diagnosisName"
+              :label="item.diagnosisName"
+              :value="item.id"
+            >
+            </el-option>
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="描述" prop="remark">
+          <el-input
+            type="textarea"
+            :autosize="{ minRows: 1, maxRows: 5 }"
+            placeholder="请输入内容"
+            v-model="dialog.model.remark"
+            maxlength="100"
+            show-word-limit
+            class="min_height_72"
+          ></el-input>
+        </el-form-item>
+
+        <el-form-item label="药品清单" prop="rpDrugList">
+          <PrescriptionItem
+            scene="template"
+            :operate="operate"
+            ref="prescription"
+            v-if="dialog.visible"
+            @operate="applyOperate"
+            :prescription="{
+              template: 'template',
+              status: 'DRAFT',
+              rpDrugList: [],
+            }"
+          ></PrescriptionItem>
+        </el-form-item>
+      </el-form>
+      <div class="is-center">
+        <el-button size="mini" @click="cancel(dialog)"> 取消 </el-button>
+        <el-button
+          type="primary"
+          size="mini"
+          :loading="dialog.pending"
+          @click="submit('form')"
+        >
+          确认
+        </el-button>
+      </div>
+    </aside>
   </section>
 </template>
 
@@ -383,6 +384,7 @@ export default {
     },
     async handleRowClick(row, force = false) {
       this.row = JSON.parse(JSON.stringify(row))
+      console.log(force)
       // if (!force && this.model.id === row.id) return
       this.$refs.table.setCurrentRow(row)
       this.pending = true
@@ -469,7 +471,7 @@ export default {
           this.$message.success(isEdit ? '修改成功' : '新增成功')
           this.dialog.visible = false
           //确认修改后是否重新拉取数据
-          // await this.$_fetchTableData()
+          await this.$_fetchTableData()
           if (!isEdit)
             this.handleRowClick(
               this.currentRow || this.tableData.list?.[0],
@@ -563,7 +565,7 @@ export default {
     }
   }
   > .c__list:hover {
-    overflow: scroll;
+    overflow-y: scroll;
   }
 
   > .edit {
@@ -592,7 +594,14 @@ export default {
 .el-dialog__wrapper ::v-deep {
   .component__dialog {
     max-width: 1400px;
-    min-width: 1200px;
+    min-width: 1350px;
+
+    .el-dialog__body {
+      padding: 15px 20px;
+    }
+  }
+  .el-scrollbar__wrap {
+    min-height: 404px;
   }
 }
 

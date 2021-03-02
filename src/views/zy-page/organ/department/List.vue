@@ -37,9 +37,7 @@
         </el-button>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="add(row)">
-          编辑
-        </el-button>
+        <el-button size="mini" type="text" @click="add(row)"> 编辑 </el-button>
       </template>
       <template v-slot:slot_sonDeptNum="{ row }">
         <el-button

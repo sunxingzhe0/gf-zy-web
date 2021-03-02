@@ -4,7 +4,7 @@
     <el-row>
       <el-col :md="18">
         <el-date-picker
-          style="margin-right: 10px;"
+          style="margin-right: 10px"
           type="daterange"
           :clearable="false"
           :picker-options="pickerOptions"
@@ -52,7 +52,7 @@
         </el-radio-group>
       </el-col>
       <el-col :span="24"
-        ><div class="chart" ref="chart" style="margin-left: 50px;"></div
+        ><div class="chart" ref="chart" style="margin-left: 50px"></div
       ></el-col>
       <el-col>
         <span>统计方式</span>

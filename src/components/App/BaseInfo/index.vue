@@ -10,7 +10,7 @@
       </div>
       <div class="app-info-item">
         <div class="app-info-label">唯一ID</div>
-        <div class="app-info-value" style="overflow: hidden;">
+        <div class="app-info-value" style="overflow: hidden">
           <el-tooltip
             effect="dark"
             placement="top"

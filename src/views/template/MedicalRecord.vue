@@ -90,7 +90,7 @@
               </label>
               <el-form-item
                 :key="`form-item_${prop}`"
-                style="margin: 20px 0 30px 0;"
+                style="margin: 20px 0 30px 0"
                 class="el-form-item_no-margin-left"
                 :prop="prop"
               >
@@ -113,9 +113,7 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button @click="dialog.visible = false">
-            取消
-          </el-button>
+          <el-button @click="dialog.visible = false"> 取消 </el-button>
           <el-button
             type="primary"
             :loading="dialog.loading"

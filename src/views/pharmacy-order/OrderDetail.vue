@@ -3,7 +3,7 @@
     <header>
       <h3 class="view__title">
         订单号：{{ id }}
-        <el-tag style="margin-left: 30px;" type="default" size="mini">
+        <el-tag style="margin-left: 30px" type="default" size="mini">
           {{ statusText[detailInfo.orderStatus] || '已关闭' }}
         </el-tag>
       </h3>

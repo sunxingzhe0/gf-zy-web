@@ -7,14 +7,10 @@
       :tableData="tableData"
     >
       <template v-slot:footertool>
-        <el-button type="primary" @click="add()">
-          新增模板
-        </el-button>
+        <el-button type="primary" @click="add()"> 新增模板 </el-button>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button type="text" @click="add(row)">
-          修改
-        </el-button>
+        <el-button type="text" @click="add(row)"> 修改 </el-button>
         <el-button class="danger" type="text" @click="del(row.id)">
           删除
         </el-button>

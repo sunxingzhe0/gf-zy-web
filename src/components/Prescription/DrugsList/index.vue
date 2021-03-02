@@ -1,8 +1,6 @@
 <template>
   <div class="drugs-list">
-    <div class="drugs-list-header">
-      药品清单
-    </div>
+    <div class="drugs-list-header">药品清单</div>
     <div class="drugs-list-body">
       <PrescriptionItem
         ref="refItem"
@@ -12,12 +10,10 @@
       </PrescriptionItem>
     </div>
     <div class="drugs-list-footer">
-      <el-button size="mini" @click="cancel" style="margin-right: 40px;">
+      <el-button size="mini" @click="cancel" style="margin-right: 40px">
         取消
       </el-button>
-      <el-button size="mini" type="primary" @click="confirm">
-        确认
-      </el-button>
+      <el-button size="mini" type="primary" @click="confirm"> 确认 </el-button>
     </div>
   </div>
 </template>

@@ -8,7 +8,7 @@
         <el-image
           :src="FILE_URL(orderList.userAvatar)"
           class="avatar_round"
-          style="width: 40px; height: 40px; vertical-align: middle;"
+          style="width: 40px; height: 40px; vertical-align: middle"
         >
           <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
         </el-image>
@@ -65,10 +65,10 @@
           disabled
           show-text
           :texts="['不满意', '一般', '满意', '较满意', '非常满意']"
-          style="display: inline-block;"
+          style="display: inline-block"
         ></el-rate>
         <div
-          style="padding-left: 50px;"
+          style="padding-left: 50px"
           v-if="$attrs.evaluate && $attrs.evaluate.content"
         >
           {{
@@ -130,7 +130,7 @@
           <el-image
             v-for="_ in orderList.patient.pic"
             :key="_"
-            style="width: 120px; height: 120px;"
+            style="width: 120px; height: 120px"
             :src="FILE_URL(_)"
             fit="cover"
             :preview-src-list="[]"
@@ -151,7 +151,7 @@
           <el-image
             :src="FILE_URL(orderList.avatar)"
             class="avatar_round"
-            style="width: 40px; height: 40px; vertical-align: middle;"
+            style="width: 40px; height: 40px; vertical-align: middle"
           >
             <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
           </el-image>
@@ -161,11 +161,11 @@
           ></el-avatar> -->
         </dt>
         <dd
-          style="margin: -60px 0 0 60px; color: #666; font-size: 14px;"
+          style="margin: -60px 0 0 60px; color: #666; font-size: 14px"
           v-if="orderList.biz"
         >
           <p>
-            <b style="font-size: 18px; color: #333; margin-right: 12px;">
+            <b style="font-size: 18px; color: #333; margin-right: 12px">
               {{ orderList.biz.doctorName }}
             </b>
 
@@ -191,7 +191,7 @@
             </router-link> -->
             <button
               v-if="show"
-              style="margin-left: 40px; cursor: pointer;"
+              style="margin-left: 40px; cursor: pointer"
               class="el-button el-button--text el-button--mini"
               @click="goMore(orderList.doctorId)"
             >
@@ -202,12 +202,12 @@
       </dl>
       <el-row v-if="rpList.length > 0">
         <el-col :span="24" class="flex-start-start">
-          <span style="margin-right: 30px;">关联处方:</span>
+          <span style="margin-right: 30px">关联处方:</span>
           <div>
             <div v-for="item in rpList" :key="item.id">
               <span>{{ item.id }}</span>
               <router-link
-                style="margin-left: 40px;"
+                style="margin-left: 40px"
                 class="el-button el-button--text el-button--mini primary"
                 :to="{
                   path: '/order/prescription/detail/' + item.id,

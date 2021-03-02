@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="flex-between" style="margin-bottom: 30px;">
+    <div class="flex-between" style="margin-bottom: 30px">
       <div>
-        <span style="color: #666;">时间段：</span>
+        <span style="color: #666">时间段：</span>
         <el-date-picker
           align="right"
           v-model="date"
@@ -10,7 +10,7 @@
           type="datetimerange"
           end-placeholder="结束日期"
           start-placeholder="开始日期"
-          style="margin-right: 10px;"
+          style="margin-right: 10px"
           value-format="yyyyMMddHHmmss"
           :picker-options="pickerOptions"
           :default-time="['00:00:00', '23:59:59']"
@@ -65,8 +65,8 @@
           <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
         </el-image>
       </div>
-      <div class="flex_1" style="padding-left: 20px;">
-        <div class="flex-between" style="margin-bottom: 20px;">
+      <div class="flex_1" style="padding-left: 20px">
+        <div class="flex-between" style="margin-bottom: 20px">
           <div class="user-name">
             {{
               item.chatType == 'DOCTOR'
@@ -86,7 +86,7 @@
     </div>
     <div
       v-if="record.length == 0"
-      style="margin: 240px 0; color: #999;"
+      style="margin: 240px 0; color: #999"
       class="is-center"
     >
       暂无数据

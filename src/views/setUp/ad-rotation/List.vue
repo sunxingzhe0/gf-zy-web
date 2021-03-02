@@ -3,7 +3,7 @@
     <List v-model="query" :columns="columns" :tableData="tableData" :bats="[]">
       <template v-slot:slot_title>
         <el-image
-          style="width: 280px; height: 120px;"
+          style="width: 280px; height: 120px"
           :src="url"
           :preview-src-list="srcList"
         >
@@ -29,31 +29,25 @@
       </template>
       <template v-slot:slot_picId="{ row }">
         <el-image
-          style="height: 100px;"
+          style="height: 100px"
           :fit="'cover'"
           :src="FILE_URL(row.picId)"
           :preview-src-list="[FILE_URL(row.picId)]"
         ></el-image>
       </template>
       <template v-slot:footertool>
-        <el-button type="primary" plain @click="del()">
-          批量删除
-        </el-button>
+        <el-button type="primary" plain @click="del()"> 批量删除 </el-button>
         <el-button type="primary" plain @click="stateChange('', false)">
           批量隐藏
         </el-button>
         <el-button type="primary" plain @click="stateChange('', true)">
           批量显示
         </el-button>
-        <el-button type="primary" @click="add(false)">
-          新增轮播图
-        </el-button>
+        <el-button type="primary" @click="add(false)"> 新增轮播图 </el-button>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button type="text" @click="add(row)">
-          修改
-        </el-button>
-        <el-button style="color: #f74949;" type="text" @click="del([row.id])">
+        <el-button type="text" @click="add(row)"> 修改 </el-button>
+        <el-button style="color: #f74949" type="text" @click="del([row.id])">
           删除
         </el-button>
       </template>
@@ -75,7 +69,7 @@
             accept="image/png, image/jpeg, image/gif, image/webp"
           >
             <el-image
-              style="width: 280px; height: 120px;"
+              style="width: 280px; height: 120px"
               v-if="form.picId"
               :src="FILE_URL(form.picId)"
             >
@@ -89,7 +83,7 @@
               >更改</el-button
             >
           </el-upload>
-          <div style="font-size: 12px; color: #999;">
+          <div style="font-size: 12px; color: #999">
             尺寸建议750x220像素以上，大小2M以下，最多1张
           </div>
         </el-form-item>
@@ -106,7 +100,7 @@
             v-model="form.skipLinks"
           ></el-input>
           <el-select
-            style="width: 100%;"
+            style="width: 100%"
             v-show="form.linksType == 0"
             v-model="form.skipLinks"
             placeholder="请选择"

@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-input
-      style="width: 103px;"
+      style="width: 103px"
       v-model.lazy.trim="values[0]"
       clearable
       size="mini"
@@ -9,9 +9,9 @@
       @keyup.native="keyupEvent($event, values[0], 0)"
     >
     </el-input>
-    <span style="margin: 0 6px;">-</span>
+    <span style="margin: 0 6px">-</span>
     <el-input
-      style="width: 103px;"
+      style="width: 103px"
       v-model.lazy.trim="values[1]"
       clearable
       size="mini"

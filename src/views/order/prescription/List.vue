@@ -42,9 +42,7 @@
         ¥{{ row.prescriptionPrice }}
       </template> -->
       <template v-slot:fixed="{ row }">
-        <el-button type="text" @click="info(row.id)">
-          查看
-        </el-button>
+        <el-button type="text" @click="info(row.id)"> 查看 </el-button>
       </template>
     </List>
   </div>

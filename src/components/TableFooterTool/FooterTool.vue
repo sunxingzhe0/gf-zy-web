@@ -109,14 +109,14 @@ export default {
       pageSize: this.value[this.pageProps.pageSize],
     }
   },
-  watch: {
-    value: {
+  /*   watch: {
+     value: {
       handler: function (value) {
         this.currentPage = value[this.pageProps.currentPage]
       },
       deep: true,
     },
-  },
+  }, */
   computed: {
     showLeft() {
       return this.bats.length !== 0 || this.hasExport || !isEmpty(this.$slots)
@@ -177,6 +177,9 @@ export default {
   .left-btns {
     > * + * {
       margin-left: 10px;
+    }
+    .el-button {
+      padding: 10px 12px;
     }
   }
 

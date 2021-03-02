@@ -27,7 +27,7 @@
         </el-button>
         <el-button
           size="mini"
-          style="color: #f74949;"
+          style="color: #f74949"
           type="text"
           @click="del(row.id)"
         >

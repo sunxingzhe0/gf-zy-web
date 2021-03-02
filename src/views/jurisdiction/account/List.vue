@@ -65,7 +65,9 @@
         <el-button
           type="text"
           @click="
-            ;(resetDialog.visible = true), (resetDialog.model.id = row.id)
+            ;(resetDialog.visible = true),
+              (resetDialog.model.id = row.id),
+              (resetDialog.account = row.account)
           "
           >重置密码</el-button
         >
@@ -155,7 +157,11 @@
           <el-button size="small" @click="importDialog.visible = false">
             取消
           </el-button>
-          <el-button size="small" type="primary" @click="submit('importForm')">
+          <el-button
+            size="small"
+            type="primary"
+            @click="importSave('importForm')"
+          >
             保存
           </el-button>
         </div>
@@ -227,6 +233,7 @@ export default {
       resetDialog: {
         visible: false,
         loading: false,
+        account: '',
         model: {
           id: '',
           password: '',
@@ -240,6 +247,9 @@ export default {
     }
   },
   computed: {
+    account() {
+      return this.$store.state.user.account
+    },
     filter() {
       return {
         date: {
@@ -725,12 +735,22 @@ export default {
             setTimeout(() => (this.resetDialog.loading = false), 200),
           )
 
-          this.$message({
-            type: 'success',
-            message: '完成',
-            showClose: true,
-          })
-
+          console.log(this.account)
+          if (this.account == this.resetDialog.account) {
+            await this.$store.dispatch('user/logout')
+            this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+            this.$message({
+              type: 'success',
+              message: '修改成功，请重新登录',
+              showClose: true,
+            })
+          } else {
+            this.$message({
+              type: 'success',
+              message: '完成',
+              showClose: true,
+            })
+          }
           this.resetDialog.visible = false
         } else {
           invalidFieldSetFocus(this.$refs[formName], invalidFields)

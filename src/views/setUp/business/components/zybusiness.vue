@@ -40,7 +40,7 @@
           <el-input
             v-model="row.selectConfig"
             size="mini"
-            style="width: 200px;"
+            style="width: 200px"
             @change="serbus(row, row.bizSelect)"
           ></el-input>
           {{

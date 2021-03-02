@@ -9,7 +9,7 @@
         </el-tag>
       </div>
     </div>
-    <el-table border :data="tableData" style="with: 100%; margin-top: 10px;">
+    <el-table border :data="tableData" style="with: 100%; margin-top: 10px">
       <el-table-column
         v-for="(item, index) in colums"
         :min-width="minWidth(index, colums)"
@@ -441,14 +441,14 @@ export default {
       const time = val[1] || ''
       if (this.tableData[0].type === 'LAB') {
         if (date) {
-          end = dayjs(date + '17:30').format('YYYYMMDDHHmmss')
-          start = dayjs(date + ' 08:00').format('YYYYMMDDHHmmss')
+          start = dayjs(date + '17:30').format('YYYYMMDDHHmmss')
+          end = dayjs(date + ' 08:00').format('YYYYMMDDHHmmss')
         }
       } else if (this.tableData[0].type === 'EXAMINE') {
         if (date && time) {
           const arr = time.split('~')
-          end = dayjs(date + ' ' + arr[0]).format('YYYYMMDDHHmmss')
-          start = dayjs(date + ' ' + arr[1]).format('YYYYMMDDHHmmss')
+          start = dayjs(date + ' ' + arr[0]).format('YYYYMMDDHHmmss')
+          end = dayjs(date + ' ' + arr[1]).format('YYYYMMDDHHmmss')
         }
       }
       return { end, start }

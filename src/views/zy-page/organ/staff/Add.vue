@@ -24,7 +24,7 @@
             </el-image>
 
             <el-upload
-              style="display: inline-block;"
+              style="display: inline-block"
               action
               :show-file-list="false"
               accept="image/png, image/jpeg, image/gif, image/webp"
@@ -53,7 +53,7 @@
             <el-select
               v-model="form.sex"
               placeholder="请选择性别"
-              style="width: 100%;"
+              style="width: 100%"
             >
               <el-option label="女" :value="0"></el-option>
               <el-option label="男" :value="1"></el-option>
@@ -77,7 +77,7 @@
               multiple
               placeholder="请选择科室"
               @change="setDefaultDept"
-              style="width: 100%;"
+              style="width: 100%"
             >
               <el-option
                 :label="item.name"
@@ -91,7 +91,7 @@
             <el-select
               v-model="form.defDeptId"
               placeholder="请选择默认科室"
-              style="width: 100%;"
+              style="width: 100%"
             >
               <el-option
                 :label="item.name"
@@ -105,7 +105,7 @@
             <el-select
               v-model="form.titleId"
               placeholder="请选择职称"
-              style="width: 100%;"
+              style="width: 100%"
             >
               <el-option
                 :label="item.name"

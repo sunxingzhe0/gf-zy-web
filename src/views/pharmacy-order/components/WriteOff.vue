@@ -13,7 +13,7 @@
           <el-image
             :src="FILE_URL(toWaitOff.userAvatar)"
             class="avatar_round"
-            style="width: 40px; height: 40px; margin-right: 15px;"
+            style="width: 40px; height: 40px; margin-right: 15px"
           >
             <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
           </el-image>
@@ -58,7 +58,7 @@
       <el-table
         :data="contentList"
         border
-        style="width: 100%;"
+        style="width: 100%"
         class="tableList"
         v-if="contentList"
       >

@@ -53,7 +53,7 @@
           <el-image
             v-for="_ in parent.detailInfo.picList"
             :key="_"
-            style="width: 120px; height: 120px;"
+            style="width: 120px; height: 120px"
             :src="parent.FILE_URL(_)"
             :preview-src-list="[]"
           ></el-image>
@@ -82,12 +82,12 @@
 
       <el-col>
         <span>药品清单</span>
-        <div style="width: 100%; padding-left: 75px;">
+        <div style="width: 100%; padding-left: 75px">
           <el-table
             :data="parent.detailInfo.rpDrugList"
             border
             size="mini"
-            style="width: 100%;"
+            style="width: 100%"
           >
             <el-table-column type="index" label="序号" width="70">
             </el-table-column>
@@ -149,7 +149,7 @@
         <div v-for="rpId in parent.detailInfo.relRpIds" :key="rpId">
           <span class="primary">{{ rpId }}</span>
           <router-link
-            style="margin: 0 30px 0 10px; color: #000;"
+            style="margin: 0 30px 0 10px; color: #000"
             class="el-button el-button--text el-button--mini"
             :to="{
               path: '/business/prescription/detail/' + rpId,

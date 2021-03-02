@@ -36,7 +36,7 @@
 
     <div class="right-menu">
       <template v-if="device !== 'mobile'">
-        <div @click="toMyMessage()" style="display: inline-block;">
+        <div @click="toMyMessage()" style="display: inline-block">
           <el-badge
             class="right-menu-item hover-effect"
             :value="message"

@@ -3,7 +3,7 @@
     <div class="orderTop">
       单据号：{{ infoData.billNo }}
       <el-tag
-        style="margin-left: 10px; font-weight: nomal;"
+        style="margin-left: 10px; font-weight: nomal"
         size="mini"
         :type="infoData.pay ? 'success' : ''"
         >{{ infoData.pay ? '已支付' : '待支付' }}</el-tag
@@ -83,7 +83,7 @@
       <ul>
         <li class="" v-for="(item, index) in infoData.items" :key="index">
           {{ item.body }}<span>￥{{ item.fee }} x{{ item.num }}</span
-          ><span style="color: red;"
+          ><span style="color: red"
             >￥{{
               (parseFloat(item.fee) * parseInt(item.num)).toFixed(2)
             }}</span

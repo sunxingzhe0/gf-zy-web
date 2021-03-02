@@ -18,7 +18,7 @@
           <el-form
             label-position="top"
             label-width="80px"
-            style="height: 100%;"
+            style="height: 100%"
             ref="form"
             :model="form"
             v-if="clearValid"
@@ -44,7 +44,7 @@
                       size="mini"
                       type="primary"
                       plain
-                      style="margin-left: 80px; float: left; margin-top: -40px;"
+                      style="margin-left: 80px; float: left; margin-top: -40px"
                       @click="editList"
                       >修改</el-button
                     >
@@ -107,7 +107,7 @@
                     :maxlength="formRules[item] && formRules[item].maxLength"
                     show-word-limit
                     placeholder="请输入内容"
-                    style="width: 80%;"
+                    style="width: 80%"
                   ></el-input>
 
                   <div v-if="t.name != 'dtoList'" class="form-button">
@@ -230,7 +230,7 @@
       width="68%"
       @open="openDialog"
     >
-      <el-container style="border: 1px solid #eee;">
+      <el-container style="border: 1px solid #eee">
         <el-scrollbar>
           <el-menu :default-openeds="importTemplate.active">
             <el-submenu

@@ -1,6 +1,6 @@
 <template>
   <section class="view__card">
-    <div style="position: relatiev; display: flex;">
+    <div style="position: relatiev; display: flex">
       <!-- 左侧菜单 -->
       <div class="leftMenu">
         <el-tabs
@@ -69,7 +69,7 @@
                   ref="origin"
                   v-model="form.origin"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in newPacl"
@@ -89,7 +89,7 @@
                   v-model="form.reimbursement"
                   :disabled="id ? true : false"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in attriButeA"
@@ -108,7 +108,7 @@
                   ref="pharmaceuticalDosage"
                   v-model="form.pharmaceuticalDosage"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in dosage"
@@ -139,7 +139,7 @@
                   @change="Packagingunit($event, 'DOSAGE_UNIT')"
                   v-model="form.dosageUnit"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                   :multiple-limit="0"
                   filterable
                   allow-create
@@ -163,7 +163,7 @@
                   v-model="form.drugType"
                   :disabled="id ? true : false"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in category"
@@ -212,7 +212,7 @@
                   :disabled="id ? true : false"
                   v-model="form.basicUnit"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                   :multiple-limit="0"
                   filterable
                   allow-create
@@ -247,7 +247,7 @@
                   :disabled="id ? true : false"
                   v-model="form.regularUnit"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                   :multiple-limit="0"
                   filterable
                   allow-create
@@ -289,7 +289,7 @@
                   ref="frequency"
                   v-model="form.frequency"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in frequency"
@@ -308,7 +308,7 @@
                   ref="ways"
                   v-model="form.ways"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in channel"
@@ -327,7 +327,7 @@
                   ref="unit"
                   v-model="form.unit"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in optionC"
@@ -346,7 +346,7 @@
                   ref="tenderType"
                   v-model="form.tenderType"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in bidding"
@@ -374,7 +374,7 @@
                   ref="approval"
                   v-model="form.approval"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in approval"
@@ -408,7 +408,7 @@
                   ref="refinedAnesthetic"
                   v-model="form.refinedAnesthetic"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in boolNode"
@@ -433,7 +433,7 @@
                   ref="drugInstructions"
                   v-model="form.drugInstructions"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in notice"
@@ -453,7 +453,7 @@
                   v-model="form.divided"
                   :disabled="id ? true : false"
                   placeholder="请选择"
-                  style="width: 100%;"
+                  style="width: 100%"
                 >
                   <el-option
                     v-for="item in Graded"
@@ -470,7 +470,7 @@
               <el-form-item label="是否拆零" prop="split">
                 <el-select
                   ref="split"
-                  style="width: 100%;"
+                  style="width: 100%"
                   v-model="form.split"
                   :disabled="id ? true : false"
                   filterable
@@ -487,18 +487,18 @@
                 <el-input
                   ref="enterCode1"
                   v-model="form.enterCode1"
-                  style="width: 20%;"
+                  style="width: 20%"
                 ></el-input>
                 <el-input
                   ref="enterCode2"
                   v-model="form.enterCode2"
-                  style="width: 20%;"
+                  style="width: 20%"
                   class="box"
                 ></el-input>
                 <el-input
                   ref="enterCode3"
                   v-model="form.enterCode3"
-                  style="width: 20%;"
+                  style="width: 20%"
                   class="box"
                 ></el-input>
               </el-form-item>

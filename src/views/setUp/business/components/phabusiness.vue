@@ -59,7 +59,7 @@
                 <el-input
                   v-model="row.selectConfig"
                   size="mini"
-                  style="width: 205px;"
+                  style="width: 205px"
                   @change="handleChange(row)"
                 ></el-input>
               </div>
@@ -113,7 +113,7 @@
               <!-- 预约时段渲染判断 -->
               <div v-if="row.bizSelect == 'ORDER_TIME_RANGE'">
                 <el-input
-                  style="width: 205px;"
+                  style="width: 205px"
                   v-model="row.selectConfig"
                   size="mini"
                   @change="handleChange(row)"

@@ -46,13 +46,9 @@
             </template>
 
             <template v-slot:fixed="{ row }">
-              <el-button type="text" @click="add(row)">
-                修改
-              </el-button>
+              <el-button type="text" @click="add(row)"> 修改 </el-button>
 
-              <el-button type="text" @click="opanLog(row)">
-                日志
-              </el-button>
+              <el-button type="text" @click="opanLog(row)"> 日志 </el-button>
               <!-- <router-link
                 class="el-button el-button--text el-button--mini"
                 :to="{
@@ -68,9 +64,7 @@
             </template>
 
             <template v-slot:footertool>
-              <el-button type="primary" @click="add()">
-                新增业务
-              </el-button>
+              <el-button type="primary" @click="add()"> 新增业务 </el-button>
             </template>
           </List>
         </div>
@@ -92,7 +86,7 @@
             <el-select
               v-model="rulesForm.servicePeriodUnit"
               placeholder="请选择"
-              style="width: 80px;"
+              style="width: 80px"
             >
               <el-option value="H" label="时"></el-option>
               <el-option value="M" label="分"></el-option>
@@ -151,7 +145,7 @@
               <el-select
                 v-model="rulesForm.closeClinicUnit"
                 placeholder="请选择"
-                style="width: 80px;"
+                style="width: 80px"
               >
                 <el-option value="H" label="时"></el-option>
                 <el-option value="M" label="分"></el-option>
@@ -164,13 +158,13 @@
               <el-select
                 v-model="rulesForm.firstVideoUnit"
                 placeholder="请选择"
-                style="width: 80px;"
+                style="width: 80px"
               >
                 <el-option value="H" label="时"></el-option>
                 <el-option value="M" label="分"></el-option>
                 <el-option value="D" label="日"></el-option>
               </el-select>
-              <span style="margin-left: 10px; color: #444;">自动结束服务</span>
+              <span style="margin-left: 10px; color: #444">自动结束服务</span>
             </el-form-item>
 
             <el-form-item label="预约时间到期后" prop="orderTime">
@@ -178,13 +172,13 @@
               <el-select
                 v-model="rulesForm.orderTimeUnit"
                 placeholder="请选择"
-                style="width: 80px;"
+                style="width: 80px"
               >
                 <el-option value="H" label="时"></el-option>
                 <el-option value="M" label="分"></el-option>
                 <el-option value="D" label="日"></el-option>
               </el-select>
-              <span style="margin-left: 10px; color: #444;"
+              <span style="margin-left: 10px; color: #444"
                 >未接通过视频， 则自动结束服务并退款</span
               >
             </el-form-item>
@@ -229,7 +223,7 @@
               <el-select
                 v-model="rulesForm.closeClinicUnit"
                 placeholder="请选择"
-                style="width: 80px;"
+                style="width: 80px"
               >
                 <el-option value="H" label="时"></el-option>
                 <el-option value="M" label="分"></el-option>
@@ -245,7 +239,7 @@
               <el-select
                 v-model="rulesForm.servicePeriodUnit"
                 placeholder="请选择"
-                style="width: 80px;"
+                style="width: 80px"
               >
                 <el-option value="H" label="时"></el-option>
                 <el-option value="M" label="分"></el-option>
@@ -299,7 +293,7 @@
             <el-select
               v-model="rulesForm.servicePeriodUnit"
               placeholder="请选择"
-              style="width: 80px;"
+              style="width: 80px"
             >
               <el-option value="H" label="时"></el-option>
               <el-option value="M" label="分"></el-option>
@@ -325,7 +319,7 @@
             <el-select
               v-model="rulesForm.closeClinicUnit"
               placeholder="请选择"
-              style="width: 80px;"
+              style="width: 80px"
             >
               <el-option value="H" label="时"></el-option>
               <el-option value="M" label="分"></el-option>
@@ -424,7 +418,7 @@
               v-model="form.titleIds"
               filterable
               multiple
-              style="width: 100%;"
+              style="width: 100%"
               placeholder="请选择"
               @change="initPriceDto"
             >
@@ -442,7 +436,7 @@
               v-model="form.deptIds"
               filterable
               multiple
-              style="width: 100%;"
+              style="width: 100%"
               placeholder="请选择"
             >
               <el-option
@@ -468,7 +462,7 @@
           </el-form-item>
           <el-form-item label="价格配置" prop="priceDto" ref="priceDto">
             <el-row
-              style="margin-bottom: 22px;"
+              style="margin-bottom: 22px"
               v-for="({ titleId, title }, index) in form.priceDto"
               :key="titleId"
             >
@@ -480,7 +474,7 @@
                   :label="value"
                   :rules="priceDtoRules"
                   label-width="50px"
-                  style="margin-right: 40px;"
+                  style="margin-right: 40px"
                 >
                   <el-input
                     class="custom-input"

@@ -175,9 +175,7 @@
         </div>
       </div>
       <footer class="is-right">
-        <el-button size="mini" type="primary" @click="submit">
-          提交
-        </el-button>
+        <el-button size="mini" type="primary" @click="submit"> 提交 </el-button>
       </footer>
     </section>
   </div>
@@ -320,7 +318,7 @@ export default {
       this.form = {
         ...this.form,
         orgId: this.platformCode, // 取医院id
-        deptId: this.user.dept.id, // 取医院科室id
+        // deptId: this.user.dept.id, // 取医院科室id
         roomId: this.bizInfo.roomId, // 诊室id
         userId: this.bizInfo.userId, // 用户id
         creator: this.bizInfo.doctorId, // 创建人id
@@ -328,6 +326,7 @@ export default {
         doctorId: this.bizInfo.doctorId, // 医生id
         diagnoseNo: this.bizInfo.patientCard, // 就诊号
       }
+      // console.log(this.user.dept.id,'院内id----')
       this.depts = []
       this.dates = []
       this.doctors = []
@@ -335,8 +334,10 @@ export default {
       this.dateIndex = 0
       this.doctorTitle = ''
       await this.getOrgList()
-      await this.getDeptList()
+      await this.getDeptList() //赋值院内id
       await this.getDoctorList()
+      // console.log(this.form.deptId, '院内id=====')
+      if (!this.form.deptId) return
       Promise.all([this.getReverseDeptDate()]).then(() => this.getSchedueList())
     },
     // 获取机构列表
@@ -425,7 +426,6 @@ export default {
           this.$set(this.form, 'fee', '')
         }
       } catch (e) {
-        debugger
         this.schedue = []
         this.doctorTitle = ''
         this.$set(this.form, 'fee', '')

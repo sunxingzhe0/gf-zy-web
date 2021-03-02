@@ -3,7 +3,7 @@
     <div class="orderTop">
       单据号：{{ infoData.billData }}
       <el-tag
-        style="margin-left: 10px; font-weight: nomal;"
+        style="margin-left: 10px; font-weight: nomal"
         size="mini"
         :type="infoData.state == '已付款' ? 'success' : ''"
         >{{ infoData.state }}</el-tag
@@ -20,7 +20,7 @@
       <div class="infoItem" v-if="infoData.deType == 'GH'">
         <div>
           <span>预约时段</span
-          ><b style="font-weight: normal; color: red;">{{
+          ><b style="font-weight: normal; color: red">{{
             infoData.reserveTime
           }}</b>
         </div>
@@ -37,7 +37,7 @@
         </div>
         <div>
           <span>金额</span
-          ><b style="font-weight: normal; color: red;"
+          ><b style="font-weight: normal; color: red"
             >￥{{ parseFloat(infoData.fee).toFixed(2) }}</b
           >
         </div>
@@ -46,7 +46,7 @@
       <div class="infoItem">
         <div v-if="infoData.refundFee">
           <span>支付金额</span
-          ><b style="font-weight: normal; color: red;"
+          ><b style="font-weight: normal; color: red"
             >￥{{ parseFloat(infoData.payFee).toFixed(2) }}</b
           >
         </div>
@@ -64,7 +64,7 @@
       <div class="infoItem">
         <div v-if="infoData.refundFee">
           <span>退费金额</span
-          ><b style="font-weight: normal; color: red;"
+          ><b style="font-weight: normal; color: red"
             >￥{{ parseFloat(infoData.refundFee).toFixed(2) }}</b
           >
         </div>

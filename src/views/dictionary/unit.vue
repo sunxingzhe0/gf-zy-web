@@ -7,9 +7,7 @@
       :tableData="tableData"
     >
       <template v-slot:footertool>
-        <el-button type="primary" @click="add()">
-          新增单位
-        </el-button>
+        <el-button type="primary" @click="add()"> 新增单位 </el-button>
         <el-button
           plain
           type="primary"
@@ -110,7 +108,7 @@
       >
         <el-form-item prop="upload"
           ><el-button size="small" type="primary" @click="download"
-            >下载导入模块</el-button
+            >下载导入模板</el-button
           ><el-upload
             class="upload-demo"
             action
@@ -278,7 +276,7 @@ export default {
     }
   },
   methods: {
-    //下载导入模块
+    //下载导入模板
     async download() {
       modularLexcel('药品单位字典模板.xls')
     },

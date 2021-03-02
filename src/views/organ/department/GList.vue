@@ -119,28 +119,12 @@
         <el-row>
           <el-col :span="16">
             <el-form-item label="上级科室">
-              <el-select v-model="form.name">
-                <el-option
-                  v-for="item in options"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-              <!-- <div>{{ form.name || '-' }}</div> -->
+              <div>{{ form.faDeptName || '暂无' }}</div>
             </el-form-item>
           </el-col>
           <el-col :span="16">
             <el-form-item label="所属院区" required>
-              <el-select v-model="form.orgName">
-                <el-option
-                  v-for="item in options"
-                  :key="item.id"
-                  :label="item.orgName"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-              <!-- <div>{{ form.orgName }}</div> -->
+              <div>{{ form.orgName }}</div>
             </el-form-item>
           </el-col>
           <el-col :span="16">
@@ -150,8 +134,8 @@
           </el-col>
           <el-col :span="16">
             <el-form-item label="科室名称" required>
-              <el-input v-model="form.name"></el-input>
-              <!-- <div>{{ form.name }}</div> -->
+              <!-- <el-input v-model="form.name"></el-input> -->
+              <div>{{ form.name }}</div>
             </el-form-item>
           </el-col>
 
@@ -236,7 +220,7 @@
       >
         <el-form-item prop="upload">
           <el-button size="small" type="primary" @click="download"
-            >下载导入模块</el-button
+            >下载导入模板</el-button
           >
           <el-upload
             class="upload-demo"
@@ -475,6 +459,7 @@ export default {
       isShow: false,
       form: {
         name: '',
+        faDeptName: '',
         intro: '',
         pid: '',
         photo: '',
@@ -600,6 +585,7 @@ export default {
         this.form.orgName = row.orgName
         this.form.recommend = row.recommend
         this.form.state = row.state
+        this.form.faDeptName = row.faDeptName
       } else {
         this.form.id = ''
         this.form.name = ''
@@ -608,6 +594,7 @@ export default {
         this.form.photo = ''
         this.form.notice = ''
         this.form.orgName = ''
+        this.form.faDeptName = ''
         this.form.recommend = false
         this.form.state = true
       }

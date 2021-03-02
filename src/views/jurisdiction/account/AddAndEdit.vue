@@ -32,7 +32,7 @@
           </el-image>
 
           <el-upload
-            style="display: inline-block;"
+            style="display: inline-block"
             action
             :show-file-list="false"
             :disabled="platformAccount"
@@ -62,11 +62,11 @@
           <el-col :md="12">
             <el-form-item label="账号角色" prop="role">
               <div
-                style="margin-left: -10px; overflow: hidden;"
+                style="margin-left: -10px; overflow: hidden"
                 v-show="model.roleId.length"
               >
                 <el-tag
-                  style="margin: 0 0 10px 10px;"
+                  style="margin: 0 0 10px 10px"
                   v-for="{ name, id } in roles4Tag"
                   :key="id"
                   closable
@@ -108,7 +108,7 @@
               <el-date-picker
                 v-model="model.workHistory"
                 type="date"
-                style="width: 100%;"
+                style="width: 100%"
                 value-format="yyyy-MM-dd"
                 placeholder="选择日期"
                 :picker-options="pickerOptions"
@@ -139,7 +139,7 @@
           <el-col :md="12">
             <el-form-item label="是否本院" prop="inHospital">
               <el-select
-                style="width: 100%;"
+                style="width: 100%"
                 v-model="model.inHospital"
                 filterable
               >
@@ -156,7 +156,7 @@
             >
               <el-select
                 disabled
-                style="width: 100%;"
+                style="width: 100%"
                 :value="orgName"
                 filterable
               >
@@ -168,7 +168,7 @@
           <el-col :md="12">
             <el-form-item label="是否推荐" prop="recommend">
               <el-select
-                style="width: 100%;"
+                style="width: 100%"
                 v-model="model.recommend"
                 filterable
               >
@@ -179,7 +179,7 @@
           </el-col>
           <el-col :md="12">
             <el-form-item label="明星专家" prop="star">
-              <el-select style="width: 100%;" v-model="model.star" filterable>
+              <el-select style="width: 100%" v-model="model.star" filterable>
                 <el-option label="是" :value="true"></el-option>
                 <el-option label="否" :value="false"></el-option>
               </el-select>
@@ -262,7 +262,7 @@
           :titleId="model.titleId"
         />
 
-        <EditFooter class="is-center" style="z-index: 10;">
+        <EditFooter class="is-center" style="z-index: 10">
           <el-button
             type="primary"
             size="small"
@@ -277,7 +277,7 @@
 
     <el-tab-pane label="实名信息" name="auth">
       <el-form
-        style="max-width: 500px; position: relative;"
+        style="max-width: 500px; position: relative"
         ref="authForm"
         :model="model"
         :rules="rules"
@@ -294,7 +294,7 @@
 
         <el-form-item label="性别" prop="sex">
           <el-select
-            style="width: 100%;"
+            style="width: 100%"
             v-model="model.sex"
             v-show="!model.idCard"
             :disabled="platformAccount"
@@ -328,14 +328,10 @@
       </el-form>
       <div
         class="line"
-        style="
-          width: 100%;
-          border-top: 1px solid #f1f1f1;
-          padding-bottom: 22px;
-        "
+        style="width: 100%; border-top: 1px solid #f1f1f1; padding-bottom: 22px"
       ></div>
       <el-form
-        style="max-width: 500px; position: relative;"
+        style="max-width: 500px; position: relative"
         ref="authForm"
         :model="model"
         :rules="rules"
@@ -362,7 +358,7 @@
       </el-form>
       <EditFooter
         class="is-center"
-        style="z-index: 10; width: 500px;"
+        style="z-index: 10; width: 500px"
         v-if="!model.idCard || !model.phone"
       >
         <el-button
@@ -397,7 +393,7 @@
           <el-col :md="12">
             <el-form-item label="科室" prop="deptId">
               <el-select
-                style="width: 100%;"
+                style="width: 100%"
                 v-model="model.deptId"
                 filterable
                 multiple
@@ -417,7 +413,7 @@
           <el-col :md="12">
             <el-form-item label="默认科室" prop="defDeptId">
               <el-select
-                style="width: 100%;"
+                style="width: 100%"
                 v-model="model.defDeptId"
                 filterable
                 :disabled="platformAccount"
@@ -435,7 +431,7 @@
           <el-col :md="12">
             <el-form-item label="职称" prop="titleId">
               <el-select
-                style="width: 100%;"
+                style="width: 100%"
                 v-model="model.titleId"
                 filterable
                 :disabled="platformAccount"
@@ -453,7 +449,7 @@
           <el-col :md="12">
             <el-form-item label="药房" prop="storeId">
               <el-select
-                style="width: 100%;"
+                style="width: 100%"
                 v-model="model.storeId"
                 @change="changeStore"
                 filterable
@@ -472,7 +468,7 @@
           <el-col :md="12">
             <el-form-item label="职务" prop="position">
               <el-select
-                style="width: 100%;"
+                style="width: 100%"
                 v-model="model.dutyType"
                 filterable
                 :disabled="platformAccount"
@@ -525,23 +521,23 @@
         >
           <el-form-item
             v-if="type === 'DOCTOR_QUAL'"
-            style="margin-bottom: 20px;"
+            style="margin-bottom: 20px"
             :rules="{ required: true, message: '请输入', trigger: 'blur' }"
           >
             <el-input
-              style="width: 33%;"
+              style="width: 33%"
               v-model="model.certs[index].practiceOrg"
               placeholder="主要执业单位"
             ></el-input>
           </el-form-item>
 
           <el-input
-            style="width: 33%;"
+            style="width: 33%"
             v-model="model.certs[index].certNo"
             :placeholder="`请输入${certificateEnum[type]}编号`"
           ></el-input>
 
-          <div style="margin-top: 10px;" v-for="(id, _) in fileId" :key="id">
+          <div style="margin-top: 10px" v-for="(id, _) in fileId" :key="id">
             <el-image
               style="
                 vertical-align: bottom;
@@ -555,7 +551,7 @@
             ></el-image>
 
             <el-upload
-              style="display: inline-block; margin-left: 10px;"
+              style="display: inline-block; margin-left: 10px"
               action
               :show-file-list="false"
               accept="image/png, image/jpeg, image/gif, image/webp"
@@ -573,7 +569,7 @@
             </el-upload>
           </div>
 
-          <div style="margin-top: 10px;">
+          <div style="margin-top: 10px">
             <el-image
               style="
                 vertical-align: bottom;
@@ -587,7 +583,7 @@
             ></el-image>
 
             <el-upload
-              style="display: inline-block; margin-left: 10px;"
+              style="display: inline-block; margin-left: 10px"
               action
               :show-file-list="false"
               accept="image/png, image/jpeg, image/gif, image/webp"
@@ -608,7 +604,7 @@
         </el-form-item>
       </el-form>
 
-      <EditFooter class="is-center" style="z-index: 10;">
+      <EditFooter class="is-center" style="z-index: 10">
         <template v-if="!model.examine">
           <el-button
             type="primary"
@@ -667,7 +663,7 @@
       </el-image>
 
       <el-upload
-        style="display: inline-block;"
+        style="display: inline-block"
         action
         :show-file-list="false"
         accept="image/png, image/jpeg, image/gif, image/webp"
@@ -696,11 +692,11 @@
 
     <el-form-item label="账号角色" prop="role">
       <div
-        style="margin-left: -10px; overflow: hidden;"
+        style="margin-left: -10px; overflow: hidden"
         v-show="model.roleId.length"
       >
         <el-tag
-          style="margin: 0 0 10px 10px;"
+          style="margin: 0 0 10px 10px"
           v-for="{ name, id } in roles4Tag"
           :key="id"
           closable
@@ -756,7 +752,7 @@
 
       <el-col :md="12">
         <el-form-item label="性别" prop="sex">
-          <el-select style="width: 100%;" v-model="model.sex">
+          <el-select style="width: 100%" v-model="model.sex">
             <el-option label="女" value="0"></el-option>
             <el-option label="男" value="1"></el-option>
           </el-select>
@@ -786,7 +782,7 @@
           label="任职医院"
           :rules="{ required: true, message: '请输入', trigger: 'blur' }"
         >
-          <el-select disabled style="width: 100%;" :value="orgName" filterable>
+          <el-select disabled style="width: 100%" :value="orgName" filterable>
             <el-option :label="orgName" :value="orgName"></el-option>
           </el-select>
         </el-form-item>
@@ -795,7 +791,7 @@
       <el-col :md="12">
         <el-form-item label="科室" prop="deptId">
           <el-select
-            style="width: 100%;"
+            style="width: 100%"
             v-model="model.deptId"
             filterable
             multiple
@@ -813,7 +809,7 @@
 
       <el-col :md="12">
         <el-form-item label="默认科室" prop="defDeptId">
-          <el-select style="width: 100%;" v-model="model.defDeptId" filterable>
+          <el-select style="width: 100%" v-model="model.defDeptId" filterable>
             <el-option
               v-for="{ id, name } in dept4default"
               :key="id"
@@ -827,7 +823,7 @@
       <el-col :md="12">
         <el-form-item label="药房" prop="storeId">
           <el-select
-            style="width: 100%;"
+            style="width: 100%"
             v-model="model.storeId"
             @change="changeStore"
             filterable
@@ -845,7 +841,7 @@
 
       <el-col :md="12">
         <el-form-item label="职称" prop="titleId">
-          <el-select style="width: 100%;" v-model="model.titleId" filterable>
+          <el-select style="width: 100%" v-model="model.titleId" filterable>
             <el-option
               v-for="{ id, name } in pre.title"
               :key="id"
@@ -858,7 +854,7 @@
 
       <el-col :md="12">
         <el-form-item label="职务" prop="position">
-          <el-select style="width: 100%;" v-model="model.dutyType" filterable>
+          <el-select style="width: 100%" v-model="model.dutyType" filterable>
             <el-option
               v-for="{ value, label } in post"
               :key="value"
@@ -874,7 +870,7 @@
           <el-date-picker
             v-model="model.workHistory"
             type="date"
-            style="width: 100%;"
+            style="width: 100%"
             value-format="yyyy-MM-dd"
             placeholder="选择日期"
           >
@@ -889,7 +885,7 @@
 
       <el-col :md="12">
         <el-form-item label="是否本院" prop="inHospital">
-          <el-select style="width: 100%;" v-model="model.inHospital" filterable>
+          <el-select style="width: 100%" v-model="model.inHospital" filterable>
             <el-option label="是" :value="true"></el-option>
             <el-option label="否" :value="false"></el-option>
           </el-select>
@@ -898,7 +894,7 @@
 
       <el-col :md="12">
         <el-form-item label="是否推荐" prop="recommend">
-          <el-select style="width: 100%;" v-model="model.recommend" filterable>
+          <el-select style="width: 100%" v-model="model.recommend" filterable>
             <el-option label="是" :value="true"></el-option>
             <el-option label="否" :value="false"></el-option>
           </el-select>
@@ -906,7 +902,7 @@
       </el-col>
       <el-col :md="12">
         <el-form-item label="明星专家" prop="star">
-          <el-select style="width: 100%;" v-model="model.star" filterable>
+          <el-select style="width: 100%" v-model="model.star" filterable>
             <el-option label="是" :value="true"></el-option>
             <el-option label="否" :value="false"></el-option>
           </el-select>
@@ -1008,23 +1004,23 @@
     >
       <el-form-item
         v-if="type === 'DOCTOR_QUAL'"
-        style="margin-bottom: 20px;"
+        style="margin-bottom: 20px"
         :rules="{ required: true, message: '请输入', trigger: 'blur' }"
       >
         <el-input
-          style="width: 33%;"
+          style="width: 33%"
           v-model="model.certs[index].practiceOrg"
           placeholder="主要执业单位"
         ></el-input>
       </el-form-item>
 
       <el-input
-        style="width: 33%;"
+        style="width: 33%"
         v-model="model.certs[index].certNo"
         :placeholder="`请输入${certificateEnum[type]}编号`"
       ></el-input>
 
-      <div style="margin-top: 10px;" v-for="(id, _) in fileId" :key="id">
+      <div style="margin-top: 10px" v-for="(id, _) in fileId" :key="id">
         <el-image
           style="
             vertical-align: bottom;
@@ -1038,7 +1034,7 @@
         ></el-image>
 
         <el-upload
-          style="display: inline-block; margin-left: 10px;"
+          style="display: inline-block; margin-left: 10px"
           action
           :show-file-list="false"
           accept="image/png, image/jpeg, image/gif, image/webp"
@@ -1056,7 +1052,7 @@
         </el-upload>
       </div>
 
-      <div style="margin-top: 10px;">
+      <div style="margin-top: 10px">
         <el-image
           style="
             vertical-align: bottom;
@@ -1070,7 +1066,7 @@
         ></el-image>
 
         <el-upload
-          style="display: inline-block; margin-left: 10px;"
+          style="display: inline-block; margin-left: 10px"
           action
           :show-file-list="false"
           accept="image/png, image/jpeg, image/gif, image/webp"

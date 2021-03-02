@@ -1,5 +1,5 @@
 <template>
-  <el-table :data="tableData" style="width: 100%;">
+  <el-table :data="tableData" style="width: 100%">
     <el-table-column prop="diagnosisType" label="类别" width="120">
       <template slot-scope="{ row }">
         {{

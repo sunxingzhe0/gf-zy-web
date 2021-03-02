@@ -25,7 +25,7 @@
             <img src="~@/assets/headerImg.png" />
           </el-avatar> -->
           <el-upload
-            style="margin-right: 10px;"
+            style="margin-right: 10px"
             class="upload-demo"
             action
             accept="image/png, image/jpeg, image/gif, image/webp"
@@ -34,13 +34,11 @@
             :show-file-list="false"
             :http-request="httpRequest"
           >
-            <el-button type="primary" size="mini">
-              选择照片
-            </el-button>
+            <el-button type="primary" size="mini"> 选择照片 </el-button>
           </el-upload>
           <el-button
             type="danger"
-            style="margin-bottom: 4px;"
+            style="margin-bottom: 4px"
             size="mini"
             @click="deleteAvatar"
           >

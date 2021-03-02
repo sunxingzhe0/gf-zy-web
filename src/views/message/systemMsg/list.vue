@@ -12,14 +12,12 @@
         </div>
       </template>
       <template v-slot:footertool>
-        <el-button type="primary" @click="batchRead">
-          一键已读
-        </el-button>
+        <el-button type="primary" @click="batchRead"> 一键已读 </el-button>
       </template>
       <template v-slot:fixed="{ row }">
         <el-button type="text" @click="info(row)">查看</el-button>
         <el-button
-          style="color: #f74949;"
+          style="color: #f74949"
           type="text"
           @click="del(row.id)"
           v-if="scope == 'GR'"

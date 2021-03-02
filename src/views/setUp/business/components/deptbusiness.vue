@@ -40,7 +40,7 @@
                   v-model="row.selectConfig"
                   class="input-with-select"
                   size="mini"
-                  style="max-width: 200px;"
+                  style="max-width: 200px"
                   @change="handleChange(row)"
                 >
                   <el-select
@@ -65,7 +65,7 @@
                   v-model="row.selectConfig"
                   size="mini"
                   @change="handleChange(row)"
-                  style="max-width: 200px;"
+                  style="max-width: 200px"
                 >
                   <template slot="prepend">￥</template>
                 </el-input>
@@ -74,7 +74,7 @@
               <div v-if="row.bizSelect == 'RESP_TAKE'">
                 <el-select
                   v-model="row.selectConfig"
-                  style="max-width: 200px;"
+                  style="max-width: 200px"
                   slot="append"
                   size="mini"
                   placeholder="请选择"
@@ -94,7 +94,7 @@
                   v-model="row.selectConfig"
                   slot="append"
                   placeholder="请选择"
-                  style="max-width: 200px;"
+                  style="max-width: 200px"
                   @change="handleChange(row)"
                 >
                   <el-option
@@ -111,7 +111,7 @@
                   v-model="row.selectConfig"
                   size="mini"
                   disabled
-                  style="max-width: 200px;"
+                  style="max-width: 200px"
                 ></el-input>
               </div>
             </template>

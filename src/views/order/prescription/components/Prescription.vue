@@ -1,7 +1,5 @@
 <template>
-  <section>
-    假装这里有个处方单
-  </section>
+  <section>假装这里有个处方单</section>
 </template>
 
 <script>

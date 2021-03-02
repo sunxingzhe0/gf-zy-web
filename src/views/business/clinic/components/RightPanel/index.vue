@@ -21,7 +21,7 @@
         <el-image
           :src="FILE_URL(patient.avatar)"
           class="avatar_round"
-          style="width: 60px; height: 60px;"
+          style="width: 60px; height: 60px"
         >
           <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
         </el-image>
@@ -48,8 +48,8 @@
         <el-col :span="14">就诊卡：{{ patient.cardNo || '-' }}</el-col>
       </el-row>
 
-      <dt class="section" style="color: red;">过敏史</dt>
-      <dd class="section" style="color: red;">{{ patient.allergies }}</dd>
+      <dt class="section" style="color: red">过敏史</dt>
+      <dd class="section" style="color: red">{{ patient.allergies }}</dd>
 
       <dt class="section">预问诊</dt>
       <dd class="section">
@@ -58,7 +58,7 @@
           <el-image
             v-for="_ in patient.pic"
             :key="_"
-            style="width: 80px; height: 80px;"
+            style="width: 80px; height: 80px"
             :src="FILE_URL(_)"
             fit="cover"
             :preview-src-list="patient.pic.map(FILE_URL)"
@@ -77,10 +77,10 @@
           次
         </div>
 
-        <el-row :gutter="10" style="font-size: 12px;">
+        <el-row :gutter="10" style="font-size: 12px">
           <el-col :span="4">医院</el-col>
           <el-col :span="20">
-            <el-select style="width: 100%;" v-model="seeDoctor.query.hospital">
+            <el-select style="width: 100%" v-model="seeDoctor.query.hospital">
               <el-option
                 v-for="{ name, id } in hospitalList"
                 :label="name"
@@ -93,7 +93,7 @@
           <el-col :span="4">类型</el-col>
           <el-col :span="20">
             <el-select
-              style="width: 100%;"
+              style="width: 100%"
               v-model="seeDoctor.query.medicalType"
             >
               <el-option
@@ -134,7 +134,7 @@
           <el-col :span="20">
             <el-date-picker
               v-model="seeDoctor.date"
-              style="width: 100%;"
+              style="width: 100%"
               type="daterange"
               range-separator="至"
               start-placeholder="开始日期"

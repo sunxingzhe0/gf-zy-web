@@ -2,7 +2,7 @@
   <div>
     <div
       v-if="list.length == 0"
-      style="margin: 240px 0; color: #999;"
+      style="margin: 240px 0; color: #999"
       class="is-center"
     >
       暂无数据

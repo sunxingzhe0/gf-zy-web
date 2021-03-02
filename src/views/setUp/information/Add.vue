@@ -1,5 +1,5 @@
 <template>
-  <div class="view__card" style="padding-top: 60px;">
+  <div class="view__card" style="padding-top: 60px">
     <el-form :model="form" :rules="rules" ref="ruleForm" label-width="110px">
       <el-row>
         <el-col>

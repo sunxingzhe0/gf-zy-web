@@ -56,7 +56,7 @@
             <el-table-column label="患者记录">
               <template v-slot="{ row }">
                 <span
-                  style="color: #0ab2c1; cursor: pointer;"
+                  style="color: #0ab2c1; cursor: pointer"
                   @click="seeInfo(row)"
                   >查看</span
                 >
@@ -71,7 +71,7 @@
       <!-- 推送次数跳转 -->
       <template v-slot:slot_pushCount="{ row }">
         <span
-          style="color: #0ab2c1; cursor: pointer;"
+          style="color: #0ab2c1; cursor: pointer"
           @click="goPushList(row)"
           >{{ row.pushCount }}</span
         >
@@ -112,9 +112,7 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button @click="dialog.visible = false">
-            取消
-          </el-button>
+          <el-button @click="dialog.visible = false"> 取消 </el-button>
           <el-button
             type="primary"
             :loading="dialog.loading"
@@ -177,7 +175,6 @@ export default {
     }
   },
   created() {
-    console.log('初始化')
     this.clientType = this.$store.state.user.platform
     this.$route.path === '/patient/patientTube/list' && (this.isShowBtn = false)
   },

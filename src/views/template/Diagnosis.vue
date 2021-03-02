@@ -30,7 +30,7 @@
           @select-all="tableListSelectAll"
           @row-click="rowClickItem"
           tooltip-effect="dark"
-          style="width: 100%;"
+          style="width: 100%"
         >
           <el-table-column type="selection" width="45"></el-table-column>
           <el-table-column type="index" label="序号" width="50">

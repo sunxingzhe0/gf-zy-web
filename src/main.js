@@ -15,7 +15,6 @@ import * as filters from './filters' // global filters
 import { getToken } from '@/utils/auth'
 import { toQueryString } from '@/utils'
 import { authGuard } from './permission' // permission control
-
 import './icons' // icon
 import './directive/drag-size/index'
 Vue.use(CKEditor)

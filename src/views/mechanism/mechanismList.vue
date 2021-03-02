@@ -23,9 +23,7 @@
         </el-switch>
       </template>
       <template v-slot:fixed="{ row }">
-        <el-button size="mini" type="text" @click="edit(row)">
-          编辑
-        </el-button>
+        <el-button size="mini" type="text" @click="edit(row)"> 编辑 </el-button>
       </template>
     </List>
     <!-- 新增or编辑 -->

@@ -102,7 +102,7 @@
                 auxiliaryExam   string
                 diagDesc        string
                 advice          string
-            
+
             }>  props病历信息
 @emit       none
 */
@@ -156,6 +156,7 @@ export default {
             medicalName: val.medicalName,
             mainSuit: val.chiefComplaint,
             nowDisease: val.currentDisease,
+            hisDisease: val.historyDisease,
           }
         }
         this.medicalRecord = medicalRecord

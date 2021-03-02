@@ -24,6 +24,7 @@
               type="text"
               tabindex="1"
               autocomplete="on"
+              @change="accountChange"
             >
               <template v-slot:prefix>
                 <span class="svg-container">
@@ -121,7 +122,7 @@
           <el-button
             :loading="loading"
             type="primary"
-            style="width: 100%;"
+            style="width: 100%"
             @click.native.prevent="handleLogin"
           >
             登录
@@ -191,8 +192,12 @@ export default {
     },
   },
   created() {
-    const account = $store.loadAccount(this.loginForm)
-    if (account) this.loginForm = Object.assign({}, account)
+    const account = $store.loadAccount()
+    if (account)
+      this.loginForm = Object.assign(
+        {},
+        Array.isArray(account) ? account[account.length - 1] : account,
+      )
     // window.addEventListener('storage', this.afterQRScan)
   },
   mounted() {
@@ -240,6 +245,21 @@ export default {
       //   showClose: true,
       //   duration: 3000,
       // })
+    },
+    accountChange() {
+      const account = $store.loadAccount()
+      if (account) {
+        if (Array.isArray(account)) {
+          let accountItem = account.filter(
+            item => this.loginForm.account == item.account,
+          )
+          if (accountItem.length > 0) {
+            this.loginForm.password = accountItem[0].password
+          } else {
+            this.loginForm.password = ''
+          }
+        }
+      }
     },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {

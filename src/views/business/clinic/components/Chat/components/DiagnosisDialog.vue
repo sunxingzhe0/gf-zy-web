@@ -31,7 +31,7 @@
         >
           全选
         </el-checkbox>
-        <div style="margin: 20px 0;">
+        <div style="margin: 20px 0">
           <span
             v-for="item in [1, 3, 7]"
             :key="item"
@@ -60,7 +60,7 @@
           <el-table
             :ref="`table_${diagnosisId}`"
             :data="dtoList"
-            style="width: 100%;"
+            style="width: 100%"
             @selection-change="
               selectionChange(arguments, ['historyTemp', diagnosisId])
             "
@@ -93,14 +93,14 @@
 
     <div
       class="container"
-      style="border-left: 1px solid #eee; padding-left: 30px;"
+      style="border-left: 1px solid #eee; padding-left: 30px"
     >
       <h3>常用诊断</h3>
       <el-scrollbar class="defScroll">
         <el-table
           ref="commonTable"
           :data="diagData.commonTemp"
-          style="width: 100%;"
+          style="width: 100%"
           @selection-change="selectionChange(arguments, ['commonTemp'])"
         >
           <el-table-column type="selection" width="55"> </el-table-column>

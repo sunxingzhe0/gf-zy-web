@@ -57,7 +57,7 @@
             </div>
           </div>
 
-          <div class="btns" style="padding-top: 10px;">
+          <div class="btns" style="padding-top: 10px">
             <el-button
               type="primary"
               size="small"
@@ -98,7 +98,7 @@
         >
           <!-- lg: hasPopover ? { span: 10, offset: 2 } : 10, -->
           <template>
-            <div class="flex-start-center" style="min-width: 530px;">
+            <div class="flex-start-center" style="min-width: 530px">
               <template v-if="data.date">
                 <el-select
                   class="prepend-select prepend-select-date"
@@ -234,7 +234,7 @@
             v-on="data.on"
             collapse-tags
             v-bind="data.attrs"
-            style="width: 100%;"
+            style="width: 100%"
             :remote="props.remote"
             v-model="values[keys]"
             :multiple="props.multiple"
@@ -256,18 +256,18 @@
           :sm="6"
           :lg="6"
           :xl="3"
-          style="text-align: right; float: right;"
+          style="text-align: right; float: right"
           v-if="alwaysShowBtn"
         >
           <el-button
             type="primary"
             size="small"
-            style="font-size: 16px; padding: 7px 15px;"
+            style="font-size: 16px; padding: 7px 15px"
             @click="resolveEmitChange(), (isOpen = false)"
             >搜索</el-button
           >
           <el-button
-            style="font-size: 16px; padding: 7px 15px;"
+            style="font-size: 16px; padding: 7px 15px"
             size="small"
             @click="clearFilterData('inline')"
             >{{ resetBtnText }}</el-button

@@ -3,7 +3,7 @@
     <div class="view__card mb10">
       <div class="flex-start-start">
         <div>
-          <div class="is-center" style="padding-right: 15px;">
+          <div class="is-center" style="padding-right: 15px">
             <!-- <el-avatar :size="60" :src="FILE_URL(form.picId)"></el-avatar> -->
             <el-image :src="FILE_URL(form.picId)" :size="60">
               <img

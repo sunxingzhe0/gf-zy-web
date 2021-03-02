@@ -7,9 +7,7 @@
       :tableData="tableData"
     >
       <template v-slot:fixed="{ row }">
-        <el-button type="text" @click="info(row.orderId)">
-          查看
-        </el-button>
+        <el-button type="text" @click="info(row.orderId)"> 查看 </el-button>
       </template>
       <template v-slot:slot_payFee="{ row }">
         <span>￥{{ row.payFee }}</span>

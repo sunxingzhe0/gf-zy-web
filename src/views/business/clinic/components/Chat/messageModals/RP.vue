@@ -6,7 +6,7 @@
         <span class="ml-40">创建时间：{{ createTime }}</span>
         <span class="ml-40">数量：{{ rpDrugList.length }}</span>
       </div>
-      <el-table :data="rpDrugList" style="width: 100%;">
+      <el-table :data="rpDrugList" style="width: 100%">
         <el-table-column
           v-for="{ prop, label, width, formatter } in columns"
           :key="prop"

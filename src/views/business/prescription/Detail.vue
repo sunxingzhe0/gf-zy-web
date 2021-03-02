@@ -3,7 +3,7 @@
     <header v-if="!isEdit">
       <h3 class="view__title">
         处方号：{{ id }}
-        <el-tag style="margin-left: 30px;" type="info" size="mini">
+        <el-tag style="margin-left: 30px" type="info" size="mini">
           {{ statusMap[rpInfo.status] }}
         </el-tag>
       </h3>

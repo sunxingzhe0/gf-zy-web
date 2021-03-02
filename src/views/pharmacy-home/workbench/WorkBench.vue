@@ -1,8 +1,6 @@
 <template>
   <section class="view__card">
-    <div class="partTitle">
-      我的工作台
-    </div>
+    <div class="partTitle">我的工作台</div>
     <el-row :gutter="20">
       <el-col :span="8">
         <div
@@ -35,9 +33,7 @@
         </div></el-col
       >
     </el-row>
-    <div class="partTitle">
-      核销
-    </div>
+    <div class="partTitle">核销</div>
     <div class="inputBox">
       <el-input placeholder="请输入兑换码" v-model="inputCode">
         <template slot="prepend">兑换码</template>
@@ -61,7 +57,7 @@
                 :size="30"
                 :src="FILE_URL(perInfo.userAvatar)"
                 :style="{ 'margin-left': '10px' }"
-              > 
+              >
               </el-avatar>-->
               <el-image
                 style="
@@ -242,10 +238,11 @@ export default {
           this.inputCode = ''
           this.perInfo = {}
           this.tableData = []
+        } else {
+          this.perInfo = res
+          this.tableData = res.contentList
         }
       })
-      this.perInfo = res
-      this.tableData = res.contentList
     },
     //点击取消
     andleCancel() {

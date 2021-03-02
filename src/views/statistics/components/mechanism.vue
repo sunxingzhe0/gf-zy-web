@@ -3,7 +3,7 @@
     <el-row>
       <el-col :md="18">
         <el-date-picker
-          style="margin-right: 10px;"
+          style="margin-right: 10px"
           type="daterange"
           :clearable="false"
           :picker-options="pickerOptions"
@@ -33,7 +33,7 @@
         <el-select
           v-model="depchLisb"
           @change="hadleChange"
-          style="margin-right: 20px;"
+          style="margin-right: 20px"
         >
           <el-option label="全部" value=""></el-option>
           <el-option
@@ -159,7 +159,7 @@
           :data="tableData"
           @sort-change="hadnleSort"
           border
-          style="width: 100%;"
+          style="width: 100%"
           :header-cell-style="{ textAlign: 'center' }"
         >
           <el-table-column width="500" align="center">

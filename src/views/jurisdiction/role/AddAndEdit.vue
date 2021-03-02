@@ -8,7 +8,7 @@
   >
     <el-form-item label="角色名称" prop="name">
       <el-input
-        style="max-width: 400px;"
+        style="max-width: 400px"
         v-model="model.name"
         maxlength="20"
         show-word-limit

@@ -7,7 +7,7 @@
     class="prescription-temp"
   >
     <PrescriptionTemplate ref="pt" mode="IMPORT" v-if="show" />
-    <el-row type="flex" justify="center" style="padding-top: 10px;">
+    <el-row type="flex" justify="center" style="padding-top: 10px">
       <el-button size="small" @click="$emit('update:visible', false)">
         取消
       </el-button>

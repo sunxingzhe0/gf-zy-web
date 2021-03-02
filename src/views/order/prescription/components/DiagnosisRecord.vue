@@ -1,8 +1,8 @@
 <template>
   <div>
-    <div class="flex-between" style="margin-bottom: 30px;">
+    <div class="flex-between" style="margin-bottom: 30px">
       <div>
-        <span style="color: #666;">时间段：</span
+        <span style="color: #666">时间段：</span
         ><el-date-picker
           v-model="date"
           type="datetimerange"
@@ -12,7 +12,7 @@
           start-placeholder="开始日期"
           end-placeholder="结束日期"
           align="right"
-          style="margin-right: 10px;"
+          style="margin-right: 10px"
           @change="dateChange"
           :default-time="['00:00:00', '23:59:59']"
         >
@@ -52,10 +52,10 @@
           src="https://cube.elemecdn.com/0/88/03b0d39583f48206768a7534e55bcpng.png"
         ></el-avatar>
       </div>
-      <div class="flex_1" style="padding-left: 20px;">
-        <div class="flex-between" style="margin-bottom: 20px;">
+      <div class="flex_1" style="padding-left: 20px">
+        <div class="flex-between" style="margin-bottom: 20px">
           <div>{{ item.fromNickName }}</div>
-          <span class="info" style="font-size: 14px;">{{
+          <span class="info" style="font-size: 14px">{{
             formatDate(item.serverTime, 'yyyy-MM-dd hh:mm:ss')
           }}</span>
         </div>

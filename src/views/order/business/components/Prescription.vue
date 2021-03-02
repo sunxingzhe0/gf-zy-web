@@ -15,7 +15,7 @@
       </el-col>
       <el-col
         :span="24"
-        style="margin-bottom: 20px; padding-left: 60px;"
+        style="margin-bottom: 20px; padding-left: 60px"
         v-for="item in info"
         :key="item.id"
       >
@@ -23,7 +23,7 @@
           <template v-slot:header>
             <!-- <b>处方号：{{ item.prescriptionNo }}</b> -->
             <b>处方号：{{ item.id }}</b>
-            <el-row style="color: #666; font-size: 14px;">
+            <el-row style="color: #666; font-size: 14px">
               <el-col :md="8" :lg="2"
                 >数量:{{ item.number || item.drugNumber }}</el-col
               >
@@ -49,7 +49,7 @@
           <el-table
             :data="item.rpDrugList || item.contentList"
             border
-            style="width: 100%;"
+            style="width: 100%"
           >
             <el-table-column type="index" label="序号" width="60">
             </el-table-column>

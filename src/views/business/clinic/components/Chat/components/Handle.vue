@@ -9,7 +9,7 @@
           type="primary"
           @click="addItem()"
           :disabled="disabled"
-          style="margin-right: 5px;"
+          style="margin-right: 5px"
           :title="disabled ? '最多只能有一个草稿' : ''"
         >
           新建

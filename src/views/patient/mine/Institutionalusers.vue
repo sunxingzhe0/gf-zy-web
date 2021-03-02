@@ -8,8 +8,8 @@
     >
       <template v-slot:slot_nickname="{ row }">
         <!-- <el-avatar :size="60" :src="FILE_URL(row.avatar)"></el-avatar> -->
-        <div style="line-height: 30px;">
-          <el-image style="float: left;" :src="FILE_URL(row.avatar)">
+        <div style="line-height: 30px">
+          <el-image style="float: left" :src="FILE_URL(row.avatar)">
             <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
           </el-image>
           <span>{{ row.nickname }}</span>

@@ -19,6 +19,7 @@
         ref="scroller"
         :items="items"
         :min-item-size="54"
+        style="height: 500px;"
       >
         <template #before>
           <infinite-loading
@@ -27,7 +28,7 @@
             direction="top"
             @infinite="infiniteHandler"
           >
-            <div slot="no-more" style="margin-top: 10px; font-size: 14px;">
+            <div slot="no-more" style="margin-top: 10px; font-size: 14px">
               已经到顶啦
             </div>
 
@@ -112,10 +113,11 @@
         </div>
       </transition>-->
 
+      <!-- , 'WAIT_TREAT' -->
       <div
         class="c__chat-footer"
         :style="
-          ['APPOINTMENT', 'WAIT_TREAT'].includes(bizInfo.status)
+          ['APPOINTMENT'].includes(bizInfo.status)
             ? 'height:150px'
             : 'height:' + initHeight
         "
@@ -247,7 +249,7 @@
               >
 
               <el-upload
-                style="margin: 0 10px; display: inline-block;"
+                style="margin: 0 10px; display: inline-block"
                 action
                 :show-file-list="false"
                 accept="image/png, image/jpeg, image/gif, image/webp"
@@ -302,7 +304,7 @@
             <template v-slot:label>
               <svg-icon icon-class="chat-prescription"></svg-icon> 处方
             </template>
-            <div style="height: 100%;">
+            <div style="height: 100%">
               <Prescription
                 inClinic
                 ref="prescription"
@@ -317,7 +319,7 @@
             <template v-slot:label>
               <svg-icon
                 icon-class="chat-chuzhi"
-                style="font-size: 20px; margin-bottom: -2px;"
+                style="font-size: 20px; margin-bottom: -2px"
               ></svg-icon
               >处置</template
             >
@@ -328,7 +330,7 @@
             <template v-slot:label>
               <svg-icon
                 icon-class="chat-yuyue"
-                style="font-size: 20px; margin-bottom: -2px;"
+                style="font-size: 20px; margin-bottom: -2px"
               ></svg-icon
               >诊间预约</template
             >

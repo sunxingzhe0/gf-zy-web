@@ -58,14 +58,14 @@
               icon="el-icon-arrow-left"
               @click="changeMonth('pre')"
             ></el-button>
-            <el-button size="small" style="height: 32px;">{{
+            <el-button size="small" style="height: 32px">{{
               moment(value).format('YYYY 年 MM 月')
             }}</el-button>
             <el-button size="small" @click="changeMonth('next')"
               ><i class="el-icon-arrow-right"></i
             ></el-button>
           </el-button-group>
-          <el-button size="small" @click="today" style="margin-left: 10px;"
+          <el-button size="small" @click="today" style="margin-left: 10px"
             >今日</el-button
           >
           <el-button size="small" @click="nextDay">次日</el-button>
@@ -86,7 +86,7 @@
           placeholder="请按患者姓名搜索"
           v-model="keywords"
           size="small"
-          style="width: 280px;"
+          style="width: 280px"
           class="input-with-select"
           @keyup.enter.native="search"
         >
@@ -121,7 +121,7 @@
           </div>
           <el-calendar ref="date" v-model="value">
             <template v-slot:dateCell="{ date, data }">
-              <div style="display: none;">{{ date }}</div>
+              <div style="display: none">{{ date }}</div>
               <div
                 :class="data.isSelected ? 'active dateWrap' : 'dateWrap'"
                 @click="changeDay(data.day)"

@@ -12,7 +12,7 @@
         type="danger"
         size="mini"
         effect="dark"
-        style="margin-left: 10px;"
+        style="margin-left: 10px"
         >{{ props.unReadMessages }}</el-tag
       >
       <br />

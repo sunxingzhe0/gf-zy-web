@@ -26,7 +26,7 @@
           </div>
         </template>
 
-        <div style="background: #f2f2f2; padding: 15px 20px 6px 20px;">
+        <div style="background: #f2f2f2; padding: 15px 20px 6px 20px">
           1
           <div class="portRight">
             <div class="miniTitle">报告时间</div>
