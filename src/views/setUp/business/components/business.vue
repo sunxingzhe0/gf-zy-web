@@ -16,6 +16,7 @@
           v-model="setting.query"
           :columns="setting.columns"
           :tableData="setting.tableData"
+          tableClass="table-height"
         >
         </List>
       </div>
@@ -26,6 +27,7 @@
           v-model="log.query"
           :columns="log.columns"
           :tableData="log.tableData"
+          tableClass="table-height"
         >
         </List>
       </div>
@@ -195,6 +197,9 @@ export default {
   padding: 0;
   .account_main {
     padding: 10px;
+    .table-height {
+      height: calc(100vh - 205px);
+    }
   }
   .el-tabs--border-card {
     border: 0;

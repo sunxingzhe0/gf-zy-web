@@ -15,7 +15,7 @@
             ><i class="el-icon-arrow-right"></i
           ></el-button>
         </el-button-group>
-        <el-button size="small" @click="today" style="margin-left: 10px;"
+        <el-button size="small" @click="today" style="margin-left: 10px"
           >今日</el-button
         >
         <el-button size="small" @click="nextDay">次日</el-button>
@@ -36,7 +36,7 @@
         placeholder="请按患者姓名搜索"
         v-model="keywords"
         size="small"
-        style="width: 280px;"
+        style="width: 280px"
         class="input-with-select"
         @keyup.enter.native="search"
       >
@@ -128,7 +128,7 @@
               >
                 <div class="date">
                   {{ data.day.split('-')[2] }}日<span>{{
-                    datefu.GetLunarDay(
+                    datefu.solar2lunar(
                       data.day.split('-')[0],
                       data.day.split('-')[1],
                       data.day.split('-')[2],
@@ -271,7 +271,7 @@
 
 <script>
 import { mapState } from 'vuex'
-import datefu from './date'
+import datefu from './newDate'
 import { parseTime } from '@/utils'
 import { getDocSchInfo, curDayDetail, setTime } from '@/api/scheduling'
 import moment from 'moment'

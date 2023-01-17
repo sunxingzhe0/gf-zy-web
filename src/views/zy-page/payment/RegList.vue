@@ -30,9 +30,9 @@
             row.cardNo
           }&state=${
             row.billStateName == 1
-              ? '已付款'
+              ? '已预约'
               : row.billStateName == 2
-              ? '已退费'
+              ? '已取消'
               : ''
           }`"
         >
@@ -52,17 +52,29 @@ const pre = {
   noType: [],
 }
 export default {
-  name: 'TableList',
+  name: 'payment_reg',
   components: {
     List,
   },
-  mixins: [mixin({ fetchListFunction: rnRecordData })],
+  mixins: [
+    mixin({
+      fetchListFunction: async params => {
+        const data = JSON.parse(JSON.stringify(params))
+        data.startFee = data.startFee
+          ? Number(data.startFee).toFixed(2) * 100
+          : ''
+        data.endFee = data.endFee ? Number(data.endFee).toFixed(2) * 100 : ''
+        const res = await rnRecordData(data)
+        return res
+      },
+    }),
+  ],
   data() {
     return {
       query: {
         pageSize: 10,
         timeType: 0,
-        searchType: 0,
+        searchType: 1,
       },
     }
   },
@@ -108,6 +120,11 @@ export default {
                 ...pre.dept.map(_ => ({ label: _.name, value: _.syncCode })),
               ],
             },
+            data: {
+              attrs: {
+                filterable: true,
+              },
+            },
             keys: 'deptId',
           },
           {
@@ -122,8 +139,8 @@ export default {
               label: '支付方式',
               options: [
                 { label: '不限', value: '' },
-                { label: '银联', value: 'UNION' },
                 { label: '微信', value: 'WX' },
+                { label: '支付宝', value: 'ALI_LITE' },
               ],
             },
             keys: 'payment',
@@ -133,8 +150,8 @@ export default {
               label: '单据状态',
               options: [
                 { label: '不限', value: 0 },
-                { label: '已付款', value: 1 },
-                { label: '已退费', value: 2 },
+                { label: '已预约', value: 1 },
+                { label: '已退号', value: 2 },
               ],
             },
             keys: 'billState',
@@ -157,38 +174,62 @@ export default {
         fixed: {
           minWidth: 80,
         },
+        num: {
+          hidden: true,
+        },
         noTypeName: { minWidth: 100 },
         patientName: { minWidth: 100 },
         cardNo: { minWidth: 100 },
         paymentName: { minWidth: 100 },
-        totalFee: {
+        fee: {
           formatter(row) {
-            return `￥${row.totalFee}`
+            return `￥${parseFloat(row.fee).toFixed(2)}`
+          },
+        },
+        totalFee: {
+          hidden: true,
+          formatter(row) {
+            return `￥${parseFloat(row.record.totalFee).toFixed(2)}`
           },
           minWidth: 100,
         },
         billStateName: {
           formatter(row) {
-            return row.billStateName === '1' ? '已付款' : '已退费'
+            switch (row.billStateName) {
+              case '1':
+                return '已预约'
+              case '2':
+                return '已退号'
+              default:
+                return '不限'
+            }
           },
           minWidth: 100,
         },
       }
     },
   },
+
+  created() {
+    this.isFirstEnter = true
+  },
+  // activated() {
+  //   if (!this.$route.meta.isBack || this.isFirstEnter) {
+  //     this.query = {
+  //       pageSize: 10,
+  //       timeType: 0,
+  //       searchType: 1,
+  //       // isFilterMore: true,
+  //     }
+  //   }
+  //   this.$route.meta.isBack = false
+  //   this.isFirstEnter = false
+  // },
   async beforeRouteEnter(to, from, next) {
     ;[pre.dept, pre.noType] = await Promise.all([
       deptChooseList({ tree: false }),
       noTypes(),
     ])
-    next()
-  },
-  beforeRouteLeave(to, from, next) {
-    if (to.path == '/payment/reg/detail') {
-      from.meta.keepAlive = true
-    } else {
-      from.meta.keepAlive = false
-    }
     next()
   },
   methods: {
@@ -198,9 +239,9 @@ export default {
           row.cardNo
         }&state=${
           row.billStateName == 1
-            ? '已付款'
+            ? '已预约'
             : row.billStateName == 2
-            ? '已退费'
+            ? '已取消'
             : ''
         }`,
       )

@@ -43,13 +43,26 @@ export default {
   components: {
     List,
   },
-  mixins: [mixin({ fetchListFunction: bihRecordData })],
+  mixins: [
+    mixin({
+      fetchListFunction: async params => {
+        const data = JSON.parse(JSON.stringify(params))
+        data.startFee = data.startFee
+          ? Number(data.startFee).toFixed(2) * 100
+          : ''
+        data.endFee = data.endFee ? Number(data.endFee).toFixed(2) * 100 : ''
+        console.log(data, '参数====')
+        const res = await bihRecordData(data)
+        return res
+      },
+    }),
+  ],
   data() {
     return {
       query: {
         pageSize: 10,
         timeType: 0,
-        searchType: 0,
+        searchType: 1,
       },
     }
   },
@@ -88,8 +101,8 @@ export default {
               label: '支付方式',
               options: [
                 { label: '不限', value: '' },
-                { label: '银联', value: 'UNION' },
                 { label: '微信', value: 'WX' },
+                { label: '支付宝', value: 'ALI_LITE' },
               ],
             },
             keys: 'payment',
@@ -99,22 +112,35 @@ export default {
     },
     columns() {
       return {
-        createTime: {
-          minWidth: 160,
-        },
         opt: {
           hidden: true,
         },
         index: {
           hidden: true,
         },
+        payId: {
+          label: '支付号',
+        },
         fixed: {
           minWidth: 80,
+        },
+        name: {
+          hidden: true,
+        },
+        num: {
+          hidden: true,
+        },
+        billStateName: {
+          hidden: true,
         },
         totalFee: {
           formatter(row) {
             return `￥${row.totalFee}`
           },
+        },
+        createTime: {
+          minWidth: 160,
+          label: '缴费时间',
         },
       }
     },

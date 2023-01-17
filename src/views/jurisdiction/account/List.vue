@@ -71,6 +71,9 @@
           "
           >重置密码</el-button
         >
+        <el-button v-if="row.loginLock" type="text" @click="delLoginLock(row)"
+          >解锁账号</el-button
+        >
       </template>
 
       <template v-slot:footertool>
@@ -104,6 +107,7 @@
           <el-input
             type="password"
             v-model="resetDialog.model.password"
+            placeholder="请输入8-16位密码，包含大小写字母、数字、特殊字符"
           ></el-input>
         </el-form-item>
       </el-form>
@@ -134,7 +138,11 @@
         label-width="100px"
       >
         <el-form-item prop="upload">
+          <el-button size="small" type="primary" @click="download"
+            >下载导入模板</el-button
+          >
           <el-upload
+            v-if="importDialog.visible"
             class="upload-demo"
             action
             accept=".xls, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
@@ -154,16 +162,10 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="importDialog.visible = false">
-            取消
-          </el-button>
-          <el-button
-            size="small"
-            type="primary"
-            @click="importSave('importForm')"
+          <el-button @click="importDialog.visible = false">取消</el-button>
+          <el-button type="primary" @click="importSave('importForm')"
+            >确定</el-button
           >
-            保存
-          </el-button>
         </div>
       </template>
     </el-dialog>
@@ -171,8 +173,14 @@
 </template>
 
 <script>
+import {
+  modularLexcel, //下载导入格式
+  importExcelAccount,
+} from '@/api/dictionary'
 import { List, mixin, EditableText } from '@/components'
+import CryptoJS from 'crypto-js'
 import { invalidFieldSetFocus } from '@/utils'
+import { isPassword } from '@/utils/validate'
 import {
   accountList,
   accountChangeOrder,
@@ -181,6 +189,7 @@ import {
   updateAccountBizState,
   accountResetPassword,
   updateChangeStar,
+  removeLoginLock,
 } from '@/api/authority'
 import {
   roleChooseList,
@@ -197,28 +206,52 @@ const pre = {
 }
 
 export default {
-  name: 'TableList',
+  name: 'jurisdiction_account',
   components: {
     List,
     EditableText,
   },
   mixins: [mixin({ fetchListFunction: accountList })],
   watch: {
-    $route: {
-      handler() {
-        console.log(1111)
-        this.getPath()
-        //深度监听，同时也可监听到param参数变化
-      },
-      deep: true,
+    updateListAccount() {
+      console.log(this.updateListAccount, 666)
+      this.getPath()
     },
+    // $route: {
+    //   handler(to, from) {
+    //     console.log(to.path, from.path)
+    //     if (
+    //       to.path.indexOf('/jurisdiction/account/detail') == -1 &&
+    //       from.path.indexOf('/jurisdiction/account/detail') == -1 &&
+    //       to.path.indexOf('/jurisdiction/account/edit') == -1 &&
+    //       from.path.indexOf('/jurisdiction/account/edit') == -1
+    //     ) {
+    //       console.log(1111)
+    //       this.getPath(true)
+    //     }
+    //     //深度监听，同时也可监听到param参数变化
+    //   },
+    //   deep: true,
+    // },
   },
   data() {
+    const validatePassword = (rule, value, callback) => {
+      // const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,16}/
+      if (!isPassword(value)) {
+        callback(new Error('请输入8-16位密码，包含大小写字母、数字、特殊字符'))
+      } else {
+        callback()
+      }
+      // callback()
+    }
     this.rules = {
-      password: [{ required: true, message: '请输入密码' }],
+      password: [
+        { required: true, trigger: 'blur', validator: validatePassword },
+      ],
     }
 
     return {
+      formData: null,
       query: {
         pageSize: 10,
         timeType: 0,
@@ -226,7 +259,7 @@ export default {
         roleId: this.$route.query.id ?? '',
         deptId: this.$route.query.deptId ?? '',
         titleId: this.$route.query.titleId ?? '',
-        examineState: this.$route.query.examineState ?? '',
+        // examineState: this.$route.query.examineState ?? '',
         deptOuterId: this.$route.query.deptOuterId ?? '',
       },
 
@@ -247,6 +280,9 @@ export default {
     }
   },
   computed: {
+    updateListAccount() {
+      return this.$store.state.updateList.updateListAccount
+    },
     account() {
       return this.$store.state.user.account
     },
@@ -269,6 +305,8 @@ export default {
               { label: '姓名', value: 0 },
               { label: '工号', value: 1 },
               { label: '员工账号', value: 2 },
+              { label: '手机号', value: 3 },
+              { label: '身份证号', value: 4 },
             ],
           },
           keys: ['searchType', 'searchKeywords'],
@@ -316,6 +354,11 @@ export default {
                 ...pre.dept.map(_ => ({ label: _.name, value: _.id })),
               ],
             },
+            data: {
+              attrs: {
+                filterable: true,
+              },
+            },
             keys: 'deptId',
           },
           {
@@ -325,6 +368,11 @@ export default {
                 { label: '不限', value: '' },
                 ...pre.dept.map(_ => ({ label: _.name, value: _.id })),
               ],
+            },
+            data: {
+              attrs: {
+                filterable: true,
+              },
             },
             keys: 'defDeptId',
           },
@@ -447,6 +495,7 @@ export default {
           {
             props: {
               label: '诊疗次数',
+              isInteger: true,
               is: 'InputRange',
             },
             keys: ['diagNumStart', 'diagNumEnd'],
@@ -454,6 +503,7 @@ export default {
           {
             props: {
               label: '评分',
+              isInteger: true,
               is: 'InputRange',
             },
             keys: ['scoreStart', 'scoreEnd'],
@@ -479,6 +529,8 @@ export default {
               ? '护士'
               : row.employeeType === 'OTHER'
               ? '其他'
+              : row.employeeType === 'XZ'
+              ? '咨询师'
               : ''
           },
           minWidth: 100,
@@ -597,6 +649,7 @@ export default {
       }
     },
   },
+
   async beforeRouteEnter(to, from, next) {
     ;[pre.role, pre.dept, pre.store, pre.title] = await Promise.all([
       roleChooseList({ showUser: true }),
@@ -606,41 +659,43 @@ export default {
     ])
     next()
   },
-  // activated() {
-  //   if (this.$route.query?.flag == 1) {
-  //     this.query = {
-  //       pageSize: 10,
-  //       timeType: 0,
-  //       searchType: 0,
-  //       roleId: this.$route.query.id ?? '',
-  //       deptId: this.$route.query.deptId ?? '',
-  //       titleId: this.$route.query.titleId ?? '',
-  //       examineState: this.$route.query.examineState ?? '',
-  //     }
-  //     this.$_fetchTableData()
-  //   }
-  // },
+
   methods: {
-    getPath() {
-      let routeQuery = this.$route.query
-      // console.log(routeQuery)
-      Object.entries(routeQuery).forEach(([key, value]) => {
-        if (key in this.query && this.query[key] != value) {
-          this.query = {
-            pageSize: 10,
-            timeType: 0,
-            searchType: 0,
-            currentNum: 1,
-            roleId: this.$route.query.id ?? '',
-            deptId: this.$route.query.deptId ?? '',
-            titleId: this.$route.query.titleId ?? '',
-            examineState: this.$route.query.examineState ?? '',
-            deptOuterId: this.$route.query.deptOuterId ?? '',
-          }
-          this.$_fetchTableData()
+    async importSave() {
+      if (!this.formData) {
+        return this.$message.warning('请选择文件！')
+      }
+      try {
+        await importExcelAccount(this.formData)
+        this.$message.success('操作成功！')
+        this.importDialog.visible = false
+        this.$_fetchTableData()
+      } catch (error) {
+        this.$message.error('导入失败！')
+      }
+    },
+    async download() {
+      modularLexcel('账号导入模板.xlsx')
+    },
+    async delLoginLock({ id }) {
+      await removeLoginLock({ id })
+      this.$message.success('解锁成功！')
+      this.$_fetchTableData()
+    },
+    getPath(flag) {
+      if (flag) {
+        this.query = {
+          pageSize: 10,
+          timeType: 0,
+          searchType: 0,
+          roleId: this.$route.query.id ?? '',
+          deptId: this.$route.query.deptId ?? '',
+          titleId: this.$route.query.titleId ?? '',
+          examineState: this.$route.query.examineState ?? '',
+          deptOuterId: this.$route.query.deptOuterId ?? '',
+          isFilterMore: flag,
         }
-      })
-      if (this.$route.query?.flag == 1) {
+      } else {
         this.$_fetchTableData()
       }
     },
@@ -731,6 +786,10 @@ export default {
       this.$refs[formName].validate(async (valid, invalidFields) => {
         if (valid) {
           this.resetDialog.loading = true
+          //加密
+          this.resetDialog.model.password = CryptoJS.MD5(
+            this.resetDialog.model.password,
+          ).toString()
           await accountResetPassword(this.resetDialog.model).finally(() =>
             setTimeout(() => (this.resetDialog.loading = false), 200),
           )
@@ -769,25 +828,24 @@ export default {
       return this.$confirm(`确定移除 ${file.name}？`)
     },
     beforeUpload(file) {
-      const isPNG = file.type === 'image/png'
+      let ExcalBar = ['xlsx', 'xlsm', 'xltx', 'xls']
+      const isExcal =
+        ExcalBar.indexOf(file.name.substring(file.name.lastIndexOf('.') + 1)) >
+        -1
+          ? true
+          : false
       const isLt2M = file.size / 1024 / 1024 < 2
-      if (!isPNG) {
-        this.$message.error('上传头像图片只能是 PNG 格式!')
+      if (!isExcal) {
+        this.$message.error('上传excal只能是 excal 格式 !')
       }
       if (!isLt2M) {
-        this.$message.error('上传头像图片大小不能超过 2MB!')
+        this.$message.error('上传文件大小不能超过 2 MB !')
       }
-      return isPNG && isLt2M
     },
-    httpRequest({ file, onProgress, onSuccess, onError }) {
+    httpRequest({ file }) {
       const formData = new FormData()
       formData.append('file', file)
-      Promise.resove(formData, onProgress)
-        .then(onSuccess)
-        .catch(onError)
-        .finally(() => {
-          this.importDialog.loading = false
-        })
+      this.formData = formData
     },
   },
 }

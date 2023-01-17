@@ -13,5 +13,6 @@ const getters = {
   errorLogs: state => state.errorLog.logs,
   logo: state => state.user.logo,
   roleList: state => state.user.roleList,
+  modifyPwd: state => state.user.modifyPwd,
 }
 export default getters

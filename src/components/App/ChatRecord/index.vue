@@ -78,7 +78,34 @@
             formatDate(item.serverTime, 'yyyy-MM-dd hh:mm:ss')
           }}</span>
         </div>
-        <div class="info">{{ formatMessage(item) }}</div>
+
+        <div
+          class="info"
+          v-if="item.childMessageType === 'IMAGE'"
+          style="height: 50px"
+          @click="handleMessageClick(item)"
+        >
+          <el-image
+            class="messageImg"
+            fit="fill"
+            :src="FILE_URL(item.body)"
+            ref="previewImage"
+            :preview-src-list="previewSrcList"
+          ></el-image>
+        </div>
+        <AuthorizeRecord
+          :body="JSON.parse(item.body)"
+          v-else-if="formatMessage(item) === '[病历授权]'"
+        />
+        <Illness
+          v-else-if="formatMessage(item) === '[病情描述]'"
+          :orderId="orderInfo.orderId"
+          :bizType="orderInfo.bizType"
+        />
+        <div class="info" v-else @click="handleMessageClick(item)">
+          {{ formatMessage(item) }}
+        </div>
+
         <!-- <br /> -->
         <!-- <div>{{ item.body }}</div> -->
         <el-divider></el-divider>
@@ -104,6 +131,26 @@
       >
       </el-pagination>
     </div>
+
+    <el-dialog
+      :title="dialogTitle"
+      :visible.sync="viewMessageDialogShow"
+      width="60%"
+      top="50px"
+    >
+      <component
+        v-if="viewMessageDialogShow"
+        :is="viewMessageDialogComponent"
+        :viewMessageDialogData="viewMessageDialogData"
+        :intoId="intoId"
+        :orderId="orderInfo.orderId"
+      ></component>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="viewMessageDialogShow = false"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
   </div>
 </template>
 <script>
@@ -112,13 +159,31 @@
 @name          ChatRecord
 @desc          聊天记录【处方详情诊疗记录】
                复制于v1.0: /src/views/business/order/components/DiagnosisRecord.vue
-@props         orderInfo    Object      订单详情 
+@props         orderInfo    Object      订单详情
 @emit
 */
 import { formatDate } from '@/utils'
 import { historyMessageList } from '@/api/prescription'
 import formatMessage from '@/views/components/formatMessage'
+import {
+  Illness,
+  AuthorizeRecord,
+} from '@/views/business/clinic/components/Chat/components'
+import {
+  DIAS,
+  EMH,
+  RP,
+  DSO,
+} from '@/views/business/clinic/components/Chat/messageModals'
 export default {
+  components: {
+    Illness,
+    AuthorizeRecord,
+    DIAS,
+    EMH,
+    RP,
+    DSO,
+  },
   name: 'ChatRecord',
   props: {
     orderInfo: {
@@ -128,6 +193,7 @@ export default {
   },
   data() {
     return {
+      intoId: '',
       total: 0,
       date: '',
       record: [],
@@ -170,10 +236,15 @@ export default {
         ],
       },
       formatDate: formatDate,
+      previewImageHelper: '',
+      viewMessageDialogShow: false,
+      viewMessageDialogComponent: '',
+      viewMessageDialogData: null,
+      dialogTitle: '',
     }
   },
-  created() {
-    // this.search()
+  mounted() {
+    this.orderInfo.userId && this.search()
   },
   watch: {
     date: 'search',
@@ -244,6 +315,49 @@ export default {
           break
       }
     },
+    /**
+     * 消息内的事件处理
+     */
+    handleMessageClick(item) {
+      console.log(item)
+      const { childMessageType, body } = item
+      this.dailogTitle = '查看消息内容'
+      switch (childMessageType) {
+        case 'IMAGE':
+          this.previewImageHelper = body ? this.FILE_URL(body) : ''
+          this.$refs.previewImage?.clickHandler()
+
+          break
+        case 'DIAS':
+          this.dialogTitle = '诊断详情'
+          this.viewMessageDialogComponent = childMessageType
+          this.viewMessageDialogData = item
+          this.viewMessageDialogShow = true
+          break
+        case 'EMH':
+          this.dialogTitle = '病历详情'
+          this.viewMessageDialogComponent = childMessageType
+          this.viewMessageDialogShow = true
+          break
+        case 'DSO':
+          this.dialogTitle = '处置详情'
+          this.viewMessageDialogComponent = childMessageType
+          this.viewMessageDialogData = item
+          this.intoId = JSON.parse(item.body).content
+          this.viewMessageDialogShow = true
+          break
+      }
+    },
+  },
+  computed: {
+    previewSrcList() {
+      return this.record.reduce((_, { childMessageType, body }) => {
+        if (childMessageType === 'IMAGE' && body) {
+          _.push(this.FILE_URL(body))
+        }
+        return _
+      }, [])
+    },
   },
 }
 </script>
@@ -280,5 +394,14 @@ export default {
   height: 50px;
   border-radius: 50%;
   margin-bottom: 64px;
+}
+.messageImg {
+  width: 50px;
+  height: 50px;
+  border-radius: 0;
+  > img,
+  .el-image__error {
+    display: none;
+  }
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <el-scrollbar
     v-drag-size:left="{ onDragUp }"
-    :style="{ width: initWidth, minWidth: '50px', maxWidth: '800px' }"
+    :style="{ width: initWidth, minWidth: '250px', maxWidth: '600px' }"
     class="c__right-panel"
     :class="{ disable: !activation, min: !show }"
     view-class="infinite-wrapper"
@@ -67,7 +67,9 @@
       </dd>
     </dl>
 
-    <div v-show="show" class="see-doctor">
+    <!-- <div v-show="show" class="see-doctor"> -->
+    <!-- 隐藏就诊记录 -->
+    <div v-show="false" class="see-doctor">
       <div class="filter">
         <div class="is-center">
           总就诊次：
@@ -389,18 +391,18 @@ export default {
     onDragUp(data) {
       localStorage.setItem('r_panel_width', data.width)
     },
+
     async openHistory(item) {
-      if (item.open) {
-        this.$emit('clinic', item)
-      } else {
-        const params = {
-          medicalId: item.id,
-          memberId: item.memberId,
-          roomId: this.roomId,
-          typeName: item.medicalType,
-        }
-        await applyAuth(params)
+      // item.open当前项状态
+      if (item.open) return this.$emit('clinic', item)
+
+      const params = {
+        medicalId: item.id,
+        memberId: item.memberId,
+        roomId: this.roomId,
+        typeName: item.medicalType,
       }
+      await applyAuth(params)
     },
   },
 }
@@ -423,6 +425,7 @@ export default {
     position: absolute;
     top: 0px;
     right: 18px;
+    z-index: 99;
   }
 
   &.min {

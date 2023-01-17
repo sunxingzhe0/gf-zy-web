@@ -39,7 +39,7 @@
 import { List, mixin } from '@/components'
 import { tjFeeRecord } from '@/api/zyapi/payment'
 export default {
-  name: 'TableList',
+  name: 'payment_body',
   components: {
     List,
   },
@@ -104,8 +104,8 @@ export default {
               label: '支付方式',
               options: [
                 { label: '不限', value: '' },
-                // { label: '银联', value: 'UNION' },
                 { label: '微信', value: 'WX' },
+                { label: '支付宝', value: 'ALI_LITE' },
               ],
             },
             keys: 'payWay',

@@ -24,11 +24,17 @@
       </el-col>
       <el-col :md="4" class="is-right">
         <el-button type="primary" @click="fails">导出数据</el-button>
-        <el-button type="info" @click="refResh">刷新</el-button>
+        <el-button
+          type="info"
+          style="border-color: #f4f4f5"
+          plain
+          @click="refResh"
+          >刷新</el-button
+        >
       </el-col>
     </el-row>
     <h3 class="view__title">评价趋势图</h3>
-    <el-row class="view__content">
+    <el-row class="view__content" v-loading="loading">
       <el-col :span="14">
         <span>业务类型</span>
         <el-radio-group v-model="arrayS" @change="meter">
@@ -146,6 +152,7 @@ export default {
     }
 
     return {
+      loading: false,
       active: 7,
       arrayS: '', //业务类型
       department: '', //科室
@@ -210,20 +217,22 @@ export default {
     //导出数据
     missIle() {},
     //刷新
-    refResh() {
-      this.arrayS = '' //业务类型
-      ;(this.typeDate = 1), //日 周 月
-        (this.vbrSan = ''), //总分
-        (this.date = [
-          formatDate(
-            new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 7),
-            'yyyyMMdd',
-          ),
-          formatDate(new Date(), 'yyyyMMdd'),
-        ]),
-        (this.active = 7)
-      this.meter()
-      this.jend()
+    async refResh() {
+      // this.arrayS = '' //业务类型
+      // ;(this.typeDate = 1), //日 周 月
+      //   (this.vbrSan = ''), //总分
+      //   (this.date = [
+      //     formatDate(
+      //       new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 7),
+      //       'yyyyMMdd',
+      //     ),
+      //     formatDate(new Date(), 'yyyyMMdd'),
+      //   ]),
+      //   (this.active = 7)
+      this.loading = true
+      await this.meter()
+      await this.jend()
+      this.loading = false
     },
     handleDatePickerChange(val) {
       this.pickerOptions.shortcuts.some(({ text, onClick }) => {

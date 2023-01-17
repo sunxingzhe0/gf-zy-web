@@ -1,0 +1,181 @@
+{
+  "headers": [
+    {
+      "field": "index",
+      "dataField": "index",
+      "fieldName": "序号",
+      "fixed": true,
+      "sorted": false,
+      "index": 1
+    },
+    {
+      "field": "nurseName",
+      "dataField": "nurseName",
+      "fieldName": "单据号",
+      "fixed": true,
+      "sorted": true,
+      "index": 2
+    },
+    {
+      "field": "typeName",
+      "dataField": "typeName",
+      "fieldName": "就诊卡号",
+      "fixed": true,
+      "sorted": false,
+      "index": 3
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "患者姓名",
+      "fixed": true,
+      "sorted": true,
+      "index": 4
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "性别",
+      "fixed": true,
+      "sorted": true,
+      "index": 5
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "年龄",
+      "fixed": true,
+      "sorted": true,
+      "index": 6
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "检验项目",
+      "fixed": true,
+      "sorted": true,
+      "index": 7
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "标本",
+      "fixed": true,
+      "sorted": true,
+      "index": 8
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "开单时间",
+      "fixed": true,
+      "sorted": true,
+      "index": 9
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "开单医生",
+      "fixed": true,
+      "sorted": true,
+      "index": 10
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "执行科室",
+      "fixed": true,
+      "sorted": true,
+      "index": 11
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "诊疗费",
+      "fixed": true,
+      "sorted": true,
+      "index": 12
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "支付方式",
+      "fixed": true,
+      "sorted": true,
+      "index": 13
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "缴费时间",
+      "fixed": true,
+      "sorted": true,
+      "index": 14
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "是否自行预约",
+      "fixed": true,
+      "sorted": true,
+      "index": 15
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "预约执行时间",
+      "fixed": true,
+      "sorted": true,
+      "index": 16
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "预约执行时间",
+      "fixed": true,
+      "sorted": true,
+      "index": 17
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "预约执行时间",
+      "fixed": true,
+      "sorted": true,
+      "index": 18
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "预约执行时间",
+      "fixed": true,
+      "sorted": true,
+      "index": 19
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "预约执行时间",
+      "fixed": true,
+      "sorted": true,
+      "index": 20
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "预约执行时间",
+      "fixed": true,
+      "sorted": true,
+      "index": 16
+    },
+    {
+      "field": "workNum",
+      "dataField": "workNum",
+      "fieldName": "预约执行时间",
+      "fixed": true,
+      "sorted": true,
+      "index": 16
+    }
+
+  ]
+}

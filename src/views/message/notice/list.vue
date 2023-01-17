@@ -30,6 +30,7 @@ import { anNotice, readAll } from '@/api/setup'
 import { createSocket } from '@/components/Socket'
 
 export default {
+  name: 'message_notice',
   components: {
     List,
   },

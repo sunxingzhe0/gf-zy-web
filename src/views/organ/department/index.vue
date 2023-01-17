@@ -7,25 +7,41 @@
       <el-tab-pane label="预约挂号科室" name="1">
         <GList></GList>
       </el-tab-pane>
+      <el-tab-pane label="心咨科室" name="3">
+        <XList />
+      </el-tab-pane>
+      <el-tab-pane label="科室简介" name="2">
+        <DepetInfoList></DepetInfoList>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
 <script>
 import HList from './HList'
 import GList from './GList'
+import XList from './XList'
+import DepetInfoList from './depetInfoList.vue'
 import { deptOuterPdeptList } from '@/api/organization'
 const pre = {
   dept: [],
 }
 export default {
+  name: 'organ_department',
   components: {
     GList,
     HList,
+    DepetInfoList,
+    XList,
   },
   data() {
     return {
       active: '0',
       dept: pre.dept,
+    }
+  },
+  created() {
+    if (this.$route.query.active) {
+      this.active = this.$route.query.active
     }
   },
   mounted() {},
@@ -35,6 +51,7 @@ export default {
         ? pre.dept
         : deptOuterPdeptList({ tree: false, type: 'WEB' }),
     ])
+
     next()
   },
   methods: {

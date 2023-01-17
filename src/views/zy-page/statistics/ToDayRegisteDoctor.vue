@@ -68,9 +68,9 @@ export default {
       deep: true, //深度监听设置为 true
       handler: function (newV) {
         console.log(newV)
-        this.query.time = newV.time || moment().format('YYYYMMDD')
-        this.query.startTime = newV.time + '000000'
-        this.query.endTime = newV.time + '000000'
+        this.query.time = newV.time || '' /* moment().format('YYYYMMDD') */
+        this.query.startTime = newV.time ? newV.time + '000000' : ''
+        this.query.endTime = newV.time ? newV.time + '000000' : ''
       },
     },
   },
@@ -100,6 +100,7 @@ export default {
             props: {
               label: '科室',
               is: 'el-select',
+              filterable: true,
               options: [
                 { label: '不限', value: '' },
                 ...pre.dept.map(_ => ({
@@ -112,7 +113,7 @@ export default {
           },
           {
             props: {
-              label: '就诊类型',
+              label: '号源类型',
               is: 'el-select',
               options: [
                 { label: '不限', value: '' },

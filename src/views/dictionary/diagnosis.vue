@@ -26,7 +26,6 @@ export default {
           props: {
             label: '诊断代码',
             is: 'el-input',
-            noColon: true,
           },
           keys: 'dCode',
         },
@@ -34,7 +33,6 @@ export default {
           props: {
             label: '诊断名称',
             is: 'el-input',
-            noColon: true,
           },
           keys: 'dName',
         },
@@ -42,7 +40,6 @@ export default {
           props: {
             label: '拼音编码',
             is: 'el-input',
-            noColon: true,
           },
           keys: 'dPinyin',
         },
@@ -121,27 +118,5 @@ export default {
 <style lang="scss" scoped>
 .dialog-footer {
   text-align: center;
-}
-.view__card ::v-deep {
-  .item-label.is-right {
-    height: 32px;
-    padding: 0 15px;
-    margin-right: 0;
-    color: #8c8c8c;
-    line-height: 30px;
-    border-radius: 4px;
-    border-right: none;
-    width: unset !important;
-    border: 1px solid #dcdfe6;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .item-label.is-right + .el-input {
-    .el-input__inner {
-      border-left: none;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-  }
 }
 </style>

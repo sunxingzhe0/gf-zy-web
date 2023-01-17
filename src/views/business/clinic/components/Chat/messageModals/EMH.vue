@@ -24,25 +24,49 @@ export default {
     return {
       info: {},
       dataList: [
+        // {
+        //   key: 'mainSuit',
+        //   title: '主诉',
+        // },
+        // {
+        //   key: 'nowDisease',
+        //   title: '现病史',
+        // },
+        // {
+        //   key: 'hisDisease',
+        //   title: '既往史',
+        // },
+        // {
+        //   key: 'phyCheck',
+        //   title: '体格检查',
+        // },
+        // {
+        //   key: 'supCheck',
+        //   title: '辅助检查',
+        // },
+        // {
+        //   key: 'diagnosis',
+        //   title: '诊断',
+        // },
+        // {
+        //   key: 'dealIdea',
+        //   title: '处理意见',
+        // },
         {
-          key: 'mainSuit',
-          title: '主诉',
+          key: 'seeWay',
+          title: '就诊方式',
         },
         {
-          key: 'nowDisease',
-          title: '现病史',
-        },
-        {
-          key: 'phyCheck',
-          title: '体格检查',
+          key: 'illness',
+          title: '病情',
         },
         {
           key: 'supCheck',
           title: '辅助检查',
         },
         {
-          key: 'diagnosis',
-          title: '诊断',
+          key: 'dtoList',
+          title: '初步诊断',
         },
         {
           key: 'dealIdea',

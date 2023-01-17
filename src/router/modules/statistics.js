@@ -1,11 +1,10 @@
 /** When your routing table is too long, you can split it into small modules **/
 
 import Layout from '@/components/layout'
-
 export default {
   path: '/statistics',
   component: Layout,
-  redirect: '/statistics/order',
+  redirect: '/statistics/business',
   name: 'StatisticsModules',
   meta: {
     title: '统计',
@@ -15,8 +14,10 @@ export default {
       'ORG_WEB_STATISTICS',
       'DOC_WEB_STATISTICS',
       'ZY_ORG_STATISTICS',
+      'XZ_ORG_XZ_STATISTICS',
     ], //药房端、机构端、医生端
   },
+  alwaysShow: true,
   children: [
     // {
     //   path: 'order',
@@ -54,9 +55,18 @@ export default {
     // },
 
     {
+      path: 'business',
+      component: () => import('@/views/statistics/business.vue'), //机构端
+      name: 'statistics_business',
+      meta: {
+        title: '业务统计',
+        roles: ['ORG_WEB_STATISTICS_ORDER_STATISTICS'],
+      },
+    },
+    {
       path: 'order',
       component: () => import('@/views/statistics/components/OrderDoctor.vue'), //医生端
-      name: 'order',
+      name: 'statistics_order',
       meta: {
         title: '我的订单',
         roles: ['DOC_WEB_STATISTICS_EVALUATION_STATISTICS'],
@@ -73,7 +83,7 @@ export default {
     {
       path: 'comment',
       component: () => import('@/views/statistics/components/Comment.vue'), //医生端
-      name: 'Comment',
+      name: 'statistics_comment',
       meta: {
         title: '我的评价',
         roles: ['DOC_WEB_STATISTICS_ORDER_STATISTICS'], //医生端,
@@ -82,7 +92,7 @@ export default {
     {
       path: 'Drugorders',
       component: () => import('@/views/statistics/components/Drugorders.vue'), //药房端
-      name: 'Drugorders',
+      name: 'statistics_Drugorders',
       meta: {
         title: '药房药品',
         roles: ['DRUG_STORE_STATISTICS_DRUG_STATISTICS'],
@@ -91,7 +101,7 @@ export default {
     {
       path: 'Singleder',
       component: () => import('@/views/statistics/components/Singleder.vue'), //药房端
-      name: 'Singleder',
+      name: 'statistics_Singleder',
       meta: {
         title: '药房订单',
         roles: ['DRUG_STORE_STATISTICS_ORDER_STATISTICS'],
@@ -100,7 +110,7 @@ export default {
     {
       path: 'mechanism',
       component: () => import('@/views/statistics/components/mechanism.vue'), //机构端
-      name: 'Singleder',
+      name: 'statistics_mechanism',
       meta: {
         title: '机构订单',
         roles: ['ORG_WEB_STATISTICS_ORDER_STATISTICS'],
@@ -110,50 +120,31 @@ export default {
       path: 'institutional',
       component: () =>
         import('@/views/statistics/components/institutional.vue'), //机构端
-      name: 'Singleder',
+      name: 'statistics_institutional',
       meta: {
         title: '所有评价',
         roles: ['ORG_WEB_STATISTICS_EVALUATION_STATISTICS'],
       },
     },
     {
-      path: 'registeDoctor',
-      component: () => import('@/views/zy-page/statistics/registeDoctor.vue'),
-      name: 'registeDoctor',
-      meta: { title: '预约挂号统计', roles: ['ZY_ORG_STATISTICS_APPOINTMENT'] },
-    },
-    {
-      path: 'ToDayRegisteDoctor',
+      path: 'mindStatistics',
       component: () =>
-        import('@/views/zy-page/statistics/ToDayRegisteDoctor.vue'),
-      name: 'ToDayRegisteDoctor',
-      meta: { title: '当日挂号统计', roles: ['ZY_ORG_STATISTICS_SAME_DAY'] },
-    },
-    {
-      path: 'OutpatientPayment',
-      component: () =>
-        import('@/views/zy-page/statistics/OutpatientPayment.vue'),
-      name: 'OutpatientPayment',
+        import('@/views/statistics/components/MindStatistics.vue'),
+      name: 'statistics_mindStatistics',
       meta: {
-        title: '门诊缴费统计',
-        roles: ['ZY_ORG_STATISTICS_OUTPATIENT_PAY'],
+        title: '心咨统计',
+        roles: ['XZ_ORG_XZ_STATISTICS_RESERVED_STATISTICS'],
       },
     },
     {
-      path: 'HospitalizationPayment',
+      path: 'minDistribution',
       component: () =>
-        import('@/views/zy-page/statistics/HospitalizationPayment.vue'),
-      name: 'HospitalizationPayment',
+        import('@/views/statistics/components/MinDistribution.vue'),
+      name: 'statistics_minDistribution',
       meta: {
-        title: '住院缴费统计',
-        roles: ['ZY_ORG_STATISTICS_INHOSPITAL_PAY'],
+        title: '购买时段分布',
+        roles: ['XZ_ORG_XZ_STATISTICS_RESERVED_STATISTICS'],
       },
-    },
-    {
-      path: 'ReportQuery',
-      component: () => import('@/views/zy-page/statistics/ReportQuery.vue'),
-      name: 'ReportQuery',
-      meta: { title: '报告查询统计', roles: ['ZY_ORG_STATISTICS_REPORT'] },
     },
   ],
 }

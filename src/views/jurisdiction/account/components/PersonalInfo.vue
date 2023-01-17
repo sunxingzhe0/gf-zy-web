@@ -8,7 +8,7 @@
       </el-col>
       <el-col :md="6">
         <span>性别</span>
-        {{ info.sex === 1 ? '男' : '女' }}
+        {{ info.sex === 1 ? '男' : info.sex === 0 ? '女' : '-' }}
       </el-col>
       <el-col :md="6">
         <span>手机号</span>
@@ -174,9 +174,9 @@
         {{ info.mail || '-' }}
       </el-col>
     </el-row>
-
-    <h3 class="view__title">资格证书</h3>
-    <el-row class="view__content short_margin">
+    <!-- 隐藏部分账号信息 -->
+    <h3 v-if="false" class="view__title">资格证书</h3>
+    <el-row v-if="false" class="view__content short_margin">
       <template v-for="{ type, certNo, fileId } in info.certs">
         <el-col :key="`label_${type}`" :span="6">
           <div>
@@ -240,6 +240,12 @@
       </el-col>
       <el-col :span="24">
         <div class="otherInfo">
+          <span>擅长</span>
+          <div class="info">{{ info.skilled }}</div>
+        </div>
+      </el-col>
+      <!-- <el-col :span="24">
+        <div class="otherInfo">
           <span>执业经历</span>
           <div class="info">{{ info.practiceInfo }}</div>
         </div>
@@ -255,7 +261,7 @@
           <span>执业范围</span>
           <div class="info">{{ info.practiceArea }}</div>
         </div>
-      </el-col>
+      </el-col> -->
     </el-row>
 
     <EditFooter

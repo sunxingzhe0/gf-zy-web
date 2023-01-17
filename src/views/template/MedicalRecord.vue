@@ -99,7 +99,7 @@
                   :autosize="{ minRows: 5, maxRows: 10 }"
                   placeholder="请输入内容"
                   v-model="dialog.model[prop]"
-                  :maxlength="'主诉' === label ? '20' : 3000"
+                  :maxlength="'就诊方式' === label ? '20' : 3000"
                   show-word-limit
                   :ref="prop"
                   @focus="inputFocus(prop)"
@@ -151,11 +151,16 @@ export default {
   mixins: [mixin({ fetchListFunction: findDiseaseTemplateList })],
   data() {
     this.textarea = [
-      { label: '主诉', prop: 'mainSuit' },
-      { label: '现病史', prop: 'nowDisease' },
-      { label: '既往史', prop: 'hisDisease' },
-      { label: '体格检查', prop: 'phyCheck' },
+      // { label: '主诉', prop: 'mainSuit' },
+      // { label: '现病史', prop: 'nowDisease' },
+      // { label: '既往史', prop: 'hisDisease' },
+      // { label: '体格检查', prop: 'phyCheck' },
+      // { label: '辅助检查', prop: 'supCheck' },
+      // { label: '处理意见', prop: 'dealIdea' },
+      { label: '就诊方式', prop: 'seeWay' },
+      { label: '病情', prop: 'illness' },
       { label: '辅助检查', prop: 'supCheck' },
+      { label: '初次诊断', prop: 'diagnosis' },
       { label: '处理意见', prop: 'dealIdea' },
     ]
 
@@ -358,7 +363,7 @@ export default {
     handleClosed() {
       this.dialog.disabling = true
       this.$refs.form.resetFields()
-      this.dialog.activeName = '主诉'
+      this.dialog.activeName = '就诊方式'
       this.dialog.model.tempId = ''
     },
     //滚动事件

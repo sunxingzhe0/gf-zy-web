@@ -38,7 +38,7 @@ import { List, mixin } from '@/components'
 import { getDocSchList } from '@/api/scheduling'
 import {
   roleChooseList,
-  deptChooseList,
+  deptOuterChooseList,
   drugStoreChooseList,
   titleChooseList,
 } from '@/api'
@@ -50,6 +50,7 @@ const pre = {
   title: [],
 }
 export default {
+  name: 'shift_scheduleList',
   components: {
     List,
   },
@@ -157,7 +158,7 @@ export default {
   async beforeRouteEnter(to, from, next) {
     ;[pre.role, pre.dept, pre.store, pre.title] = await Promise.all([
       roleChooseList({ showUser: true }),
-      deptChooseList({ tree: false }),
+      deptOuterChooseList({ tree: false }),
       drugStoreChooseList(),
       titleChooseList(),
     ])
@@ -176,6 +177,10 @@ export default {
   text-align: center;
 }
 .orderNumspan {
-  color: #646464;
+  color: #0ab2c1;
+  &:hover {
+    color: rgb(28, 13, 230);
+    cursor: pointer;
+  }
 }
 </style>

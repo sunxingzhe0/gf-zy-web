@@ -5,6 +5,8 @@
       :filter="filter"
       :columns="columns"
       :tableData="tableData"
+      :tableClass="`system-table ${scope != 'YF' ? 'hide-btn' : ''}`"
+      ref="systemTable"
     >
       <template v-slot:slot_title="{ row }">
         <div :class="['title', !row.readed ? 'unread' : '']">
@@ -42,6 +44,17 @@ export default {
   props: {
     scope: {
       type: String,
+    },
+  },
+  watch: {
+    //全局监听刷新
+    updateListFlagNavNotice() {
+      this.$_fetchTableData(getSystemInfo)
+    },
+  },
+  computed: {
+    updateListFlagNavNotice() {
+      return this.$store.state.updateList.updateListFlagNavNotice
     },
   },
   data() {
@@ -134,10 +147,11 @@ export default {
         keys: 'storeId',
       })
     }
+    console.log(this.$refs)
   },
-  activated() {
-    this.$_fetchTableData(getSystemInfo)
-  },
+  // activated() {
+  //   this.$_fetchTableData(getSystemInfo)
+  // },
   methods: {
     init() {
       const IM = createSocket()
@@ -173,7 +187,7 @@ export default {
         scope: this.scope == 'JG' ? 2 : this.scope == 'YF' ? 1 : 0,
       }).then(() => {
         this.$message.success('操作成功!')
-        this.$_fetchTableData(getSystemInfo)
+        // this.$_fetchTableData(getSystemInfo)
         this.$store.dispatch('updateList/changeFlag', 'updateListFlagNavNotice')
       })
     },
@@ -187,6 +201,20 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.system-table {
+  height: calc(100vh - 120px);
+}
+.hide-btn {
+  ::v-deep {
+    .c__filter {
+      .c_filter_right {
+        .show-hide {
+          display: none;
+        }
+      }
+    }
+  }
+}
 .title {
   &::before {
     content: '•';

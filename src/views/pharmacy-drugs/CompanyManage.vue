@@ -85,12 +85,8 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="importDialog.visible = false"
-            >取消</el-button
-          >
-          <el-button size="small" type="primary" @click="preservation">
-            保存
-          </el-button>
+          <el-button @click="importDialog.visible = false">取消</el-button>
+          <el-button type="primary" @click="preservation"> 确定 </el-button>
         </div>
       </template>
     </el-dialog>
@@ -307,7 +303,7 @@ export default {
     },
     //文件上传
     beforeUpload(file) {
-      let ExcalBar = ['xls', 'xlsm', 'xltx']
+      let ExcalBar = ['xls', 'xlsm', 'xltx', 'xlsx']
       const isExcal =
         ExcalBar.indexOf(file.name.substring(file.name.lastIndexOf('.') + 1)) >
         -1

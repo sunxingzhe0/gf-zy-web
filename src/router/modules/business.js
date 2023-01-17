@@ -19,6 +19,7 @@ export default {
       path: 'clinic',
       component: () => import('@/views/business/clinic/index.vue'),
       meta: { title: '我的诊室', roles: ['DOC_WEB_BUSINESS_MY_CLINIC'] },
+      name: 'business_clinic',
     },
     {
       path: 'order',
@@ -34,7 +35,9 @@ export default {
             title: '列表',
             activeMenu: '/business/order',
             keepAlive: true,
+            isBack: false,
           },
+          name: 'business_order',
         },
         {
           path: 'detail/:id',
@@ -42,6 +45,7 @@ export default {
           props: true,
           hidden: true,
           meta: { title: '订单详情页', activeMenu: '/business/order' },
+          name: 'business_order_detail',
         },
       ],
     },
@@ -58,7 +62,10 @@ export default {
           meta: {
             title: '列表',
             activeMenu: '/business/prescription',
+            keepAlive: true,
+            isBack: false,
           },
+          name: 'business_prescription',
         },
         {
           path: 'detail/:id',
@@ -66,6 +73,7 @@ export default {
           props: true,
           hidden: true,
           meta: { title: '处方号详情页', activeMenu: '/business/prescription' },
+          name: 'business_prescription_detail',
         },
         {
           path: 'edit/:id',
@@ -73,6 +81,7 @@ export default {
           props: ({ params }) => ({ ...params, isEdit: true }),
           hidden: true,
           meta: { title: '修改处方', activeMenu: '/business/prescription' },
+          name: 'business_prescription_edit',
         },
       ],
     },
@@ -81,6 +90,7 @@ export default {
       path: 'myHandle',
       component: () => import('@/views/business/myHandle/myHandle.vue'),
       meta: { title: '我的处置', roles: ['DOC_WEB_BUSINESS_MY_DISPOSE'] },
+      name: 'business_myHandle',
     },
     {
       path: 'consult',
@@ -90,8 +100,8 @@ export default {
       meta: {
         title: '在线咨询',
         roles: ['ORG_WEB_BUSINESS_ONLINE_CONSULTATION'],
-        keepAlive: true,
       },
+      name: 'business_consult',
     },
     {
       path: 'repeat_clinic',
@@ -101,8 +111,8 @@ export default {
       meta: {
         title: '在线复诊',
         roles: ['ORG_WEB_BUSINESS_ONLINE_REFERRAL'],
-        keepAlive: true,
       },
+      name: 'business_repeatClinic',
     },
     {
       path: 'carryon_presc',
@@ -112,10 +122,23 @@ export default {
       meta: {
         title: '慢病续方',
         roles: ['ORG_WEB_BUSINESS_CONTINUED_PRESCRIPTION'],
-        keepAlive: true,
         // roles: ['ORG_WEB_BUSINESS_CONTINUED_PRESCRIPTION_FOR_CHRONIC_DISEASES'],
       },
+      name: 'business_carryonPresc',
     },
+    {
+      path: 'report_read',
+      component: () =>
+        import('@/views/business/InstitutionalConfiguration/List.vue'),
+      props: { type: 'REPORT_READ' },
+      meta: {
+        title: '报告解读',
+        roles: ['ORG_WEB_BUSINESS_CONTINUED_PRESCRIPTION'],
+        // roles: ['ORG_WEB_BUSINESS_CONTINUED_PRESCRIPTION_FOR_CHRONIC_DISEASES'],
+      },
+      name: 'business_reportRead',
+    },
+
     // {
     //   path: 'patient',
     //   component: () => import('@/views/business/patient/List.vue'),

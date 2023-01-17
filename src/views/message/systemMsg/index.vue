@@ -64,6 +64,7 @@ import permissionNum from '@/utils/permissionNum'
 import List from './list'
 import { mapState } from 'vuex'
 export default {
+  name: 'message_systemMsg',
   components: {
     List,
   },

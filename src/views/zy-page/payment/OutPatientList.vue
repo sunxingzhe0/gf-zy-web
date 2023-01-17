@@ -26,7 +26,7 @@
       <template v-slot:fixed="{ row }">
         <router-link
           class="el-button el-button--text"
-          :to="`/payment/out-patient/detail?billNo=${row.billNo}&patientId=${row.patientId}`"
+          :to="`/payment/out-patient/detail?billNo=${row.billNo}&patientId=${row.patientId}&billStateName=${row.billStateName}`"
         >
           查看
         </router-link>
@@ -44,17 +44,30 @@ const pre = {
   noType: [],
 }
 export default {
-  name: 'TableList',
+  name: 'payment_outPatient',
   components: {
     List,
   },
-  mixins: [mixin({ fetchListFunction: mzRecordData })],
+  mixins: [
+    mixin({
+      fetchListFunction: async params => {
+        const data = JSON.parse(JSON.stringify(params))
+        data.startFee = data.startFee
+          ? Number(data.startFee).toFixed(2) * 100
+          : ''
+        data.endFee = data.endFee ? Number(data.endFee).toFixed(2) * 100 : ''
+        console.log(data, '参数====')
+        const res = await mzRecordData(data)
+        return res
+      },
+    }),
+  ],
   data() {
     return {
       query: {
         pageSize: 10,
         timeType: 0,
-        searchType: 0,
+        searchType: 1,
       },
     }
   },
@@ -83,7 +96,7 @@ export default {
         popover: [
           {
             props: {
-              label: '项目',
+              label: '类别',
               options: [
                 { label: '不限', value: '' },
                 ...pre.noType.map(_ => ({ label: _.name, value: _.id })),
@@ -100,6 +113,11 @@ export default {
                 ...pre.dept.map(_ => ({ label: _.name, value: _.syncCode })),
               ],
             },
+            data: {
+              attrs: {
+                filterable: true,
+              },
+            },
             keys: 'deptId',
           },
           {
@@ -109,23 +127,23 @@ export default {
             },
             keys: ['startFee', 'endFee'],
           },
-          {
-            props: {
-              label: '支付方式',
-              options: [
-                { label: '不限', value: '' },
-                { label: '银联', value: 'UNION' },
-                { label: '微信', value: 'WX' },
-              ],
-            },
-            keys: 'payment',
-          },
+          // {
+          //   props: {
+          //     label: '支付方式',
+          //     options: [
+          //       { label: '不限', value: '' },
+          //       { label: '银联', value: 'UNION' },
+          //       { label: '微信', value: 'WX' },
+          //     ],
+          //   },
+          //   keys: 'payment',
+          // },
           {
             props: {
               label: '单据状态',
               options: [
                 { label: '不限', value: 0 },
-                { label: '已付款', value: 1 },
+                { label: '已支付', value: 1 },
                 { label: '已退费', value: 2 },
               ],
             },
@@ -148,27 +166,30 @@ export default {
         fixed: {
           minWidth: 80,
         },
+        billNo: {
+          minWidth: 100,
+        },
         totalFee: {
           formatter(row) {
-            return `￥${row.totalFee}`
+            return `￥${parseFloat(row.totalFee).toFixed(2)}`
           },
           minWidth: 100,
         },
-        billStateName: { minWidth: 100 },
+        num: {
+          hidden: true,
+        },
+        billStateName: {
+          minWidth: 100,
+          formatter(row) {
+            return row.billStateName === 'REFUNDED' ? '已退费' : '已支付'
+          },
+        },
         noTypeName: { minWidth: 100 },
         patientName: { minWidth: 100 },
         cardNo: { minWidth: 100 },
         paymentName: { minWidth: 100 },
       }
     },
-  },
-  beforeRouteLeave(to, from, next) {
-    if (to.path == '/payment/out-patient/detail') {
-      from.meta.keepAlive = true
-    } else {
-      from.meta.keepAlive = false
-    }
-    next()
   },
   async beforeRouteEnter(to, from, next) {
     ;[pre.dept, pre.noType] = await Promise.all([

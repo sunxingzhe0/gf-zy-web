@@ -114,7 +114,7 @@
                     v-for="item in dosage"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id"
+                    :value="item.name"
                   >
                   </el-option>
                 </el-select>
@@ -149,7 +149,7 @@
                     v-for="item in optionB"
                     :key="item.id"
                     :label="item.unitName"
-                    :value="item.id"
+                    :value="item.unitName"
                   >
                   </el-option>
                 </el-select>
@@ -222,7 +222,7 @@
                     v-for="item in optionA"
                     :key="item.id"
                     :label="item.unitName"
-                    :value="item.id"
+                    :value="item.unitName"
                   >
                   </el-option>
                 </el-select>
@@ -257,7 +257,7 @@
                     v-for="item in optionU"
                     :key="item.id"
                     :label="item.unitName"
-                    :value="item.id"
+                    :value="item.unitName"
                   >
                   </el-option>
                 </el-select>
@@ -295,7 +295,7 @@
                     v-for="item in frequency"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id"
+                    :value="item.code"
                   >
                   </el-option>
                 </el-select>
@@ -314,7 +314,7 @@
                     v-for="item in channel"
                     :key="item.id"
                     :label="item.name"
-                    :value="item.id"
+                    :value="item.name"
                   >
                   </el-option>
                 </el-select>
@@ -333,7 +333,7 @@
                     v-for="item in optionC"
                     :key="item.id"
                     :label="item.unitName"
-                    :value="item.id"
+                    :value="item.unitName"
                   >
                   </el-option>
                 </el-select>
@@ -1069,7 +1069,7 @@ export default {
           this.$nextTick(() => {
             this.form.dosageUnit = this.optionB.filter(item => {
               return item.unitName == val
-            })[0].id
+            })[0].unitName
           })
         } else if (type == 'CONVENTIONAL_PACKAGING_UNIT') {
           console.log(222222)
@@ -1085,7 +1085,7 @@ export default {
             console.log(this.typeId, '33333')
             this.form.regularUnit = this.optionU.filter(item => {
               return item.unitName == val
-            })[0].id
+            })[0].unitName
           })
           // this.optionU.push({ unitName: val, id: this.typeId })
         } else if (type == 'BASIC_PACKAGING_UNIT') {
@@ -1102,23 +1102,24 @@ export default {
           this.$nextTick(() => {
             this.form.basicUnit = this.optionA.filter(item => {
               return item.unitName == val
-            })[0].id
+            })[0].unitName
           })
         }
       }
       this.$nextTick(() => {
-        this.optionC = [
+       this.optionC = [
           ...this.optionU.filter(item => {
-            return item.id == this.form.regularUnit
+            return item.unitName == this.form.regularUnit
           }),
 
           ...this.optionB.filter(item => {
-            return item.id == this.form.dosageUnit
+            return item.unitName == this.form.dosageUnit
           }),
           ...this.optionA.filter(item => {
-            return item.id == this.form.basicUnit
+            return item.unitName == this.form.basicUnit
           }),
         ]
+        
         console.log(this.optionC)
         this.form.unit = ''
       })
@@ -1273,7 +1274,7 @@ export default {
       this.codeList = [res.dosageUnit, res.basicUnit, res.regularUnit]
       //默认单位列表全字段匹配
       this.optionC = this.typecodeList.filter(val => {
-        return this.codeList.includes(val.id)
+        return this.codeList.includes(val.unitName)
       })
       this.loading = false
       this.$nextTick(() => {
@@ -1312,6 +1313,15 @@ export default {
     handleSave() {
       this.$refs.formee.validate(async (valid, invalidFields) => {
         if (valid) {
+          // this.form = Object.assign(this.form, {
+          //   pharmaceuticalDosage: this.form.pharmaceuticalDosageText,
+          //   dosageUnit: this.form.dosageUnitText,
+          //   basicUnit: this.form.basicUnitText,
+          //   regularUnit: this.form.regularUnitText,
+          //   ways: this.form.waysText,
+          //   unit: this.form.unitText,
+          // })
+          console.log(this.form, '参数----')
           if (this.form.id) {
             await modify({
               ...this.form,

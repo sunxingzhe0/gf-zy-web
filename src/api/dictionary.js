@@ -183,6 +183,16 @@ export function importDrugExcel(data) {
   })
 }
 
+//账号批量导入
+export function importExcelAccount(data) {
+  return request({
+    url: '/api/v1/account/importExcel',
+    method: 'post',
+    timeout: '',
+    data,
+  })
+}
+
 //下载导入模板
 export function modularLexcel(params) {
   return downloadFile({

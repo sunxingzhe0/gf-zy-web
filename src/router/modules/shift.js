@@ -17,7 +17,7 @@ export default {
     {
       path: 'scheduling',
       component: () => import('@/views/scheduling/index'),
-      name: 'scheduling',
+      name: 'shift_scheduling',
       meta: {
         title: '我的排班',
         roles: ['DOC_WEB_SCHEDULING_SCHEDULING_INFORMATION'],
@@ -27,7 +27,6 @@ export default {
       path: 'online-visit',
       component: RouterView,
       redirect: '/shift/online-visit/list',
-      name: 'onlineVisit',
       meta: {
         title: '在线复诊',
         roles: ['ORG_WEB_SCHEDULING_ONLINE_REFERRAL'],
@@ -35,16 +34,19 @@ export default {
       children: [
         {
           path: 'list',
+          name: 'shift_onlineVisit',
           component: () => import('@/views/scheduling/online-visit/List'),
           meta: {
             title: '列表',
             activeMenu: '/shift/online-visit',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
         },
         {
           path: 'edit',
+          name: 'shift_onlineVisit_edit',
           component: () => import('@/views/scheduling/online-visit/Edit'),
           meta: {
             title: '科室排班',
@@ -58,21 +60,23 @@ export default {
       path: 'schedule-list',
       component: RouterView,
       redirect: '/shift/schedule-list/list',
-      name: 'scheduleList',
       meta: { title: '排班表', roles: ['ORG_WEB_SCHEDULING_SCHEDULE'] },
       children: [
         {
           path: 'list',
+          name: 'shift_scheduleList',
           component: () => import('@/views/scheduling/schedule-list/List'),
           meta: {
             title: '列表',
             activeMenu: '/shift/schedule-list',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
         },
         {
           path: 'detail',
+          name: 'shift_scheduleList_detail',
           component: () => import('@/views/scheduling/schedule-list/Detail'),
           meta: {
             title: '排班详情',

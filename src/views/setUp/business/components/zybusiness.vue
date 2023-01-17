@@ -4,6 +4,7 @@
       v-model="setting.query"
       :columns="setting.columns"
       :tableData="setting.tableData"
+      tableClass="table-height"
     >
       <template v-slot:slot_busSet="{ row }">
         <EditableText
@@ -40,8 +41,9 @@
           <el-input
             v-model="row.selectConfig"
             size="mini"
-            style="width: 200px"
-            @change="serbus(row, row.bizSelect)"
+            style="width: 130px"
+            @change="serbus(row, row.selectConfig)"
+            :disabled="row.bizSelect == 'ADD_RESERVE'"
           ></el-input>
           {{
             row.bizSelect == 'ADD_RESERVE' ||
@@ -56,7 +58,7 @@
       </template>
       <template v-slot:slot_busType="{ row }">{{ row.bizSelectDesc }}</template>
       <template v-slot:slot_busOption="{ row }"
-        ><div>{{ row.descList[0] }}</div></template
+        ><div class="d">{{ row.descList[0] }}</div></template
       >
     </List>
   </div>
@@ -73,6 +75,7 @@ export default {
   data() {
     return {
       activeName: 'setting',
+      selectConfig: '',
       setting: {
         query: {
           pageSize: 10,
@@ -84,15 +87,19 @@ export default {
           index: {
             hidden: true,
           },
+          bizType: {
+            width: 90,
+          },
           selectConfig: {
             prop: 'slot_busSet',
-            minWidth: 240,
+            // width: 250,
           },
           bizSelect: {
             prop: 'slot_busType',
+            width: 120,
           },
           descList: {
-            width: 300,
+            // minWidth: 300,
             prop: 'slot_busOption',
           },
         },
@@ -112,7 +119,7 @@ export default {
       this.table.tableData.list.length || this.$_fetchTableData(name)
     },
     //
-    async serbus(row) {
+    async serbus(row, val) {
       await modifyBus(
         {
           moduleType: 3,
@@ -122,7 +129,7 @@ export default {
           {
             configId: row.configId,
             bizSelect: row.bizSelect,
-            selectConfig: row.selectConfig,
+            selectConfig: val,
           },
         ],
       ).finally(async () => {
@@ -151,6 +158,9 @@ export default {
 <style lang="scss" scoped>
 .accountWrap {
   padding: 0;
+  .table-height {
+    height: calc(100vh - 205px);
+  }
   .account_main {
     padding: 10px;
     ::v-deep.el-table .cell.el-tooltip {
@@ -169,5 +179,10 @@ export default {
   ::v-deep.el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
     border: 1px solid transparent;
   }
+}
+.d {
+  white-space: normal !important;
+  word-wrap: break-word;
+  word-break: normal;
 }
 </style>

@@ -64,3 +64,124 @@ export function editInfo(data) {
     data,
   })
 }
+
+/**
+ * 6.小程序体验版生成
+ */
+export function miniExperienceCreate(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniExperienceCreate',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 7.小程序体验版查询
+ */
+export function miniExperienceQuery(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniExperienceQuery',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 8.小程序体验版取消
+ */
+export function miniExperienceCancel(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniExperienceCancel',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 9.提交审核
+ */
+export function miniAuditApply(data) {
+  return request({
+    url: '/api/v1/alipayVersion/miniAuditApply',
+    method: 'post',
+    data,
+  })
+}
+/**
+ * 10.撤销审核
+ */
+export function miniAuditCancel(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniAuditCancel',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 11.小程序上架
+ */
+export function miniOnline(params) {
+  return request({
+    url: '/api/v1/alipayVersion//miniOnline',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 12.小程序下架
+ */
+export function miniOffline(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniOffline',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 13.小程序退回开发
+ */
+export function miniAuditedCancel(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniAuditedCancel',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 14.小程序回滚版本
+ */
+export function miniRollback(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniRollback',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 15.小程序删除版本
+ */
+export function miniDelete(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniDelete',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 16.小程序版本详情查询
+ */
+export function miniDetailQuery(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniDetailQuery',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 16.小程序版本列表查询
+ */
+export function miniVersionList(params) {
+  return request({
+    url: '/api/v1/alipayVersion/miniVersionList',
+    method: 'get',
+    params,
+  })
+}

@@ -22,4 +22,9 @@ export default {
     outer: '互联网',
     inner: '院内',
   },
+  medicalType: {
+    MZ: '门诊',
+    ZY: '住院',
+    TJ: '体检',
+  },
 }

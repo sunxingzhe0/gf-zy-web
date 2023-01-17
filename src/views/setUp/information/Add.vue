@@ -99,21 +99,23 @@ export default {
             })
             this.$message.success('操作成功!')
             // this.$router.push('/set-up/information/list')
-            this.$router.push({
-              path: '/set-up/information/list',
-              query: { flag: 1 },
-            })
+            // this.$router.push({
+            //   path: '/set-up/information/list',
+            //   query: { flag: 1 },
+            // })
           } else {
             await addInfo({
               ...this.form,
             })
             this.$message.success('操作成功!')
             // this.$router.push('/set-up/information/list')
-            this.$router.push({
-              path: '/set-up/information/list',
-              query: { flag: 1 },
-            })
+            // this.$router.push({
+            //   path: '/set-up/information/list',
+            //   query: { flag: 1 },
+            // })
           }
+          this.$store.dispatch('updateList/changeFlag', 'updateListInformation')
+          this.$router.back()
         } else {
           console.log('error submit!!')
           return false

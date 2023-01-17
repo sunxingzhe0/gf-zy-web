@@ -12,19 +12,12 @@
       <section class="app-main">
         <el-scrollbar class="page-component__scroll">
           <transition :name="transitionName">
-            <keep-alive>
+            <keep-alive :include="keepLiveList">
               <router-view
-                v-if="$route.meta.keepAlive"
+                :key="$route.fullpath"
                 class="content__router-view"
               ></router-view>
             </keep-alive>
-          </transition>
-          <transition :name="transitionName">
-            <router-view
-              v-if="!$route.meta.keepAlive"
-              class="content__router-view"
-            ></router-view>
-            <!-- <router-view class="content__router-view" /> -->
           </transition>
         </el-scrollbar>
       </section>
@@ -66,6 +59,8 @@ export default {
   mixins: [ResizeMixin],
   data() {
     return {
+      history: [],
+      cachedViews: [],
       transitionName: 'slide-left',
     }
   },
@@ -77,6 +72,9 @@ export default {
       needTagsView: state => state.settings.tagsView,
       fixedHeader: state => state.settings.fixedHeader,
     }),
+    keepLiveList() {
+      return this.$store.state.user.keepLiveList
+    },
     classObj() {
       return {
         hideSidebar: !this.sidebar.opened,

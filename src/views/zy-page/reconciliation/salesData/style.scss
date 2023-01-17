@@ -1,0 +1,100 @@
+.salesList {
+  padding-bottom: 0 !important;
+  ::v-deep .el-table .cell:empty::before {
+    content: '';
+  }
+  ::v-deep .el-table--border th,
+  ::v-deep .el-table--border td {
+    font-size: 14px;
+    border-right: 0;
+  }
+  ::v-deep .el-table--border .border-right {
+    border-right: 2px solid #dfe6ec !important;
+  }
+  ::v-deep .el-table--border .border-right-opt {
+    border-right: 1px solid #dfe6ec !important;
+  }
+  ::v-deep .el-table--border .border-left {
+    border-left: 2px solid #dfe6ec !important;
+  }
+  ::v-deep .el-table thead.is-group th,
+  ::v-deep .el-table__footer-wrapper tbody td {
+    /* background: #fff; */
+  }
+  ::v-deep .el-table__fixed-footer-wrapper {
+    height: 37px;
+  }
+  ::v-deep .el-table--group,
+  ::v-deep .el-table--border {
+    border: 0;
+  }
+  ::v-deep .warning-row {
+    background: #fef0f0;
+    &.hover-row > td {
+      background: #fef0f0;
+    }
+  }
+}
+.list-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  color: #666;
+  margin-right: 20px;
+  .lable {
+    /* min-width: 140px; */
+    color: #666;
+    text-align: right;
+  }
+}
+.filter-width {
+  width: 350px;
+}
+.sales-query {
+  display: flex;
+  flex-wrap: wrap;
+  background: #f2f2f2;
+  padding: 20px;
+  padding-bottom: 0px;
+  margin-bottom: 20px;
+  .list-item {
+    .filter-width {
+      width: 180px;
+    }
+  }
+}
+.allNum {
+  font-size: 14px;
+  color: #666;
+  span {
+    margin: 0 10px;
+  }
+  b {
+    color: red;
+    font-weight: normal;
+  }
+}
+.priceTip {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  margin-right: 4px;
+  position: relative;
+  top: -2px;
+  &.payColor {
+    background: #f74a4a;
+  }
+  &.refundColor {
+    background: #f2a41c;
+  }
+  &.actualColor {
+    background: #bf48f1;
+  }
+}
+.addColor {
+  color: #f74a4a;
+}
+.subColor {
+  color: #21d20f;
+}

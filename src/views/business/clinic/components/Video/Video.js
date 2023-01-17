@@ -1,4 +1,4 @@
-import AgoraRTC from 'agora-rtc-sdk'
+import AgoraRTC from './AgoraRTCSDK-3.6.11'
 import { Message } from 'element-ui'
 
 import './Video.scss'
@@ -327,13 +327,14 @@ export function leave() {
       }
       // close stream
       rtc.localStream.close()
+
       for (let i = 0; i < rtc.remoteStreams.length; i++) {
         const stream = rtc.remoteStreams.shift()
 
         if (stream.isPlaying()) {
           stream.stop()
-          removeView()
         }
+        removeView()
       }
 
       rtc.localStream = null
@@ -352,6 +353,7 @@ export function leave() {
 let videoNode = null
 
 function addView(id) {
+  removeView()
   const wrap =
     videoNode || (videoNode = document.querySelector('#remote_stream'))
   if (wrap.querySelector(`remote_video_${id}`)) return
@@ -364,7 +366,8 @@ function addView(id) {
 }
 
 function removeView() {
-  document.querySelector('#remote_stream').innerHTML = ''
+  const wrapper = document.getElementById('remote_stream')
+  wrapper.childNodes.forEach(node => wrapper.removeChild(node))
 }
 
 /* function toggleMiniView(e) {

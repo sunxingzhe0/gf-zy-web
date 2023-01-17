@@ -24,7 +24,7 @@ import { List, mixin } from '@/components'
 import { OrderDoctorWebList } from '@/api/business'
 
 export default {
-  name: 'TableList',
+  name: 'business_order',
   components: {
     List,
   },

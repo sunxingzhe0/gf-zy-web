@@ -70,7 +70,7 @@ const statusMap = {
   PASSED: '已通过',
 }
 export default {
-  name: 'TableList',
+  name: 'business_prescription',
   components: {
     List,
   },

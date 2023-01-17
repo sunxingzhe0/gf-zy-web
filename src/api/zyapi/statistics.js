@@ -115,3 +115,184 @@ export function feeCount(data) {
     data,
   })
 }
+
+//对账列表
+export function reconciliation(params) {
+  return request({
+    url: '/api/v1/reconciliation/list',
+    method: 'get',
+    params,
+  })
+}
+
+//对账流水
+export function reconciliationTotal(params) {
+  return request({
+    url: '/api/v1/reconciliation/total',
+    method: 'get',
+    params,
+  })
+}
+
+///导出数据
+export function exportData(params) {
+  return downloadFile({
+    url: '/api/v1/reconciliation/exportData',
+    method: 'get',
+    params,
+  })
+}
+///导出数据
+export function exportData2(params) {
+  return downloadFile({
+    url: '/api/v1/reconciliation/exportData2',
+    method: 'get',
+    params,
+  })
+}
+
+// 银行流水
+export function foundFlow(params) {
+  return request({
+    url: '/api/v1/bank/total/list',
+    params,
+  })
+}
+
+// 银行流水导出
+export function exportFoundFlow(params) {
+  return downloadFile({
+    url: '/api/v1/bank/total/exportData',
+    params,
+  })
+}
+
+// 银行流水明细
+export function foundFlowDetail(params) {
+  return request({
+    url: '/api/v1/bank/detail/list',
+    params,
+  })
+}
+
+// 银行流水明细导出
+export function exportFoundFlowDetail(params) {
+  return downloadFile({
+    url: '/api/v1/bank/detail/exportData',
+    params,
+  })
+}
+
+// 对账汇总统计页
+export function reconciliation3Statis(params) {
+  return request({
+    url: '/api/v1/reconciliation3/statistics',
+    params,
+  })
+}
+
+// 对账列表
+export function reconciliation3List(params) {
+  return request({
+    url: '/api/v1/reconciliation3/list',
+    params,
+  })
+}
+
+// 列表统计
+export function reconciliation3Total(params) {
+  return request({
+    url: '/api/v1/reconciliation3/total',
+    params,
+  })
+}
+
+// 对账列表详情
+export function reconciliation3Detail(params) {
+  return request({
+    url: '/api/v1/reconciliation3/detail',
+    params,
+  })
+}
+
+// 对账汇总导出
+export function reconciliation3ExportSsData(params) {
+  return downloadFile({
+    url: '/api/v1/reconciliation3/exportSsData',
+    params,
+  })
+}
+// 对账列表导出
+export function reconciliation3ExportData(params) {
+  return downloadFile({
+    url: '/api/v1/reconciliation3/exportData',
+    params,
+  })
+}
+
+/* 支付宝流水 */
+//支付宝汇总列表
+export function zfbTotalList(params) {
+  return request({
+    url: '/api/v1/alipay/total/list',
+    method: 'get',
+    params,
+  })
+}
+//支付宝汇总导出
+export function zfbExportData(params) {
+  return downloadFile({
+    url: '/api/v1/alipay/total/exportData',
+    params,
+  })
+}
+//支付宝明细列表
+export function zfbDetailList(params) {
+  return request({
+    url: '/api/v1/alipay/detail/list',
+    method: 'get',
+    params,
+  })
+}
+//支付宝明细统计
+export function zfbDetailTotal(params) {
+  return request({
+    url: '/api/v1/alipay/detail/total',
+    method: 'get',
+    params,
+  })
+}
+//支付宝明细导出
+export function zfbExportDetail(params) {
+  return downloadFile({
+    url: '/api/v1/alipay/detail/exportData',
+    params,
+  })
+}
+
+//获取冲销记录
+export function writeoffTrade(params) {
+  return request({
+    url: '/api/v1/reconciliation3/writeoff-trade',
+    method: 'get',
+    params,
+  })
+}
+
+//执行平账
+export function executeWriteoffAccounts(data) {
+  return request({
+    url: '/api/v1/reconciliation3/execute-writeoff-accounts',
+    method: 'post',
+    data,
+  })
+}
+
+//退款业务单列表
+export function refundBizOrderList(params) {
+  return request({
+    url: '/api/v1/order/org/refundBizOrderList',
+    method: 'get',
+    params,
+  })
+}

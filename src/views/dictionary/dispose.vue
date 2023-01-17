@@ -90,7 +90,6 @@ export default {
           {
             props: {
               label: '类型',
-              noColon: true,
               is: 'el-select',
               options: [
                 { label: '全部', value: '' },
@@ -103,7 +102,6 @@ export default {
           },
           {
             props: {
-              noColon: true,
               is: 'el-select',
               label: '标本/部位',
               options: [],
@@ -117,7 +115,6 @@ export default {
           },
           {
             props: {
-              noColon: true,
               is: 'el-select',
               label: '执行科室',
               options: [],
@@ -186,47 +183,4 @@ export default {
   },
 }
 </script>
-<style lang="scss" scoped>
-.view__card ::v-deep {
-  .c__filter.el-row .el-row {
-    display: flex;
-  }
-  .item-label.is-right {
-    height: 32px;
-    padding: 0 15px;
-    margin-right: 0;
-    color: #8c8c8c;
-    line-height: 30px;
-    border-radius: 4px;
-    border-right: none;
-    width: unset !important;
-    border: 1px solid #dcdfe6;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .item-label.is-right + .el-input,
-  .item-label.is-right + .el-select {
-    .el-input__inner {
-      border-left: none;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
-  }
-  .el-select__tags {
-    & > span {
-      max-width: calc(100% - 16px);
-      display: flex;
-    }
-    .el-tag--info:first-child {
-      flex: 1;
-      overflow: hidden;
-    }
-    .el-select__tags-text {
-      width: 100%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: block;
-    }
-  }
-}
-</style>
+<style lang="scss" scoped></style>

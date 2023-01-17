@@ -44,6 +44,7 @@
 import { List, mixin } from '@/components'
 import { getSchedualList, setStateSchedual } from '@/api/scheduling'
 export default {
+  name: 'shift_onlineVisit',
   components: {
     List,
   },

@@ -5,11 +5,15 @@
       :filter="filter"
       :columns="columns"
       :tableData="tableData"
+      tableClass="institutionalusers"
     >
       <template v-slot:slot_nickname="{ row }">
         <!-- <el-avatar :size="60" :src="FILE_URL(row.avatar)"></el-avatar> -->
         <div style="line-height: 30px">
-          <el-image style="float: left" :src="FILE_URL(row.avatar)">
+          <el-image
+            style="float: left"
+            :src="row.avatar ? FILE_URL(row.avatar) : ''"
+          >
             <img slot="error" class="image-slot" src="@/assets/headerImg.png" />
           </el-image>
           <span>{{ row.nickname }}</span>
@@ -31,7 +35,8 @@ export default {
   data() {
     return {
       query: {
-        pageSize: 0,
+        pageSize: 10,
+        currentNum: 1,
         timeType: 1,
         searchType: 1,
       },
@@ -44,7 +49,7 @@ export default {
           props: {
             options: [
               // { label: '登录时间', value: 0 },
-              { label: '第一次登录时间', value: 1 },
+              { label: '首次登录时间', value: 1 },
               { label: '最近一次登录时间', value: 2 },
             ],
           },
@@ -53,8 +58,9 @@ export default {
         search: {
           props: {
             options: [
-              { label: '微信昵称', value: 1 },
+              { label: '昵称', value: 1 },
               { label: '用户ID', value: 0 },
+              { label: '平台用户标识', value: 2 },
             ],
           },
           keys: ['searchType', 'searchKeywords'],
@@ -66,6 +72,17 @@ export default {
               is: 'InputRange',
             },
             keys: ['startMoney', 'endMoney'],
+          },
+          {
+            props: {
+              label: '用户来源',
+              options: [
+                { label: '不限', value: '' },
+                { label: '支付宝', value: 'ALI' },
+                { label: '微信', value: 'MINI' },
+              ],
+            },
+            keys: 'source',
           },
         ],
       }
@@ -112,8 +129,10 @@ export default {
 span {
   margin-left: 15px;
 }
-::v-deep .c__filter .prepend-select {
-  width: 210px;
+.institutionalusers {
+  ::v-deep .prepend-select-date {
+    width: 210px;
+  }
 }
 ::v-deep .c__filter .prepend-select-date .el-input__inner {
   // width: calc(100px +51px);

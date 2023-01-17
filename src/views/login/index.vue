@@ -24,6 +24,7 @@
               type="text"
               tabindex="1"
               autocomplete="on"
+              @input="inputChange"
               @change="accountChange"
             >
               <template v-slot:prefix>
@@ -130,6 +131,7 @@
         </el-form>
       </el-col>
     </el-row>
+    <img class="login-logo" src="@/assets/login-logo.png" alt="" />
   </div>
 </template>
 
@@ -138,18 +140,21 @@ import $store from '@/utils/$store'
 import defaultSettings from '@/settings'
 // import SocialSign from './components/SocialSignin'
 import { humanValidate } from '@/api/user'
-
+import { hasOperate } from '@/utils/listening'
 export default {
   name: 'Login',
   // components: { SocialSign },
   data() {
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('密码不能小于六位字符'))
-      } else {
-        callback()
-      }
-    }
+    // const validatePassword = (rule, value, callback) => {
+    //   // const reg =
+    //   //   /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,16}/
+    //   // if (!reg.test(value)) {
+    //   //   callback(new Error('请输入8-16位密码，包含大小写字母、数字、特殊字符'))
+    //   // } else {
+    //   //   callback()
+    //   // }
+    //   // callback()
+    // }
     return {
       loginForm: {
         account: '',
@@ -162,7 +167,11 @@ export default {
         account: [{ required: true, trigger: 'blur', message: '请输入账号' }],
         code: [{ required: true, trigger: 'blur', message: '请输入验证码' }],
         password: [
-          { required: true, trigger: 'blur', validator: validatePassword },
+          {
+            required: true,
+            trigger: 'blur',
+            message: '密码不能为空' /* validator: validatePassword */,
+          },
         ],
       },
       passwordType: 'password',
@@ -182,6 +191,7 @@ export default {
   watch: {
     $route: {
       handler: function (route) {
+        console.log(route, '路由--')
         const query = route.query
         if (query) {
           this.redirect = query.redirect
@@ -199,6 +209,9 @@ export default {
         Array.isArray(account) ? account[account.length - 1] : account,
       )
     // window.addEventListener('storage', this.afterQRScan)
+    for (var i = 1; i < 1000; i++) {
+      clearInterval(i)
+    }
   },
   mounted() {
     if (this.loginForm.account === '') {
@@ -261,6 +274,9 @@ export default {
         }
       }
     },
+    inputChange() {
+      this.loginForm.password = ''
+    },
     handleLogin() {
       this.$refs.loginForm.validate(valid => {
         if (valid) {
@@ -271,15 +287,41 @@ export default {
               if (this.loginForm.remember) {
                 $store.saveAccount(this.loginForm)
               }
+
+              console.log('登录成功跳转', this.otherQuery)
               this.$router.push({
                 path: '/',
                 query: this.otherQuery,
                 // path: this.redirect || '/',
               })
               this.loading = false
+
+              for (var i = 1; i < 100; i++) {
+                clearInterval(i)
+              }
+              //监听操作
+              hasOperate(1800000, async () => {
+                await this.$store.dispatch('user/logout')
+                const confirm = await this.$confirm(
+                  '长时间未操作，已为您退出登录，请重新登录！',
+                  '提示',
+                  {
+                    type: 'warning',
+                    showClose: false,
+                    showCancelButton: false,
+                    closeOnClickModal: false,
+                    closeOnPressEscape: false,
+                  },
+                )
+                if (confirm !== 'confirm') return
+                setTimeout(() => {
+                  this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+                }, 300)
+              })
             })
             .catch(() => {
               this.loading = false
+              this.getVerification()
             })
         } else {
           console.log('error submit!!')
@@ -328,6 +370,11 @@ $dark_gray: #889aa4;
   width: 100%;
   background: url('~@/assets/login/background.png') no-repeat 0 / cover;
   overflow: hidden;
+  .login-logo {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+  }
 
   .login-wrapper {
     position: absolute;

@@ -20,8 +20,8 @@
         <span>就诊人</span>
         {{ info.medicalName || '-' }}
       </el-col>
-
-      <el-col>
+      <!-- 病历调整前 -->
+      <!-- <el-col>
         <span>主诉</span>
         {{ info.mainSuit || '-' }}
       </el-col>
@@ -46,6 +46,27 @@
         {{ info.diagnosis || '-' }}
       </el-col>
 
+      <el-col>
+        <span>处理意见</span>
+        {{ info.dealIdea || '-' }}
+      </el-col> -->
+      <!-- 病历调整后 -->
+      <el-col>
+        <span>就诊方式</span>
+        {{ info.seeWay || '-' }}
+      </el-col>
+      <el-col>
+        <span>病情</span>
+        {{ info.illness || '-' }}
+      </el-col>
+      <el-col>
+        <span>辅助检查</span>
+        {{ info.supCheck || '-' }}
+      </el-col>
+      <el-col>
+        <span>初次诊断</span>
+        {{ info.diagnosis || '-' }}
+      </el-col>
       <el-col>
         <span>处理意见</span>
         {{ info.dealIdea || '-' }}

@@ -24,11 +24,15 @@ export default function formatMessage(message) {
         '个处方]'
       )
     case 'DIAS':
-      return body.indexOf('SUB_AGAIN') > -1 ? '[更新了诊断]' : '[发送了诊断]'
+      return body.indexOf('SUB_AGAIN') > -1
+        ? '[更新了诊断]，查看详情>>'
+        : '[发送了诊断]，查看详情>>'
     case 'EMH':
-      return body.indexOf('SUB_AGAIN') > -1 ? '[更新了病历]' : '[发送了病历]'
+      return body.indexOf('SUB_AGAIN') > -1
+        ? '[更新了病历]，查看详情>>'
+        : '[发送了病历]，查看详情>>'
     case 'DSO':
-      return '[发送了一个处置单]'
+      return '[发送了一个处置单]，查看详情>>'
     case 'ZJ':
       return '[发送了一个预约单]'
     case 'ANY': {

@@ -1,5 +1,9 @@
 <template>
-  <section class="view__card" :class="{ isShowcheck: !isShowBtn }">
+  <section
+    class="view__card"
+    :class="{ isShowcheck: !isShowBtn }"
+    v-loading="loading"
+  >
     <List
       v-model="query"
       :filter="filter"
@@ -16,25 +20,19 @@
       <!-- 就诊记录弹出层 -->
       <template v-slot:slot_visitCount="{ row }">
         <el-popover placement="bottom">
-          <el-table
-            :data="row.visitList"
-            max-height="250"
-            size="small"
-            fit
-            lazy
-          >
+          <el-table :data="rowListData" max-height="250" size="small" fit lazy>
             <el-table-column
               type="index"
               width="50"
               label="序号"
             ></el-table-column>
             <el-table-column property="name" label="就诊人"></el-table-column>
-            <el-table-column property="orderType" label="类型">
+            <el-table-column property="medicalType" label="类型">
               <template v-slot="{ row }">
-                <span>{{ orderType[row.orderType] }}</span>
+                <span>{{ medicalType[row.medicalType] }}</span>
               </template>
             </el-table-column>
-            <el-table-column property="wayType" label="形式">
+            <!-- <el-table-column property="wayType" label="形式">
               <template v-slot="{ row }">
                 <span>{{ wayType[row.wayType] }}</span>
               </template>
@@ -43,7 +41,11 @@
               <template v-slot="{ row }">
                 <span>{{ row.diagnosisInfo || '-' }}</span>
               </template></el-table-column
-            >
+            > -->
+            <el-table-column
+              property="deptName"
+              label="科室名称"
+            ></el-table-column>
             <el-table-column
               property="doctorName"
               label="接诊人"
@@ -51,7 +53,7 @@
             <el-table-column
               property="acceptsTime"
               label="就诊时间"
-              width="100"
+              width="150"
             ></el-table-column>
             <el-table-column label="患者记录">
               <template v-slot="{ row }">
@@ -63,7 +65,7 @@
               </template>
             </el-table-column>
           </el-table>
-          <el-button slot="reference" type="text">{{
+          <el-button slot="reference" type="text" @click="getRowList(row)">{{
             row.visitCount
           }}</el-button>
         </el-popover>
@@ -76,9 +78,25 @@
           >{{ row.pushCount }}</span
         >
       </template>
+      <!-- 换绑 -->
+      <!-- <template v-slot:slot_cardNo="{ row }">
+        <span @click="goPushList(row)">{{ row.cardNo }}</span> -->
+      <!-- <span
+          v-show="$route.path === '/patient/patientTube/list'"
+          style="margin-left: 10px; color: #0ab2c1; cursor: pointer"
+          @click="changeBind(row)"
+          >换绑</span
+        > -->
+      <!-- </template> -->
       <!-- 查看详情 -->
       <template v-slot:fixed="{ row }">
         <el-button type="text" @click="gotoInfo(row)">查看</el-button>
+        <el-button
+          v-show="$route.path === '/patient/patientTube/list'"
+          type="text"
+          @click="changeBind(row)"
+          >换绑</el-button
+        >
         <el-button type="text" @click="handlePushBtnClick(row)" v-if="isShowBtn"
           >推送</el-button
         >
@@ -89,6 +107,7 @@
       :title="dialog.isBat ? '批量推送' : `推送对象 - ${dialog.user}`"
       :visible.sync="dialog.visible"
       append-to-body
+      :close-on-click-modal="false"
       custom-class="component__dialog"
       @closed="handleClosed"
     >
@@ -103,6 +122,8 @@
               type="textarea"
               :autosize="{ minRows: 5, maxRows: 10 }"
               placeholder="请输入内容"
+              maxlength="255"
+              show-word-limit
               v-model="dialog.model.content"
             >
             </el-input>
@@ -123,17 +144,72 @@
         </div>
       </template>
     </el-dialog>
+
+    <el-dialog
+      title="换绑就诊卡"
+      :visible.sync="bindDialog"
+      append-to-body
+      :close-on-click-modal="false"
+      custom-class="component__dialog"
+      @closed="closeBindDialog"
+    >
+      <div class="flex-start dialog-row-top">
+        <span>就诊卡号：{{ row.cardNo || '-' }}</span>
+        <span>患者姓名：{{ row.name || '-' }}</span>
+        <span>性别：{{ sexs[row.sex] || '-' }}</span>
+      </div>
+      <el-table
+        :data="dialogTableData"
+        style="width: 100%; border: 1px solid #dfe6ec; border-bottom: 0"
+        highlight-current-row
+        @row-click="rowClick"
+      >
+        <el-table-column label width="30">
+          <template slot-scope="scope">
+            <el-radio :label="scope.row.pid" v-model="radioId"></el-radio>
+          </template>
+        </el-table-column>
+        <el-table-column prop="pid" label="就诊卡号"> </el-table-column>
+        <el-table-column prop="name" label="姓名"> </el-table-column>
+        <el-table-column prop="balanceZy" label="卡内金额">
+          <template slot-scope="scope">
+            <span>{{ scope.row.balanceZy || '-' }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column width="180" prop="visitTime" label="最近使用时间">
+        </el-table-column>
+      </el-table>
+      <template v-slot:footer>
+        <div class="is-center">
+          <el-button @click="bindDialog = false"> 取消 </el-button>
+          <el-button
+            type="primary"
+            :loading="dialog.loading"
+            @click="coonfirmChangeBind"
+          >
+            确认
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </section>
 </template>
 
 <script>
+import dayjs from 'dayjs'
 import { List, mixin /* EditableText */ } from '@/components'
-import { fetchList, pushMsg } from '@/api/list'
+import {
+  fetchList,
+  pushMsg,
+  medicalListByPatientId,
+  getAllCard,
+  changeCard,
+} from '@/api/list'
 import { invalidFieldSetFocus /* param */ } from '@/utils'
 // import { createOrUpdate } from 'echarts/lib/util/throttle'
 import enumsList from '../enumsList'
 export default {
-  name: 'TableList',
+  name: 'patient_mine',
   components: {
     List,
     // EditableText,
@@ -145,6 +221,13 @@ export default {
   ],
   data() {
     return {
+      selectRow: {},
+      sexs: ['女', '男', '未知'],
+      radioId: '',
+      dialogTableData: [],
+      bindDialog: false,
+      row: {},
+      rowListData: [],
       isShowcheck: [],
       //是否显示机构端按钮
       isShowBtn: true,
@@ -156,6 +239,8 @@ export default {
         timeType: 1,
         searchType: 0,
         sourceType: this.$route.path === '/patient/patientTube/list' ? 1 : 0,
+        start: dayjs().format('YYYYMMDDHHmmss'),
+        end: dayjs().subtract(7, 'day').format('YYYYMMDDHHmmss'),
       },
 
       dialog: {
@@ -172,6 +257,8 @@ export default {
       wayType: enumsList.wayType,
       status: enumsList.status,
       type: enumsList.type,
+      medicalType: enumsList.medicalType,
+      isFirstEnter: false,
     }
   },
   created() {
@@ -193,7 +280,7 @@ export default {
         search: {
           props: {
             options: [
-              { label: '患者ID', value: 0 },
+              { label: '就诊卡号', value: 0 },
               { label: '电子健康卡号', value: 1 },
               { label: '患者姓名', value: 2 },
               { label: '身份证号', value: 3 },
@@ -227,6 +314,7 @@ export default {
           {
             props: {
               label: '就诊记录',
+              isInteger: true,
               is: 'InputRange',
             },
             keys: ['visitStartNum', 'visitEndNum'],
@@ -238,18 +326,18 @@ export default {
             },
             keys: ['pushStartNum', 'pushEndNum'],
           }, */
-          {
-            props: {
-              label: '最近一次就诊类型',
-              options: [
-                { label: '不限', value: '' },
-                { label: '在线咨询', value: 'CONSULT' },
-                { label: '在线复诊', value: 'REPEAT_CLINIC' },
-                { label: '慢病续方', value: 'CARRYON_PRESC' },
-              ],
-            },
-            keys: 'orderType',
-          },
+          // {
+          //   props: {
+          //     label: '最近一次就诊类型',
+          //     options: [
+          //       { label: '不限', value: '' },
+          //       { label: '在线咨询', value: 'CONSULT' },
+          //       { label: '在线复诊', value: 'REPEAT_CLINIC' },
+          //       { label: '慢病续方', value: 'CARRYON_PRESC' },
+          //     ],
+          //   },
+          //   keys: 'orderType',
+          // },
           /* {
             props: {
               label: '测试',
@@ -276,12 +364,12 @@ export default {
         lastOrderType: {
           minWidth: 150,
           formatter(row) {
-            return row.lastOrderType === 'CONSULT'
-              ? '在线咨询'
-              : row.lastOrderType === 'REPEAT_CLINIC'
-              ? '在线复诊'
-              : row.lastOrderType === 'CARRYON_PRESC'
-              ? '慢病续方'
+            return row.lastOrderType === 'MZ'
+              ? '门诊'
+              : row.lastOrderType === 'ZY'
+              ? '住院'
+              : row.lastOrderType === 'TJ'
+              ? '体检'
               : ''
           },
         },
@@ -302,6 +390,10 @@ export default {
           prop: 'slot_pushCount',
           minWidth: 90,
         },
+        // cardNo: {
+        //   prop: 'slot_cardNo',
+        //   minWidth: 120,
+        // },
         index: {
           hidden: true,
         },
@@ -331,6 +423,49 @@ export default {
     },
   },
   methods: {
+    initQuery() {
+      this.query = {
+        pageSize: 10,
+        timeType: 1,
+        searchType: 0,
+        sourceType: this.$route.path === '/patient/patientTube/list' ? 1 : 0,
+        isFilterMore: true,
+        start: dayjs().subtract(7, 'day').format('YYYYMMDDHHmmss'),
+        end: dayjs().format('YYYYMMDDHHmmss'),
+      }
+    },
+    async getDialogTableData() {
+      this.dialogTableData = await getAllCard({ patientId: this.row.patientId })
+    },
+    rowClick(row) {
+      this.radioId = row.pid
+      this.selectRow = row
+    },
+    closeBindDialog() {
+      this.bindDialog = false
+    },
+    async coonfirmChangeBind() {
+      this.bindDialog = false
+      console.log(this.selectRow)
+      const params = {
+        patientId: this.row.patientId, //患者id
+        cardNo: this.selectRow.pid,
+      }
+      await changeCard(params)
+      this.$message.success('操作成功！')
+      this.$_fetchTableData()
+    },
+    //huanbagn
+    changeBind(row) {
+      this.row = row
+      this.bindDialog = true
+      this.getDialogTableData()
+    },
+    //获取本行就诊记录列表数据
+    async getRowList({ patientId }) {
+      const res = await medicalListByPatientId({ patientId })
+      this.rowListData = res
+    },
     //请求数据
     async fetchList() {
       this.tableData = await fetchList(this.query)
@@ -392,11 +527,20 @@ export default {
     //查看就诊记录详情
     seeInfo(row) {
       this.$router.push({
-        name: 'recordInfo',
-        params: {
+        path:
+          this.$route.path === '/patient/patientTube/list'
+            ? '/patient/patientTube/detail/recordInfo'
+            : '/patient/mine/detail/recordInfo',
+        query: {
           medicalId: row.medicalId,
         },
       })
+      // this.$router.push({
+      //   name: 'recordInfo',
+      //   params: {
+      //     medicalId: row.medicalId,
+      //   },
+      // })
     },
     //推送次数跳转
     goPushList(row) {
@@ -436,26 +580,25 @@ export default {
         this.delPush()
       }
     },
-    $route(to) {
-      console.log(to.path, '---跳转的路由')
-      if (to.path === '/patient/patientTube/list') {
+    $route(to, from) {
+      console.log(to, from)
+      if (
+        to.path === '/patient/patientTube/list' &&
+        from.path !== '/patient/patientTube/detail/detail'
+      ) {
         this.isShowBtn = false
-        this.query.sourceType = 1
-        // this.fetchList()
+        this.initQuery()
         this.delPush()
-      } else if (to.path === '/patient/mine/list') {
-        this.query.sourceType = 0
+      } else if (
+        to.path === '/patient/mine/list' &&
+        from.path !== '/patient/mine/detail/detail'
+      ) {
         // this.fetchList()
         this.isShowBtn = true
+        this.initQuery()
       }
     },
   },
-
-  /* beforeRouteLeave(to, from, next) {
-    // 设置下一个路由的 meta
-    to.meta.keepAlive = false // 详情不缓存，刷新
-    next()
-  }, */
 }
 </script>
 <style lang="scss" scoped>
@@ -484,5 +627,38 @@ export default {
 // }
 .el-button--medium {
   font-size: 14px;
+}
+.dialog-row-top {
+  margin-bottom: 20px;
+  font-size: 16px;
+  /* font-weight: 500; */
+  color: #333;
+  span {
+    margin-right: 60px;
+    &:nth-child(3) {
+      margin-right: 0;
+    }
+  }
+}
+::v-deep .el-dialog__body {
+  padding-top: 20px;
+}
+/* ::v-deep .component__dialog .el-table thead {
+  color: #333;
+  .cell {
+    font-weight: normal !important;
+  }
+} */
+::v-deep .component__dialog .el-table {
+  color: #333;
+  thead {
+    color: #333;
+    th.is-leaf {
+      border-bottom: 2px solid #dfe6ec;
+    }
+  }
+  .cell {
+    font-weight: normal !important;
+  }
 }
 </style>

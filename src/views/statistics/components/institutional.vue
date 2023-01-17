@@ -23,11 +23,17 @@
       </el-col>
       <el-col :md="4" class="is-right">
         <!-- <el-button type="primary" @click="fails">导出数据</el-button> -->
-        <el-button type="info" @click="Refresh">刷新</el-button>
+        <el-button
+          type="info"
+          style="border-color: #f4f4f5"
+          plain
+          @click="Refresh"
+          >刷新</el-button
+        >
       </el-col>
     </el-row>
     <h3 class="view__title">评价均分TOP8</h3>
-    <el-row class="view__content">
+    <el-row class="view__content" v-loading="loading">
       <el-col :span="16">
         <span>业务类型</span>
         <el-radio-group v-model="arrayS" @change="meter">
@@ -168,6 +174,7 @@ export default {
     }
 
     return {
+      loading: false,
       active: 7,
       arrayS: '', //业务类型
       department: 1, //科室
@@ -235,19 +242,21 @@ export default {
       this.meter()
     },
     //刷新
-    Refresh() {
-      ;(this.typeDate = 1), (this.arrayS = '')
-      this.branch.name = ''
-      this.date = [
-        formatDate(
-          new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 7),
-          'yyyyMMdd',
-        ),
-        formatDate(new Date(), 'yyyyMMdd'),
-      ]
+    async Refresh() {
+      // ;(this.typeDate = 1), (this.arrayS = '')
+      // this.branch.name = ''
+      // this.date = [
+      //   formatDate(
+      //     new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 7),
+      //     'yyyyMMdd',
+      //   ),
+      //   formatDate(new Date(), 'yyyyMMdd'),
+      // ]
+      this.loading = true
       this.active = 7
-      this.meter()
-      // this.jend()
+      await this.meter()
+      await this.jend()
+      this.loading = false
     },
 
     handleDatePickerChange(val) {

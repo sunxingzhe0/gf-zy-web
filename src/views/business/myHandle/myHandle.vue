@@ -1,12 +1,12 @@
 <template>
-  <section class="view__card">
+  <section class="view__card" :class="intoId ? 'hide-filter' : ''">
     <List
       ref="list"
       v-model="query"
       :filter="filter"
       :tableData="tableData"
       :columns="{
-        fixed: { width: 120 },
+        fixed: { width: 160 },
         index: { hidden: true },
         type: { formatter: typeFilter },
         price: { formatter: priceFilter },
@@ -27,21 +27,40 @@
         ></Handle>
       </div>
     </List>
+    <QrCode ref="qrcode" />
   </section>
 </template>
 
 <script>
 import dayjs from 'dayjs'
+import QrCode from '@/components/QrCode'
+
 import { cloneDeep } from 'lodash'
 import * as business from '@/api/business'
 import { List, mixin } from '@/components'
 import Handle, { Status, PayStatus } from '@/components/Handle/Handle'
 
 export default {
-  name: 'TableList',
+  name: 'business_myHandle',
   components: {
     List,
     Handle,
+    QrCode,
+  },
+  props: {
+    intoId: String,
+  },
+  watch: {
+    intoId: {
+      handler(val) {
+        console.log(val, 'intoId--------')
+        this.query = {
+          id: val,
+        }
+        // this.query.id = val
+      },
+      immediate: true,
+    },
   },
   mixins: [
     mixin({
@@ -373,8 +392,12 @@ export default {
         this.$_fetchTableData()
         loading.close()
       } catch (e) {
-        console.log(e)
         loading?.close()
+        console.log(e, '错误信息')
+        const reg = new RegExp('CA-SIGN-ERROR')
+        if (reg.test(e)) {
+          this.$refs.qrcode.open() //打开二维码
+        }
       }
     },
     // 删除
@@ -425,26 +448,6 @@ export default {
 .view__card {
   overflow: hidden;
   height: calc(100vh - 40px - 5px);
-  & ::v-deep {
-    .c__list {
-      height: 100%;
-      display: flex;
-      flex-direction: column;
-      & > .el-table {
-        flex: unset;
-      }
-    }
-    .el-table--medium th,
-    .el-table--medium td {
-      padding: 5px 0;
-    }
-    .el-table th > .cell {
-      white-space: nowrap;
-    }
-    td:last-child {
-      width: 120px;
-    }
-  }
 }
 .edit_box {
   width: 100%;
@@ -460,5 +463,10 @@ export default {
 }
 .el-button--mini {
   font-size: 14px;
+}
+.hide-filter {
+  .c__filter {
+    display: none;
+  }
 }
 </style>

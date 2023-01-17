@@ -26,17 +26,7 @@
       </template>
       <!-- 业务形式 -->
       <template v-slot:slot_orderStatus="{ row }">
-        <div v-if="row.orderStatus == 'UNPAID'">待付款</div>
-        <div v-if="row.orderStatus == 'PAID'">已支付</div>
-        <div v-if="row.orderStatus == 'WAIT_TREAT'">待接诊</div>
-        <div v-if="row.orderStatus == 'IN_TREAT'">接诊中</div>
-        <div v-if="row.orderStatus == 'WAIT_TAKE'">待自提</div>
-        <div v-if="row.orderStatus == 'WAIT_SEND'">待发货</div>
-        <div v-if="row.orderStatus == 'WAIT_RECEIVE'">待收货</div>
-        <div v-if="row.orderStatus == 'TO_EVALUATE'">待评价</div>
-        <div v-if="row.orderStatus == 'IN_AFTER_SALE'">售后中</div>
-        <div v-if="row.orderStatus == 'FINISHED'">已完成</div>
-        <div v-if="row.orderStatus == 'CLOSED'">已关闭</div>
+        <div>{{ state(row.orderStatus) }}</div>
       </template>
     </List>
   </div>
@@ -46,7 +36,7 @@ import { List, mixin } from '@/components'
 import { getBusOrderList } from '@/api/order'
 import {
   roleChooseList,
-  deptChooseList,
+  deptOuterChooseList,
   drugStoreChooseList,
   titleChooseList,
 } from '@/api'
@@ -58,6 +48,7 @@ const pre = {
   title: [],
 }
 export default {
+  name: 'order_business',
   components: {
     List,
   },
@@ -120,7 +111,7 @@ export default {
         },
         {
           props: {
-            label: '员工科室',
+            label: '科室',
             options: [
               { label: '不限', value: '' },
               ...pre.dept.map(_ => ({ label: _.name, value: _.id })),
@@ -225,18 +216,58 @@ export default {
           minWidth: 120,
         },
       },
+      isFirstEnter: false,
     }
   },
   async beforeRouteEnter(to, from, next) {
     ;[pre.role, pre.dept, pre.store, pre.title] = await Promise.all([
       roleChooseList({ showUser: true }),
-      deptChooseList({ tree: false }),
+      deptOuterChooseList({ tree: false }),
       drugStoreChooseList(),
       titleChooseList(),
     ])
     next()
   },
   methods: {
+    state(orderStatus) {
+      let str = '-'
+      switch (orderStatus) {
+        case 'UNPAID':
+          str = '待付款'
+          break
+        case 'PAID':
+          str = '已支付'
+          break
+        case 'WAIT_TREAT':
+          str = '待接诊'
+          break
+        case 'IN_TREAT':
+          str = '接诊中'
+          break
+        case 'WAIT_TAKE':
+          str = '待自提'
+          break
+        case 'WAIT_SEND':
+          str = '待发货'
+          break
+        case 'WAIT_RECEIVE':
+          str = '待收货'
+          break
+        case 'TO_EVALUATE':
+          str = '待评价'
+          break
+        case 'IN_AFTER_SALE':
+          str = '售后中'
+          break
+        case 'FINISHED':
+          str = '已完成'
+          break
+        case 'CLOSED':
+          str = '已关闭'
+          break
+      }
+      return str
+    },
     info(id) {
       console.log(id)
       let str = this.$route.fullPath.replace('list', 'detail')

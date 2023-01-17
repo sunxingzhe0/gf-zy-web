@@ -7,7 +7,7 @@
     </div>
     <div class="buttonBox">
       <EditFooter></EditFooter>
-      <el-button type="default" size="small" class="detail" @click="goTo"
+      <el-button type="default" class="detail" @click="goTo"
         >查看详情</el-button
       >
     </div>
@@ -80,6 +80,12 @@ export default {
       }
       if (clientType == 'ALL') {
         this.$router.push('/set-up/account')
+      }
+      //心咨
+      if (clientType == 'XZ') {
+        if (this.notice == 'XZ_DOCTOR_03') {
+          this.$router.push('/mindConsult/appointmentPatient/list')
+        }
       }
     },
   },

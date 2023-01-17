@@ -10,9 +10,9 @@
         <div class="app-info-value">
           {{ prescriptionInfo.auditUserTitle }}
         </div>
-        <div class="app-info-value">
+        <!-- <div class="app-info-value">
           {{ prescriptionInfo.deptName }}
-        </div>
+        </div> -->
       </div>
       <div class="app-info-item">
         <div class="app-info-label">药品数量</div>

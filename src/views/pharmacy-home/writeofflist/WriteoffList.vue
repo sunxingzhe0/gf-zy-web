@@ -48,7 +48,7 @@ import { List, mixin } from '@/components'
 import { getWriteOffList } from '@/api/phaIndex'
 
 export default {
-  name: 'TableList',
+  name: 'home_writeoff',
   components: {
     List,
   },
@@ -56,7 +56,6 @@ export default {
   data() {
     return {
       query: {
-        currentNum: 1,
         pageSize: 10,
         timeType: 0,
         searchType: 0,
@@ -68,7 +67,6 @@ export default {
       dialogVisible: false,
     }
   },
-
   methods: {
     // 跳转详情页
     showMore(id) {

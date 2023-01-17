@@ -9,7 +9,7 @@ import Socket from '@/components/Socket'
 
 NProgress.configure({ showSpinner: false }) // NProgress Configuration
 
-const whiteList = ['/login', '/auth-redirect'] // no redirect whitelist
+const whiteList = ['/login', '/auth-redirect', '/appointment'] // no redirect whitelist
 
 Message.info = function (msg) {
   Message({
@@ -68,11 +68,13 @@ const genGetPath = function (item) {
 
 export const authGuard = async function () {
   let asyncRoutes = []
+  let appointment = false
   let params = getUrlParams()
-  if (params.code && params.attrs) {
-    params.type = params.attrs.split('@')
+  if (params.code) {
     await store.dispatch('user/codeLogin', params)
+    // if (!store.getters.modifyPwd) {
     await store.dispatch('user/getInfo')
+    // }
     location.href = '/'
   }
   router.beforeEach(async (to, from, next) => {
@@ -113,17 +115,34 @@ export const authGuard = async function () {
           try {
             // get user info
             // note: roles must be a object array! such as: ['admin'] or ,['developer','editor']
-            const [, roles] = await Promise.all([
-              store.dispatch('user/getInfo').then(() => {
+
+            store.dispatch('user/getInfo').then(() => {
+              if (!store.getters.modifyPwd) {
                 Socket().connect()
-              }),
-              store.dispatch('user/getRoles'),
-            ])
+              }
+            })
+            const [roles] = await Promise.all([store.dispatch('user/getRoles')])
 
             // generate accessible routes map based on roles
+            // console.log(asyncRoutes, '用户角色-----------------------')
+            //密码长时间未更改限制路由权限
+            const isOutTimeRoles = [
+              'DOC_WEB_SET_UP',
+              // 'DRUG_STORE_SET_UP',
+              // 'ORG_WEB_SET_UP',
+              // 'DRUG_DOC',
+              'ZY_ORG_SETTING',
+              'DOC_WEB_SET_UP_PERSONAL_INFORMATION',
+              'DRUG_DOC_SET_UP_PERSONAL_INFORMATION',
+              'DRUG_STORE_SET_UP_PERSONAL_INFORMATION',
+              'DRUG_DOC_SET_UP_PERSONAL_INFORMATION',
+              'ORG_WEB_SET_UP_PERSONAL_INFORMATION',
+            ]
+
+            // console.log(roles, '角色=====')
             asyncRoutes = await store.dispatch(
               'permission/generateRoutes',
-              roles,
+              store.getters.modifyPwd ? isOutTimeRoles : roles,
             )
 
             // dynamically add accessible routes
@@ -135,7 +154,7 @@ export const authGuard = async function () {
             console.log(error)
             // remove token and go to login page to re-login
             await store.dispatch('user/resetToken')
-            Message.error(error || 'Has Error')
+            // Message.error(error || 'Has Error')
             next(`/login?redirect=${to.path}`)
             NProgress.done()
           }
@@ -143,8 +162,19 @@ export const authGuard = async function () {
       }
     } else {
       /* has no token*/
+      const reg = new RegExp('^(' + whiteList.join('|') + ')')
+      if (reg.test(to.path)) {
+        if (/^\/appointment/.test(to.path) && !appointment) {
+          asyncRoutes = await store.dispatch('permission/appointmentMenu')
+          router.addRoutes(asyncRoutes)
+          let path = asyncRoutes[0]?.children[0]?.path
+          if (path) {
+            next({ ...to, path: '/appointment/' + path, replace: true })
+          }
+          appointment = true
 
-      if (whiteList.indexOf(to.path) !== -1) {
+          return
+        }
         // in the free login whitelist, go directly
         next()
       } else {

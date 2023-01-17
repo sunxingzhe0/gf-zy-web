@@ -5,6 +5,7 @@
       :filter="filter"
       :columns="columns"
       :tableData="tableData"
+      :tableClass="`journal-table ${scope != 'YF' ? 'hideBtn' : ''}`"
     >
     </List>
   </div>
@@ -129,6 +130,20 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.journal-table {
+  height: calc(100vh - 120px);
+}
+.hideBtn {
+  ::v-deep {
+    .c__filter {
+      .c_filter_right {
+        .show-hide {
+          display: none;
+        }
+      }
+    }
+  }
+}
 .title {
   &::before {
     content: '•';

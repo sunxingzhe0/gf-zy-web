@@ -30,7 +30,7 @@ const pre = {
 
 export default {
   inject: ['reload'],
-  name: 'Prescription',
+  name: 'prescription_passed',
   props: {
     type: String,
   },
@@ -50,7 +50,7 @@ export default {
             options: [
               { label: '创建时间', value: 0 },
               { label: '提交时间', value: 1 },
-              // { label: '审核时间', value: 2 },
+              { label: '审核时间', value: 2 },
             ],
           },
           keys: ['timeType', 'startTime', 'endTime'],
@@ -180,6 +180,7 @@ export default {
       hasAuthShow: false,
       // 二维码
       erImg: '',
+      isFirstEnter: false,
     }
   },
   computed: {
@@ -278,31 +279,22 @@ export default {
   watch: {
     //全局监听刷新
     updateListFlagPendingPrescription() {
+      console.log(this.updateListFlagPendingPrescription)
       this.$_fetchTableData(webPageRpList)
     },
-    type: function (val) {
+    type(val) {
       this.query.rpStatus = val
-      if ('PENDING_REVIEW' === val) {
-        this.filter.date.props.options = [
-          { label: '创建时间', value: 0 },
-          { label: '提交时间', value: 1 },
-        ]
-      } else {
-        this.filter.date.props.options = [
-          { label: '创建时间', value: 0 },
-          { label: '提交时间', value: 1 },
-          { label: '审核时间', value: 2 },
-        ]
-      }
     },
-    $route() {
-      this.query = {
-        timeType: 0,
-        searchType: 0,
-        pageSize: 10,
-        currentNum: 1,
-        rpStatus: this.type,
-        pharmacyIds: this.$store.state.user.store.id,
+    $route(to, from) {
+      if (
+        (this.type == 'PASSED' &&
+          from.path.indexOf('/prescription/passed/list') == -1 &&
+          to.path.indexOf('/prescription/passed/detail') == -1) ||
+        (this.type == 'REJECTED' &&
+          from.path.indexOf('/prescription/rejected/detail') == -1 &&
+          to.path.indexOf('/prescription/rejected/detail') == -1)
+      ) {
+        this.init()
       }
     },
   },
@@ -312,6 +304,19 @@ export default {
       pre.dept.length ? pre.dept : deptChooseList({ tree: false }),
     ])
     next()
+  },
+  methods: {
+    init() {
+      this.query = {
+        timeType: 0,
+        searchType: 0,
+        pageSize: 10,
+        currentNum: 1,
+        rpStatus: this.type,
+        pharmacyIds: this.$store.state.user.store.id,
+        isFilterMore: true,
+      }
+    },
   },
 }
 </script>

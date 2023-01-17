@@ -13,6 +13,7 @@
             v-model="setting.query"
             :columns="setting.columns"
             :tableData="setting.tableData"
+            tableClass="table-height"
           >
             <template v-slot:slot_descList="{ row }">
               <p v-for="(item, index) in row.descList" :key="index">
@@ -118,8 +119,13 @@
           </List>
         </div>
       </el-tab-pane>
+      <!-- 掌医业务 -->
       <el-tab-pane label="掌医业务" name="zyBusiness" lazy>
         <zyBusiness></zyBusiness>
+      </el-tab-pane>
+      <!-- 心咨业务 -->
+      <el-tab-pane label="心咨业务" name="xzBusiness" lazy>
+        <XzBusiness />
       </el-tab-pane>
       <!-- 操作日志 -->
       <el-tab-pane
@@ -133,6 +139,7 @@
             v-model="log.query"
             :columns="log.columns"
             :tableData="log.tableData"
+            tableClass="table-height"
           >
           </List>
         </div>
@@ -144,11 +151,13 @@
 import zyBusiness from './zybusiness'
 import { List, mixin } from '@/components'
 import { getBusSetList, modifyBus, editBusSet } from '@/api/setup'
+import XzBusiness from './XzBusiness.vue'
 export default {
   name: 'Bus',
   components: {
     List,
     zyBusiness,
+    XzBusiness,
   },
   mixins: [
     mixin([
@@ -318,6 +327,9 @@ export default {
   padding: 0;
   .account_main {
     padding: 10px;
+    .table-height {
+      height: calc(100vh - 205px);
+    }
   }
   .el-tabs--border-card {
     border: 0;

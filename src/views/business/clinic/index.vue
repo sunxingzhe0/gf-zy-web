@@ -107,7 +107,8 @@
             @reloadConversationList="fetchConversationList"
           />
         </el-tab-pane>
-        <el-tab-pane
+        <!-- 隐藏就诊档案 -->
+        <!-- <el-tab-pane
           class="archives"
           label="就诊档案"
           name="treatmentRecord"
@@ -127,7 +128,7 @@
             class="iframeWa"
             else
           ></iframe>
-        </el-tab-pane>
+        </el-tab-pane> -->
         <!-- <el-tab-pane label="院外档案" name="out" lazy>
           <CourtFile />
         </el-tab-pane> -->
@@ -150,6 +151,7 @@
 </template>
 
 <script>
+import { access_url } from '@/utils/wss-http'
 import { debounce } from 'lodash'
 import NProgress from 'nprogress'
 import LiveVideo, { join, leave } from './components/Video'
@@ -159,13 +161,13 @@ import Chat from './components/Chat'
 import RightPanel from './components/RightPanel/index'
 import { createSocket } from '@/components/Socket'
 import DragSize from '@/directive/drag-size/index'
-import { webDoctorSessionData } from '@/api'
+import { webDoctorSessionData, replyUrl } from '@/api'
 import moment from 'moment'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 // import { logov } from '@/api/business'
 export default {
-  name: 'Clinic',
+  name: 'business_clinic',
   components: {
     LiveVideo,
     ConversationList,
@@ -176,6 +178,7 @@ export default {
   directives: { DragSize },
   data() {
     this.startWidth = 0
+
     this.startX = 0
     this.mouseDown = false
     const [startTime, endTime] = [
@@ -218,6 +221,11 @@ export default {
     },
   },
   watch: {
+    chat(val) {
+      if (!val.sessionId) {
+        this.$refs.chat.clearInterValChat()
+      }
+    },
     'conversation.query': {
       handler: function () {
         this.fetchConversationList()
@@ -287,6 +295,9 @@ export default {
     //   })
     // }, 2000)
   },
+  beforeDestroy() {
+    this.$refs.chat.clearInterValChat()
+  },
   methods: {
     //结束服务
     closeChat(bizInfo) {
@@ -328,11 +339,28 @@ export default {
       })
     },
     //档案
-    openTreatmentRecord(item) {
+    async openTreatmentRecord(item) {
+      /* *** */
+      //验证地址
+      const { visitNo } = item
+      console.log(item, visitNo, '当前数据信息')
+      const res = await replyUrl({ visitNo: visitNo })
+      console.log(res, '地址结果')
+      if (res) {
+        this.isShow = false
+        // window.open('access_url + res');
+        setTimeout(() => {
+          this.isShow = true
+          this.archives = access_url + res
+          this.activeName = 'treatmentRecord'
+        })
+        return
+      }
+      /* *** */
       let path = ''
       let prefix = '/cdr/#/diagnosis/diagnosis'
       if (process.env.NODE_ENV === 'development') {
-        prefix = 'https://wxapp.chuntaoyisheng.com/cdr/#/diagnosis/diagnosis'
+        prefix = 'https://miapp.chuntaoyisheng.com/cdr/#/diagnosis/diagnosis'
       }
       this.isShow = false
       //outer 互联网  inner院内
@@ -577,6 +605,8 @@ $header-height: 80px;
     border: none;
     height: calc(100vh - 157px);
     overflow-y: scroll;
+    /* position: relative; */
+    /* top: -100px; */
   }
   .c__chat {
     margin: -15px;

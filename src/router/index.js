@@ -6,6 +6,7 @@ Vue.use(VueRouter)
 import Layout from '@/components/layout'
 
 /* Router Modules */
+import organ from './modules/organ' // 机构
 import business from './modules/business' // 业务
 import patient from './modules/patient' //患者
 import mechanism from './modules/mechanism' //患者
@@ -21,7 +22,6 @@ import pharmacyDrugs from './modules/pharmacyDrugs' // 药品
 import pharmacySetup from './modules/pharmacySetup' */
 
 // import home from './modules/home'
-import organ from './modules/organ' // 机构
 
 import order from './modules/order' // 订单
 // import drugs from './modules/drugs'
@@ -30,7 +30,11 @@ import jurisdiction from './modules/jurisdiction' // 权限
 import statistics from '@/router/modules/statistics' // 统计
 // import organize from './modules/organize'
 import payment from './modules/payment' // 缴费
-import reconciliation from './modules/reconciliation' // 对账
+import reconciliation from './modules/reconciliation' // 记录
+import checkBill from './modules/checkBill' // 记录
+
+import appointment from './modules/appointment' //预约
+import mindConsult from './modules/mindConsult' //预约
 /**
  * Note: sub-menu only appear when route children.length >= 1
  * Detail see: https://panjiachen.github.io/vue-element-admin-site/guide/essentials/router-and-nav.html
@@ -89,6 +93,7 @@ export const constantRoutes = [
     component: () => import('@/views/error-page/401'),
     hidden: true,
   },
+  // appointment,
 ]
 
 /**
@@ -98,19 +103,22 @@ export const constantRoutes = [
 export const asyncRoutes = [
   /** when your routing map is too long, you can split it into small modules **/
   pharmacyHome, // 首页
+  organ, // 机构
   prescription, // 处方
+  mindConsult, //心咨
   message, // 消息
   business, // 业务
   patient, // 患者
   mechanism, //机构
   template, // 模板
-  organ, // 机构
   pharmacyDrugs, // 药品
   dictionary, // 字典
   order, // 订单
   shift, // 排班
   payment, // 缴费
-  reconciliation, // 对账
+  appointment, //预约
+  reconciliation, // 记录
+  checkBill, //对账
   statistics, // 统计
   jurisdiction, // 权限
   setUp, // 设置

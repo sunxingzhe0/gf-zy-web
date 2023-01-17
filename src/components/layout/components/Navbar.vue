@@ -34,7 +34,8 @@
       </el-dropdown>
     </div>
 
-    <div class="right-menu">
+    <!--  医技预约不需要 -->
+    <div class="right-menu" v-if="!appointment">
       <template v-if="device !== 'mobile'">
         <div @click="toMyMessage()" style="display: inline-block">
           <el-badge
@@ -57,7 +58,8 @@
             :content="roleListNames"
           >
             <span slot="reference"
-              ><b>{{ name }} </b>{{ title }} {{ dept.name }}</span
+              ><b>{{ name }} </b>{{ title }}
+              <!-- {{ dept.name }} --></span
             >
           </el-popover>
           <!-- <el-avatar :size="30" :src="FILE_URL(avatar)">
@@ -174,6 +176,7 @@ export default {
     return {
       message: 0,
       roleListNames: '',
+      appointment: /appointment/.test(window.location.href),
     }
   },
   computed: {
@@ -211,8 +214,9 @@ export default {
     },
   },
   created() {
-    this.getMessgae()
-    // console.log()
+    if (!this.$store.getters.modifyPwd) {
+      this.getMessgae()
+    }
     this.roleListNames = this.roleList.map(({ name }) => name).join(',')
   },
   mounted() {
@@ -228,7 +232,9 @@ export default {
       },
     },
     updateListFlagNavNotice() {
-      this.getMessgae()
+      if (!this.$store.getters.modifyPwd) {
+        this.getMessgae()
+      }
     },
   },
   methods: {
@@ -238,7 +244,8 @@ export default {
     },
     // 检查是不是绑定了手机号 没有则跳过去
     checkPhone() {
-      const userPhone = this.$store.state.user.phone
+      const userPhone =
+        this.$store.state.user.phone || localStorage.getItem('orgphone')
       if (!userPhone) {
         if (checkPermission(['ORG_WEB'])) {
           this.$confirm('您还未绑定手机号，是否去绑定？', '提示', {
@@ -261,7 +268,7 @@ export default {
     },
     async logout() {
       await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+      this.$router.push(`/login`)
     },
     getMessgae: debounce(async function () {
       let noticeNumber = []
@@ -283,9 +290,13 @@ export default {
         noticeNumber.map(item => queryAnyData({ readType: 1, scope: item })),
       )
       noticeNumber = noticeNumber.map(item => item.total)
-      this.message = noticeNumber.reduce((_, item) => {
-        return (_ += item)
-      })
+      console.log(noticeNumber)
+      if (noticeNumber.length > 0) {
+        this.message = noticeNumber.reduce((_, item) => {
+          return (_ += item)
+        })
+      }
+
       // console.log(this.message)
       // [
       //   queryAnyData({ readType: 1, scope: 0 }),

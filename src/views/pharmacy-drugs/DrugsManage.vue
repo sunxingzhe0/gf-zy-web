@@ -102,11 +102,9 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="importDialog.visible = false">
-            取消
-          </el-button>
-          <el-button size="small" type="primary" @click="submit('importForm')">
-            保存
+          <el-button @click="importDialog.visible = false"> 取消 </el-button>
+          <el-button type="primary" @click="submit('importForm')">
+            确定
           </el-button>
         </div>
       </template>
@@ -129,7 +127,7 @@ const pre = {
 }
 
 export default {
-  name: 'DrugsManage',
+  name: 'drugs_drugsmanage',
   components: {
     List,
     EditableText,
@@ -139,26 +137,6 @@ export default {
     //全局监听刷新
     updateListAddNewDrugs() {
       this.$_fetchTableData(getDrugList)
-    },
-
-    $route(to, from) {
-      //警急库存
-      if (this.$route.query?.warnVal) {
-        this.getNewList()
-      }
-      if (
-        from.path != '/drugs/drugsmanage/AddNewDrugs' &&
-        to.path != '/drugs/drugsmanage/AddNewDrugs' &&
-        !this.$route.query.warnVal
-      ) {
-        this.query = {
-          pageSize: 10,
-          dateType: 0,
-          searchType: 0,
-          mechanismId: this.$store.state.user.store.id,
-        }
-        this.$_fetchTableData(getDrugList)
-      }
     },
   },
   created() {
@@ -199,6 +177,7 @@ export default {
   beforeCreated() {
     this.getBasic()
   },
+
   async beforeRouteEnter(to, from, next) {
     ;[pre.basicPackUnit, pre.commonPackUnit] = await Promise.all([
       packingUnit({
@@ -291,7 +270,7 @@ export default {
     //文件上传
 
     beforeUpload(file) {
-      let ExcalBar = ['xls', 'xlsm', 'xltx']
+      let ExcalBar = ['xls', 'xlsm', 'xltx', 'xlsx']
       const isExcal =
         ExcalBar.indexOf(file.name.substring(file.name.lastIndexOf('.') + 1)) >
         -1
@@ -334,7 +313,6 @@ export default {
         ...this.query,
         inventoryEnd: this.$route.query.warnVal - 1,
       }
-      this.$_fetchTableData()
     },
     async confirm(value, id, type) {
       let datas = {
@@ -530,7 +508,7 @@ export default {
         },
         availableInventory: {
           prop: 'slot_availableInventory',
-          minWidth: 120,
+          minWidth: 160,
         },
         retailPrice: {
           prop: 'slot_retailPrice',

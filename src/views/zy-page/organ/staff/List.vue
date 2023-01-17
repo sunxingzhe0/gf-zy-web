@@ -59,6 +59,7 @@ const pre = {
   title: [],
 }
 export default {
+  name: 'organize_staff',
   components: {
     List,
     EditableText,

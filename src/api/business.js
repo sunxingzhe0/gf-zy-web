@@ -925,3 +925,67 @@ export function findDiagByDiagId(params) {
     params,
   })
 }
+
+/*
+@name         getWebRegList
+@desc         获取核酸检测预约列表
+@params
+              token:9C1B3EE46CE84841A902B5F7D0A048C8 //token
+@return
+*/
+export function getWebRegList(params) {
+  return request({
+    url: '/api/v1/nucleateReg/webRegList',
+    method: 'get',
+    params,
+  })
+}
+
+/*
+@name         userRegDetail
+@desc         核酸检测预约详情
+@params
+              token:9C1B3EE46CE84841A902B5F7D0A048C8 //token
+@return
+*/
+export function userRegDetail(params) {
+  return request({
+    url: '/api/v1/nucleateReg/userRegDetail',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ *
+ * @param {*} params
+ */
+export function webBasinsList(params) {
+  return request({
+    url: '/api/v1/nucleateReg/webBasinsList',
+    method: 'get',
+    params,
+  })
+}
+
+/* 
+  流调表记录详情
+*/
+export function basinsDetail(params) {
+  return request({
+    url: '/api/v1/nucleateReg/basinsDetail',
+    method: 'get',
+    params,
+  })
+}
+
+/* 
+  获取收费项目
+*/
+export function getFeeItem(params) {
+  return request({
+    url: '/api/v1/bizConfig/getFeeItem',
+    method: 'get',
+    params,
+  })
+}

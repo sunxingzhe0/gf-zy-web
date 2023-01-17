@@ -28,6 +28,7 @@
         <el-button v-else type="text">{{ row.timeSize }}</el-button>
       </template>
       <template v-slot:footertool>
+        <!-- <el-button type="primary" @click="toQuery"> 对账 </el-button> -->
         <div
           style="
             display: inline-block;
@@ -38,11 +39,15 @@
             margin-left: 20px;
           "
         >
-          <span v-if="feeAll.totalFee">
+          <span>
             合计缴纳金额：￥{{ parseFloat(feeAll.totalFee).toFixed(2) }} </span
           ><br />
-          <span v-if="feeAll.refundFee">
+          <span>
             合计退费：￥{{ parseFloat(feeAll.refundFee).toFixed(2) }}
+          </span>
+          <br />
+          <span>
+            合计实缴金额：￥{{ parseFloat(feeAll.amount).toFixed(2) }}
           </span>
         </div>
       </template>
@@ -64,7 +69,7 @@ const pre = {
   noType: [],
 }
 export default {
-  name: 'TableList',
+  name: 'checkBill_salesData',
   components: {
     List,
   },
@@ -87,16 +92,17 @@ export default {
       return {
         date: {
           props: {
-            options: [
-              { label: '创建时间', value: 0 },
-              { label: '支付时间', value: 1 },
-            ],
+            options: [{ label: '交易时间', value: 0 }],
           },
           keys: ['timeType', 'startTime', 'endTime'],
         },
         search: {
           props: {
-            options: [{ label: '患者姓名', value: 0 }],
+            options: [
+              { label: '患者姓名', value: 0 },
+              { label: '支付流水号', value: 1 },
+              { label: '就诊卡号', value: 2 },
+            ],
           },
           keys: ['searchType', 'searchKeywords'],
         },
@@ -113,11 +119,11 @@ export default {
           },
           {
             props: {
-              label: '单据状态',
+              label: '交易状态',
               options: [
                 { label: '不限', value: '' },
-                { label: '已付款', value: 1 },
-                { label: '已退费', value: 0 },
+                { label: '付款', value: 1 },
+                { label: '退款', value: 0 },
               ],
             },
             keys: 'orderState',
@@ -168,7 +174,19 @@ export default {
         patientName: { minWidth: 100 },
         cardNo: { minWidth: 100 },
         payWay: { minWidth: 100 },
-        payState: { minWidth: 100 },
+        payState: {
+          minWidth: 100,
+          formatter(row) {
+            switch (row.payState) {
+              case '已支付':
+                return '已付款'
+              case '已退款':
+                return '已退费'
+              default:
+                return row.payState
+            }
+          },
+        },
       }
     },
   },
@@ -188,6 +206,10 @@ export default {
     },
   },
   methods: {
+    //对账
+    toQuery() {
+      this.$router.push('/reconciliation/salesData/query')
+    },
     async getfeeCount() {
       let res = await feeCount(this.query)
       if (res) {
@@ -206,16 +228,16 @@ export default {
       }
       let ids = []
       selecData.forEach(i => {
-        ids.push({ orderId: i.orderId })
+        ids.push({ id: i.id })
       })
       if (command == 'query') {
         exportSellData(this.query)
       }
       if (command == 'selection') {
         let select = []
-        ids.forEach(i => [select.push(i.orderId)])
+        ids.forEach(i => [select.push(i.id)])
 
-        exportSellData({ orderIds: select })
+        exportSellData({ ids: select })
       }
     },
     goto(type, id, docId) {

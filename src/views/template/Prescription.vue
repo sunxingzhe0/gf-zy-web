@@ -18,9 +18,10 @@
           'current-change': handleCurrentChange,
         },
       }"
+      tableClass="template-table"
     >
       <template v-if="mode === 'EDIT'" v-slot:footertool>
-        <el-button size="mini" type="primary" @click="dialog.visible = true">
+        <el-button size="mini" type="primary" @click="addPertionsTemplate">
           新增处方
         </el-button>
 
@@ -80,7 +81,7 @@
           >
             <el-option
               v-for="item in options"
-              :key="item.diagnosisName"
+              :key="item.id"
               :label="item.diagnosisName"
               :value="item.id"
             >
@@ -104,11 +105,13 @@
         <el-form-item label="药品清单" prop="rpDrugList" class="drug-list">
           <PrescriptionItem
             scene="template"
+            :istemplatePage="false"
             :operate="operate"
             :iscancel="iscancel"
             ref="editPrescription"
             @operate="applyOperate"
             @editUpdate="editUpdate"
+            @updateTemplate="updateTemplate"
             :prescription="{
               rpDrugList: model.rpDrugList,
               template: 'template',
@@ -129,7 +132,7 @@
           type="primary"
           size="mini"
           :loading="pending"
-          @click="submit('editForm')"
+          @click="saveAddTemplate('editForm')"
           :disabled="isDisabled"
         >
           {{ isChangeBtn ? '确认' : '提交' }}
@@ -139,7 +142,7 @@
 
     <aside
       v-else
-      class="edit"
+      class="addEdit"
       :class="{ editable: editable }"
       v-loading="pending"
     >
@@ -173,7 +176,7 @@
           >
             <el-option
               v-for="item in options"
-              :key="item.diagnosisName"
+              :key="item.id"
               :label="item.diagnosisName"
               :value="item.id"
             >
@@ -200,6 +203,7 @@
             ref="prescription"
             v-if="dialog.visible"
             @operate="applyOperate"
+            @updateTemplate="updateTemplate"
             :prescription="{
               template: 'template',
               status: 'DRAFT',
@@ -214,7 +218,7 @@
           type="primary"
           size="mini"
           :loading="dialog.pending"
-          @click="submit('form')"
+          @click="saveAddTemplate('form')"
         >
           确认
         </el-button>
@@ -314,7 +318,21 @@ export default {
       return this.tableData.list.length > 0 && this.model.id
     },
   },
+
   methods: {
+    saveAddTemplate() {
+      this.saveTemplateList(this.formName)
+    },
+    updateTemplate() {
+      this.saveTemplateList(this.formName)
+    },
+    //新增处方模板
+    addPertionsTemplate() {
+      console.log(this.mode)
+      this.dialog.visible = true
+      this.$refs.table.setCurrentRow()
+      this.formName = 'form'
+    },
     valueChange() {
       this.isDisabled = false
     },
@@ -323,11 +341,13 @@ export default {
       this.isDisabled = false
       this.iscancel = false
     },
-    // 申请操作处方
+
+    /* 直接操作处方-- */
     applyOperate(type) {
       this.isDisabled = false
       this.operate = type
       this.isChangeBtn = true
+      this.submit('editForm')
     },
     searchDiagnosis: debounce(function (query) {
       this.loading = true
@@ -357,10 +377,12 @@ export default {
       this.currentRow = val
     },
     async cancel(dialog) {
+      console.log(this.row, '重新选择当前行---------')
+      this.$refs.table.setCurrentRow(this.nowRow) //取消再次选中当前行
+
       if (!this.isChangeBtn) {
         this.model = JSON.parse(JSON.stringify(this.oldModel))
       }
-      this.isChangeBtn = false
       const refsKey = this.dialog.visible ? 'prescription' : 'editPrescription'
       if (this.operate) {
         //
@@ -383,6 +405,9 @@ export default {
       this.$message.success('已撤销编辑')
     },
     async handleRowClick(row, force = false) {
+      this.formName = 'editForm'
+      this.dialog.visible = false
+      this.nowRow = row
       this.row = JSON.parse(JSON.stringify(row))
       console.log(force)
       // if (!force && this.model.id === row.id) return
@@ -415,8 +440,8 @@ export default {
       this.fetchTableDataHook()
     },
 
-    submit(formName) {
-      const isEdit = 'editForm' === formName
+    submit() {
+      const isEdit = 'editForm' === this.formName
       const refsKey = isEdit ? 'editPrescription' : 'prescription'
       if (this.operate) {
         switch (this.operate) {
@@ -431,6 +456,12 @@ export default {
 
         return
       }
+
+      this.isDisabled = true
+    },
+    saveTemplateList(formName) {
+      const isEdit = 'editForm' === formName
+      const refsKey = isEdit ? 'editPrescription' : 'prescription'
       this.$refs[formName].validate(async (valid, invalidFields) => {
         if (valid) {
           try {
@@ -481,21 +512,25 @@ export default {
           invalidFieldSetFocus(this.$refs[formName], invalidFields)
         }
       })
-      this.isDisabled = true
     },
-    delHandler(refsKey) {
-      const _self = this
-      this.$confirm('勾选的药品将被删除，是否确认操作？', '提示', {
-        type: 'warning',
-        callback(action) {
-          if (action === 'confirm') {
-            _self.$refs[refsKey].delHandler(() => {
-              _self.cancel()
-              _self.isDisabled = false
-            })
-          }
+    async delHandler(refsKey) {
+      const confirm = await this.$confirm(
+        '勾选的药品将被删除，是否确认操作？',
+        '提示',
+        {
+          type: 'warning',
         },
-      })
+      )
+      if (confirm === 'confirm') {
+        this.$refs[refsKey].delHandler(() => {
+          this.cancel()
+          this.isDisabled = false
+        })
+        return
+      }
+      if (confirm === 'cancel') {
+        console.log('取消----')
+      }
     },
     groupHandler(refsKey) {
       const _self = this
@@ -506,6 +541,7 @@ export default {
           if (action === 'confirm') {
             _self.$refs[refsKey].groupHandler(() => {
               _self.cancel()
+
               _self.isDisabled = false
             })
           }
@@ -525,6 +561,11 @@ export default {
   }
 }
 .view__template-prescription {
+  .c__list {
+    > .c__filter + .el-table {
+      max-height: 462px;
+    }
+  }
   display: flex;
   .no_template {
     width: 100%;
@@ -565,7 +606,7 @@ export default {
     }
   }
   > .c__list:hover {
-    overflow-y: scroll;
+    overflow-y: auto;
   }
 
   > .edit {
@@ -579,6 +620,25 @@ export default {
     padding-bottom: 0;
     &.editable {
       pointer-events: auto;
+      opacity: 1;
+      max-height: 600px;
+      overflow: scroll;
+    }
+    > h3 {
+      margin: 0 0 10px 0;
+    }
+  }
+  .addEdit {
+    position: relative;
+    flex: 1 1 auto;
+    // max-width: min(calc(70% - 10px), calc(100% - 460px - 10px));
+    min-width: 600px;
+    // pointer-events: none;
+    // opacity: 0.6;
+    transition: opacity 0.2s;
+    padding-bottom: 0;
+    &.editable {
+      // pointer-events: auto;
       opacity: 1;
       max-height: 600px;
       overflow: scroll;
@@ -623,6 +683,22 @@ export default {
           top: 3px;
         }
       }
+    }
+  }
+}
+.template-table {
+  ::v-deep {
+    .c_filter_left {
+      .c__filter_item {
+        width: 100%;
+        .prepend-select {
+          width: 105px;
+          min-width: 105px !important;
+        }
+      }
+    }
+    .c_filter_right {
+      width: 130px;
     }
   }
 }

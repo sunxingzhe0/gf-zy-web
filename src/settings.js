@@ -1,5 +1,6 @@
 module.exports = {
-  title: '互联网医院管理系统',
+  // title: '互联网医院管理系统',
+  title: '心理健康服务信息系统',
 
   /**
    * @type {boolean} true | false

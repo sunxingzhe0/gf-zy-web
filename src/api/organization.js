@@ -73,6 +73,68 @@ export function getSonList(params) {
     params,
   })
 }
+/* /科室简介相关  start*/
+//列表
+//title:标题
+//status: 不传即不限 true false
+export function introList(params) {
+  return request({
+    url: '/api/v1/dept/intro/list',
+    method: 'get',
+    params,
+  })
+}
+//新增科室简介
+export function introAdd(data) {
+  return request({
+    url: '/api/v1/dept/intro/add',
+    method: 'post',
+    data,
+  })
+}
+// 编辑科室简介
+export function introEdit(data) {
+  return request({
+    url: '/api/v1/dept/intro/edit',
+    method: 'post',
+    data,
+  })
+}
+// 删除科室简介
+export function introDelete(data) {
+  return request({
+    url: `/api/v1/dept/intro/delete/${data}`,
+    method: 'post',
+    data,
+  })
+}
+// 变更状态
+export function introChangeState(data) {
+  return request({
+    url: `/api/v1/dept/intro/changeState/${data}`,
+    method: 'post',
+    data,
+  })
+}
+// 变更排序
+export function introSeq(data) {
+  return request({
+    url: '/api/v1/dept/intro/seq',
+    method: 'post',
+    data,
+  })
+}
+// 获取详情
+export function introGet(params) {
+  return request({
+    url: `/api/v1/dept/intro/get/${params}`,
+    method: 'get',
+    params,
+  })
+}
+/* end */
+
+/*  */
 
 // ------ 互联网科室--------
 
@@ -84,6 +146,7 @@ export function deptOuterList(params) {
     params,
   })
 }
+
 // 新增科室
 export function deptOuterAdd(data) {
   return request({
@@ -149,6 +212,58 @@ export function deptOuterInfo(params) {
     params,
   })
 }
+
+// ------ 心咨科室--------
+//管理端-心咨科室列表
+export function deptXzList(params) {
+  return request({
+    url: '/api/v1/deptXz/list',
+    method: 'get',
+    params,
+  })
+}
+//管理端-同步院内科室
+export function syncDept(data) {
+  return request({
+    url: '/api/v1/deptXz/syncDept',
+    method: 'post',
+    data,
+  })
+}
+//管理端-变更启用状态
+export function deptXzChangeState(data) {
+  return request({
+    url: `/api/v1/deptXz/changeState/${data.id}`,
+    method: 'post',
+    data,
+  })
+}
+//管理端-编辑
+export function deptXzEdit(data) {
+  return request({
+    url: `/api/v1/deptXz/edit`,
+    method: 'post',
+    data,
+  })
+}
+//管理端-排序
+export function deptXzSeq(data) {
+  return request({
+    url: `/api/v1/deptXz/seq`,
+    method: 'post',
+    data,
+  })
+}
+//管理端-删除
+export function deptXzDel(data) {
+  return request({
+    url: `/api/v1/deptXz/del`,
+    method: 'post',
+    data,
+  })
+}
+//--------------------------------------
+
 // -------------------------------------药房管理--------------------------------------------------------
 
 // 药房列表获取

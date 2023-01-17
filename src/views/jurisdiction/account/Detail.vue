@@ -11,7 +11,7 @@
       <PersonalInfo :info="detail" />
     </el-tab-pane>
 
-    <el-tab-pane label="业务信息" name="business" lazy>
+    <el-tab-pane v-if="false" label="业务信息" name="business" lazy>
       <Business
         isDisable
         :doctorId="detail.id"
@@ -20,7 +20,13 @@
       />
     </el-tab-pane>
 
-    <el-tab-pane label="诊疗信息" name="info" lazy v-loading="info.loading">
+    <el-tab-pane
+      v-if="false"
+      label="诊疗信息"
+      name="info"
+      lazy
+      v-loading="info.loading"
+    >
       <p>诊疗次数：{{ info.tableData.total }}次</p>
       <List
         v-model="info.query"
@@ -30,7 +36,7 @@
       >
         <template v-slot:fixed="{ row }">
           <router-link
-            class="el-button el-button--text el-button--mini"
+            class="el-button el-button--text"
             :to="`/order/business/detail/${row.orderId}`"
           >
             查看
@@ -68,7 +74,7 @@
       </List>
     </el-tab-pane>
 
-    <el-tab-pane label="评价信息" name="comment" lazy>
+    <el-tab-pane v-if="false" label="评价信息" name="comment" lazy>
       <p>评分：{{ avgScore }}</p>
 
       <el-row
@@ -156,7 +162,12 @@
           </div>
         </el-col>
       </el-row>
-
+      <div
+        style="text-align: center; color: #999; line-height: 60vh"
+        v-if="comment.list.length == 0"
+      >
+        暂无数据
+      </div>
       <TableFooterTool
         :total="comment.allList.length"
         v-model="comment.query"
@@ -182,7 +193,7 @@ import { List, mixin, TableFooterTool } from '@/components'
 
 // import { randomString, formatDate } from '@/utils'
 import { accountGet, findEvaluateData } from '@/api/authority'
-import { loggerManageData } from '@/api/log'
+import { loggerBillData } from '@/api/log'
 import { titleChooseList } from '@/api'
 import { getBusOrderList } from '@/api/order'
 import { BizWayMap, BizTypeMap } from '@/utils/enums.js'
@@ -204,7 +215,7 @@ export default {
   mixins: [
     mixin([
       { fetchListFunction: getBusOrderList, prop: 'info' },
-      { fetchListFunction: loggerManageData, prop: 'log' },
+      { fetchListFunction: loggerBillData, prop: 'log' },
     ]),
   ],
   data() {

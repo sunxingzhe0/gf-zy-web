@@ -75,6 +75,7 @@ export default ({
     resetBtnText,
     popoverWidth,
     alwaysShowBtn,
+    tableClass,
   } = props
   const footerToolHeight = 47
   const bottomOffset =
@@ -91,7 +92,7 @@ export default ({
   const disableBottomOffset =
     props.disableBottomOffset || props.disableBottomOffset === ''
   return (
-    <div class="c__list">
+    <div class={`c__list ${tableClass ? tableClass : ''}`}>
       {filter && (
         <TableFilter
           {...mergeData(
@@ -103,6 +104,7 @@ export default ({
                 data: filter,
                 resetBtnText,
                 alwaysShowBtn,
+                tableClass,
               },
             },
             props.filterData ?? {},
@@ -121,6 +123,7 @@ export default ({
         row-key={treeSet?.key ? treeSet.key : ''}
         onSelection-change={parent.$_selectionChange}
         cell-class-name={parent.$_resolveCellClassName}
+        row-class-name={parent.$_resolveRowClassName || ''}
         tree-props={{ children: treeSet?.props ? treeSet.props : 'children' }}
         onExpand-change={listeners.expandChange || handleError}
         {...mergeData(

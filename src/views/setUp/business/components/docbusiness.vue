@@ -15,11 +15,14 @@
               ? '在线咨询'
               : item.bizType == 'REPEAT_CLINIC'
               ? '在线复诊'
+              : item.bizType == 'REPORT_READ'
+              ? '报告解读'
               : '慢病续方'
           }}
         </div>
         <el-switch
           v-model="item.totalState"
+          @change="totalChange($event, item)"
           :active-value="1"
           :inactive-value="0"
         ></el-switch>
@@ -50,6 +53,7 @@
             v-model="i.state"
             :active-value="1"
             :inactive-value="0"
+            :disabled="!item.totalState"
             v-if="i.bizWay != 'VIDEO'"
           ></el-switch>
         </el-col>
@@ -57,7 +61,6 @@
     </div>
     <el-button
       v-if="list.length != 0"
-      size="mini"
       type="primary"
       class="save"
       @click="handleSave"
@@ -99,7 +102,14 @@ export default {
       })
       this.list = afterData
     },
-
+    totalChange(e, item) {
+      console.log(e, item)
+      item.bizWayList.forEach(i => {
+        if (e != 1 && i.bizWay != 'VIDEO') {
+          i.state = 0
+        }
+      })
+    },
     // 保存提交
     async handleSave() {
       const data = this.list.reduce((result, item) => {

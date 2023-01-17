@@ -74,7 +74,7 @@
           </el-checkbox-group>
         </el-form-item>
 
-        <el-form-item label="排序" prop="seq">
+        <el-form-item label="排序">
           <el-input
             type="input"
             placeholder="请输入"
@@ -127,12 +127,8 @@
       </el-form>
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="importDialog.visible = false"
-            >取消</el-button
-          >
-          <el-button size="small" type="primary" @click="preservation">
-            保存
-          </el-button>
+          <el-button @click="importDialog.visible = false">取消</el-button>
+          <el-button type="primary" @click="preservation">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -165,6 +161,13 @@ export default {
       popover: [
         {
           props: {
+            label: '单位名称',
+            is: 'el-input',
+          },
+          keys: 'unitName',
+        },
+        {
+          props: {
             label: '使用药品',
             is: 'InputRange',
           },
@@ -194,12 +197,12 @@ export default {
           keys: ['unitType'],
         },
       ],
-      search: {
-        props: {
-          options: [{ label: '单位名称', value: 0 }],
-        },
-        keys: ['searchType', 'unitName'],
-      },
+      // search: {
+      //   props: {
+      //     options: [{ label: '单位名称', value: 0 }],
+      //   },
+      //   keys: ['searchType', 'unitName'],
+      // },
     }
     return {
       loading: false,
@@ -211,7 +214,7 @@ export default {
       isAdd: false,
       query: {
         timeType: 0,
-        searchType: 0,
+        // searchType: 0,
         pageSize: 10,
         currentNum: 1,
       },
@@ -306,12 +309,16 @@ export default {
           // 有 id 编辑
           if (this.form.id) {
             await editUnit({
-              ...this.form,
+              ...Object.assign(this.form, {
+                seq: this.form.seq === '' ? 0 : this.form.seq,
+              }),
             })
           } else {
             // 无 id 新增
             let res = await addUnit({
-              ...this.form,
+              ...Object.assign(this.form, {
+                seq: this.form.seq === '' ? 0 : this.form.seq,
+              }),
             })
             console.log(res)
           }
@@ -416,3 +423,8 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+::v-deep .el-input-group {
+  width: 60% !important;
+}
+</style>

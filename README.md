@@ -1,5 +1,3 @@
-web端
-
 # front-end-admin-starter-template
 
 ## Visual Studio Code

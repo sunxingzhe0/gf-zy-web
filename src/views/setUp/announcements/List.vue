@@ -31,24 +31,26 @@
         >
           查看
         </el-button>
-        <el-button type="text" @click="send(row.id)" v-if="!row.releaseState">
-          发布
-        </el-button>
-        <el-button
-          type="text"
-          @click="info('edit', row.id)"
-          v-if="!row.releaseState"
-        >
-          修改
-        </el-button>
-        <el-button
-          type="text"
-          style="color: #f74a4a"
-          @click="del(row.id)"
-          v-if="!row.releaseState"
-        >
-          删除
-        </el-button>
+        <div v-else>
+          <el-button type="text" @click="send(row.id)" v-if="!row.releaseState">
+            发布
+          </el-button>
+          <el-button
+            type="text"
+            @click="info('edit', row.id)"
+            v-if="!row.releaseState"
+          >
+            修改
+          </el-button>
+          <el-button
+            type="text"
+            style="color: #f74a4a"
+            @click="del(row.id)"
+            v-if="!row.releaseState"
+          >
+            删除
+          </el-button>
+        </div>
       </template>
       <template v-slot:slot_seeDesc="{ row }">
         <el-switch
@@ -70,7 +72,7 @@ import { List, mixin } from '@/components'
 import { getAnnounceList, delAnn, sendAnn, showAnn } from '@/api/setup'
 import {
   roleChooseList,
-  deptChooseList,
+  deptOuterChooseList,
   drugStoreChooseList,
   titleChooseList,
 } from '@/api'
@@ -83,6 +85,7 @@ const pre = {
 }
 
 export default {
+  name: 'setUp_announcements',
   components: {
     List,
   },
@@ -199,7 +202,7 @@ export default {
   async beforeRouteEnter(to, from, next) {
     ;[pre.role, pre.dept, pre.store, pre.title] = await Promise.all([
       roleChooseList({ showUser: true }),
-      deptChooseList({ tree: false }),
+      deptOuterChooseList({ tree: false }),
       drugStoreChooseList(),
       titleChooseList(),
     ])

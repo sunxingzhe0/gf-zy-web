@@ -7,6 +7,7 @@
       :tableData="faList.tableData"
       :treeSet="{ key: 'id', props: 'sonDeptList' }"
       @expandChange="expandChange"
+      tableClass="gl-table"
     >
       <template v-slot:slot_doctorNum="{ row }">
         <router-link
@@ -242,12 +243,8 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="importDialog.visible = false"
-            >取消</el-button
-          >
-          <el-button size="small" type="primary" @click="preservation">
-            保存
-          </el-button>
+          <el-button @click="importDialog.visible = false">取消</el-button>
+          <el-button type="primary" @click="preservation"> 确定 </el-button>
         </div>
       </template>
     </el-dialog>
@@ -321,7 +318,7 @@ export default {
           options: [
             { label: '科室名称', value: 0 },
             { label: '科室编码', value: 1 },
-            { label: '所属院区', value: 4 },
+            { label: '所属院区', value: 3 },
             { label: '科室简介', value: 2 },
           ],
         },
@@ -339,13 +336,13 @@ export default {
           },
           keys: 'deptLevel',
         },
-        {
-          props: {
-            label: '子科室',
-            is: 'InputRange',
-          },
-          keys: ['sonDeptNumStart', 'sonDeptNumEnd'],
-        },
+        // {
+        //   props: {
+        //     label: '子科室',
+        //     is: 'InputRange',
+        //   },
+        //   keys: ['sonDeptNumStart', 'sonDeptNumEnd'],
+        // },
         {
           props: {
             label: '是否推荐',
@@ -357,13 +354,14 @@ export default {
           },
           keys: 'recommend',
         },
-        {
-          props: {
-            label: '科室医生',
-            is: 'InputRange',
-          },
-          keys: ['doctorNumStart', 'doctorNumEnd'],
-        },
+        // {
+        //   props: {
+        //     label: '科室医生',
+        //     isInteger: true,
+        //     is: 'InputRange',
+        //   },
+        //   keys: ['doctorNumStart', 'doctorNumEnd'],
+        // },
 
         {
           props: {
@@ -387,6 +385,7 @@ export default {
           pageSize: 10,
           currentNum: 1,
           deptLevel: '',
+          storeId: this.$route.query.id || '',
         },
         columns: {
           index: {
@@ -658,7 +657,7 @@ export default {
     },
     //文件上传
     beforeUpload(file) {
-      let ExcalBar = ['xlsx', 'xlsm', 'xltx']
+      let ExcalBar = ['xlsx', 'xlsm', 'xltx', 'xls']
       const isExcal =
         ExcalBar.indexOf(file.name.substring(file.name.lastIndexOf('.') + 1)) >
         -1
@@ -701,6 +700,9 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+.gl-table {
+  height: calc(100vh - 120px);
+}
 .el-table {
   ::v-deep .el-table__expand-icon {
     display: none;

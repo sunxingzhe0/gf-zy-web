@@ -5,18 +5,21 @@
       <el-tag
         style="margin-left: 10px; font-weight: nomal"
         size="mini"
-        :type="infoData.state == '已付款' ? 'success' : ''"
+        :type="infoData.state == '已预约' ? 'success' : ''"
         >{{ infoData.state }}</el-tag
       >
     </div>
     <div class="infoWrap">
-      <!-- <div class="flex-start-center">
-        <el-avatar style="margin-right: 15px;" :size="60" :src="FILE_URL(infoData.picId)"></el-avatar>
+      <div class="flex-start-center">
+        <el-avatar
+          :size="60"
+          :src="FILE_URL(infoData.picId) || headerImg"
+        ></el-avatar>
         <div class="info">
           <div>{{ infoData.doctorName }}</div>
           <div>{{ infoData.hospitalName }}</div>
         </div>
-      </div> -->
+      </div>
       <div class="infoItem" v-if="infoData.deType == 'GH'">
         <div>
           <span>预约时段</span
@@ -25,6 +28,9 @@
           }}</b>
         </div>
         <div><span>预约科室</span>{{ infoData.deptName }}</div>
+        <div v-if="infoData.refundTime">
+          <span>取消时间</span>{{ infoData.refundTime }}
+        </div>
       </div>
       <div class="infoItem" v-if="infoData.deType == 'GH'">
         <div><span>患者姓名</span>{{ infoData.patientName }}</div>
@@ -43,13 +49,13 @@
         </div>
         <div><span>创建时间</span>{{ infoData.createTime || '-' }}</div>
       </div>
-      <div class="infoItem">
-        <div v-if="infoData.refundFee">
+      <div class="infoItem" v-if="!infoData.refundFee">
+        <!-- <div v-if="infoData.refundFee">
           <span>支付金额</span
           ><b style="font-weight: normal; color: red"
             >￥{{ parseFloat(infoData.payFee).toFixed(2) }}</b
           >
-        </div>
+        </div> -->
         <div><span>支付号</span>{{ infoData.hisPayId || '-' }}</div>
         <div><span>支付方式</span>{{ infoData.payWayName || '-' }}</div>
         <div><span>支付时间</span>{{ infoData.payTime || '-' }}</div>
@@ -61,7 +67,7 @@
         <div><span>医院</span>{{ infoData.hospitalName || '-' }}</div>
         <div><span>体检套餐</span>{{ infoData.packageName }}</div>
       </div>
-      <div class="infoItem">
+      <!-- <div class="infoItem">
         <div v-if="infoData.refundFee">
           <span>退费金额</span
           ><b style="font-weight: normal; color: red"
@@ -77,7 +83,7 @@
         <div v-if="infoData.refundTime">
           <span>退费时间</span>{{ infoData.refundTime || '-' }}
         </div>
-      </div>
+      </div> -->
     </div>
     <div class="orderTop" v-if="infoData.deType == 'TJ'">体检项目</div>
     <div class="infoWrap" v-if="infoData.deType == 'TJ'">
@@ -93,9 +99,11 @@
 </template>
 <script>
 import { appointmentDetail } from '@/api/zyapi/payment'
+import headerImg from '@/assets/headerImg.png'
 export default {
   data() {
     return {
+      headerImg,
       infoData: {
         state: this.$route.query.state,
         cardNo: this.$route.query.cardNo,
@@ -168,6 +176,11 @@ export default {
     font-size: 13px;
     color: #666;
     margin-top: 6px;
+  }
+}
+::v-deep.el-avatar {
+  img {
+    width: 100%;
   }
 }
 </style>

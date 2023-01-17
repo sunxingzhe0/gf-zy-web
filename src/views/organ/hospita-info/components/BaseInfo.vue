@@ -118,6 +118,26 @@
           v-model="form.address"
           :disabled="disabled_"
         ></el-input>
+        <span v-if="!disabled_">
+          <el-button @click="addAdress" type="primary" style="margin-left: 10px"
+            >新增地址</el-button
+          >
+        </span>
+        <div v-for="(item, i) in this.addAdressData" :key="i">
+          <el-input
+            style="margin-top: 10px"
+            class="input"
+            placeholder="请输入详细地址，包括省市区"
+            v-model="item.val"
+            :disabled="disabled_"
+          ></el-input>
+          <i
+            v-if="!disabled_"
+            @click="delItemList(i)"
+            style="margin-left: 10px; font-size: 20px"
+            class="el-icon-circle-close"
+          ></i>
+        </div>
       </el-form-item>
       <el-form-item label="执业许可证" prop="options">
         <el-input
@@ -183,11 +203,13 @@
 // import { EditableText } from '@/components'
 import { regionData, CodeToText, TextToCode } from 'element-china-area-data'
 import { hosInfo, edithosInfo } from '@/api/department'
+import { compressImg } from '@/utils/compress'
 import { uploadFile } from '@/api'
 import { jsonp } from 'vue-jsonp'
 export default {
   data() {
     return {
+      addAdressData: [],
       disabled_: true,
       options: regionData,
       selectedOptions: [],
@@ -203,11 +225,15 @@ export default {
         certPic: [],
         intro: '',
         picList: [],
-        lat: '',
-        lng: '',
+        latitude: '',
+        longitude: '',
       },
       // 医院等级等次
       hosLevelList: [
+        {
+          id: 'TH_TH',
+          name: '三级',
+        },
         {
           id: 'TH_SUPER',
           name: '三级特等',
@@ -271,15 +297,29 @@ export default {
     this.getBasicInfo()
   },
   methods: {
+    //删除
+
+    delItemList(i) {
+      this.addAdressData.splice(i, 1)
+    },
     // 获取医院基本信息
     async getBasicInfo() {
       let res = await hosInfo()
       this.form = res
+      //处理地址
+      const caddressArr = res.address.split('、')
+      this.form.address = caddressArr.slice(0, 1)[0]
+      this.addAdressData = caddressArr.slice(1).map(v => {
+        return { val: v }
+      })
+      //
       let arr = []
       if (res.province) {
-        arr.push(TextToCode[res.province].code)
-        arr.push(TextToCode[res.province][res.city].code)
-        arr.push(TextToCode[res.province][res.city][res.area].code)
+        console.log(TextToCode[res.province])
+        return
+        // arr.push(TextToCode[res.province].code)
+        // arr.push(TextToCode[res.province][res.city].code)
+        // arr.push(TextToCode[res.province][res.city][res.area].code)
       }
       this.selectedOptions = arr
     },
@@ -306,9 +346,12 @@ export default {
       this.form.area = area
     },
     // 处理上传的事件函数
-    httpRequest({ file, onProgress, onSuccess, onError }) {
+    async httpRequest({ file, onProgress, onSuccess, onError }) {
+      //压缩上传图片
+      const res = file.size / 1024 > 60 ? await compressImg(file, 50) : file
+      console.log(res, '----')
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', res)
       uploadFile(formData, onProgress).then(onSuccess).catch(onError)
     },
     // 执业可许
@@ -358,19 +401,29 @@ export default {
           this.form.province +
           this.form.city +
           this.form.area +
-          this.form.address,
+          // this.form.address +
+          this.form.name,
         region: this.form.province,
       })
-      this.form.lat = res.result.location.lat
-      this.form.lng = res.result.location.lng
+      this.form.latitude = res.result.location.lat
+      this.form.longitude = res.result.location.lng
     },
     // 提交
     submitForm() {
       this.$refs.ruleForm.validate(async valid => {
+        const params = Object.assign(JSON.parse(JSON.stringify(this.form)), {
+          address: this.addAdressData.length
+            ? this.form.address +
+              `、${this.addAdressData
+                .filter(v => v.val)
+                .map(v => v.val)
+                .join('、')}`
+            : this.form.address,
+        })
         if (valid) {
           await this.getLocationdata()
           await edithosInfo({
-            ...this.form,
+            ...params,
           })
           this.$message.success('修改成功！')
           this.disabled_ = true
@@ -382,10 +435,19 @@ export default {
         }
       })
     },
+    //新增地址
+    addAdress() {
+      this.addAdressData.push({
+        val: '',
+      })
+    },
   },
 }
 </script>
 <style lang="scss">
+.el-icon-circle-close {
+  cursor: pointer;
+}
 .hospita-info-BaseInfo {
   .el-textarea {
     .el-input__count {

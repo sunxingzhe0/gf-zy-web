@@ -1,5 +1,6 @@
 import { asyncRoutes, constantRoutes } from '@/router'
-
+import { appointment } from '@/api/appointment'
+import { Base64 } from 'js-base64'
 /**
  * Use meta.role to determine if the current user has permission
  * @param roles
@@ -30,7 +31,6 @@ export function filterAsyncRoutes(routes, roles) {
       res.push(tmp)
     }
   })
-
   return res
 }
 
@@ -65,6 +65,9 @@ const mutations = {
     state.addRoutes = routes
     state.routes = constantRoutes.concat(routes)
   },
+  PURE_SET_ROUTES: (state, routes) => {
+    state.routes = routes
+  },
 }
 
 const actions = {
@@ -91,8 +94,55 @@ const actions = {
       resolve(accessedRoutes)
     })
   },
+  async appointmentMenu({ commit }) {
+    let datas = await getRoles()
+    return new Promise(resolve => {
+      let accessedRoutes = []
+      if (datas) {
+        datas.forEach(function (item, index, arr) {
+          arr[index] = 'APPOINTMENT_' + item
+        })
+        accessedRoutes = filterAsyncRoutes(asyncRoutes, datas)
+      }
+      commit('SET_ROUTES', accessedRoutes)
+      resolve(accessedRoutes)
+    })
+  },
 }
+/***
+ * 获取医技预约权限
+ */
+async function getRoles() {
+  //请求地址参数
+  let url = window.location.href
+  const theRequest = new Object()
+  if (url.indexOf('?') != -1) {
+    var str = url.substr(url.indexOf('?') + 1)
+    let strs = str.split('&')
+    for (var i = 0; i < strs.length; i++) {
+      theRequest[strs[i].split('=')[0]] = unescape(strs[i].split('=')[1])
+    }
+  }
+  //host
+  let host = location.host
+  if (host.indexOf(':') != -1) {
+    host = host.substring(0, host.indexOf(':'))
+  }
+  let time = new Date().getTime()
+  let headers = {
+    timestamp: time, //时间戳
+    code: Base64.encode('11031' + time), //11031"拼接时间戳的base64加密串
+    hlwYj: host,
+    builtCode: theRequest.builtCode,
+  }
 
+  return await appointment.disposeMenu(
+    {
+      code: theRequest.builtCode,
+    },
+    headers,
+  )
+}
 export default {
   namespaced: true,
   state,

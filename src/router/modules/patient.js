@@ -11,40 +11,65 @@ export default {
   meta: {
     title: '用户',
     icon: 'sidebar-patient',
-    roles: ['DOC_WEB_PATIENT', 'ZY_ORG_PATIENT', 'ORG_WEB_USER_MENU'],
+    roles: [
+      'DOC_WEB_PATIENT',
+      'ZY_ORG_PATIENT',
+      'ORG_WEB_USER_MENU',
+      'XZ_ORG_XZ_USER',
+    ],
   },
   children: [
     {
       path: 'mine',
       component: RouterView,
       redirect: '/patient/mine/list',
-      meta: { title: '我的患者', roles: ['DOC_WEB_PATIENT_MY_PATIENTS'] },
+      meta: {
+        title: '我的患者',
+        roles: ['DOC_WEB_PATIENT_MY_PATIENTS', 'XZ_ORG_XZ_USER_XZ_MY_PATIENT'],
+        keepAlive: true,
+      },
       children: [
         {
           path: 'list',
-          component: () => import('@/views/patient/mine/List.vue'),
+          component: () => import('@/views/patient/mine/index.vue'),
           hidden: true,
           meta: {
             title: '列表',
             activeMenu: '/patient/mine',
+            keepAlive: true,
+            isBack: false,
+          },
+          name: 'patient_mine',
+        },
+        {
+          path: 'mindDetail',
+          name: 'patient_mine_mindDetail',
+          component: () => import('@/views/patient/mine/MindDetail.vue'),
+          props: true,
+          hidden: true,
+          meta: {
+            title: '心咨患者详情',
+            activeMenu: '/patient/mine/mindDetail',
+            keepAlive: true,
+            isBack: false,
           },
         },
         {
           path: 'detail',
-          name: 'detail',
           component: RouterView,
           props: true,
           hidden: true,
           redirect: '/patient/mine/detail/detail',
           meta: {
-            keepAlive: true,
             title: '患者详情',
             activeMenu: '/patient/mine',
+            keepAlive: true,
+            isBack: false,
           },
           children: [
             {
               path: 'detail',
-              name: 'detail',
+              name: 'patient_mine_detail',
               component: () => import('@/views/patient/mine/Detail.vue'),
               props: true,
               hidden: true,
@@ -52,6 +77,7 @@ export default {
             },
             {
               path: 'roominfo',
+              name: 'patient_mine_detail_roominfo',
               component: () => import('@/views/patient/mine/roominfo.vue'),
               hidden: true,
               meta: {
@@ -61,7 +87,7 @@ export default {
             },
             {
               path: 'recordInfo',
-              name: 'recordInfo',
+              name: 'patient_mine_detail_recordInfo',
               component: () => import('@/views/patient/mine/recordInfo.vue'),
               hidden: true,
               meta: {
@@ -75,7 +101,7 @@ export default {
     },
     {
       path: 'push',
-      name: 'pushList',
+      name: 'patient_pushList',
       component: () => import('@/views/patient/Push.vue'),
       meta: { title: '我的推送', roles: ['DOC_WEB_PATIENT_MY_PUSH'] },
     },
@@ -86,34 +112,52 @@ export default {
       meta: {
         keepAlive: true,
         title: '患者管理',
-        roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT'],
+        roles: [
+          'ORG_WEB_USER_MENU_USER_MANAGEMENT',
+          'XZ_ORG_XZ_USER_XZ_PATIENT',
+        ],
       },
       children: [
         {
           path: 'list',
-          component: () => import('@/views/patient/mine/List.vue'),
+          name: 'patient_mine',
+          component: () => import('@/views/patient/mine/index.vue'),
           hidden: true,
           meta: {
             title: '列表',
             activeMenu: '/patient/patientTube',
+            keepAlive: true,
+            isBack: false,
+          },
+        },
+        {
+          path: 'mindDetail',
+          name: 'patient_mine_mindDetail',
+          component: () => import('@/views/patient/mine/MindDetail.vue'),
+          hidden: true,
+          meta: {
+            title: '心咨患者详情',
+            activeMenu: '/patient/patientTube/mindDetail',
+            keepAlive: true,
+            isBack: false,
           },
         },
         {
           path: 'detail',
-          name: 'detail',
           component: RouterView,
           props: true,
           hidden: true,
           redirect: '/patient/patientTube/detail/detail',
           meta: {
             keepAlive: true,
+            isBack: false,
             title: '患者详情',
             activeMenu: '/patient/patientTube',
           },
           children: [
             {
               path: 'detail',
-              name: 'detail',
+              name: 'patient_mine_detail',
               component: () => import('@/views/patient/mine/Detail.vue'),
               props: true,
               hidden: true,
@@ -121,6 +165,7 @@ export default {
             },
             {
               path: 'roominfo',
+              name: 'patient_mine_detail_roominfo',
               component: () => import('@/views/patient/mine/roominfo.vue'),
               hidden: true,
               meta: {
@@ -130,7 +175,7 @@ export default {
             },
             {
               path: 'recordInfo',
-              name: 'recordInfo',
+              name: 'patient_mine_detail_recordInfo',
               component: () => import('@/views/patient/mine/recordInfo.vue'),
               hidden: true,
               meta: {
@@ -144,14 +189,21 @@ export default {
     },
     {
       path: 'usermanagement',
+      name: 'patient_usermanagement',
       component: () => import('@/views/patient/mine/Institutionalusers.vue'),
       meta: { title: '用户管理', roles: ['ORG_WEB_USER_MENU_USER_MANAGEMENT'] },
     },
     {
       path: 'blacklist',
-      name: 'blacklist',
+      name: 'patient_blacklist',
       component: () => import('@/views/zy-page/patient/Blacklist.vue'),
       meta: { title: '黑名单管理', roles: ['ZY_ORG_PATIENT_BLACK'] },
+    },
+    {
+      path: 'blacklist_xz',
+      name: 'patient_blacklist_xz',
+      component: () => import('@/views/mindConsult/blacklist/index'),
+      meta: { title: '心咨黑名单', roles: ['XZ_ORG_XZ_USER_XZ_BLACK'] },
     },
   ],
 }

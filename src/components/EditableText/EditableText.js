@@ -61,7 +61,11 @@ export default Vue.extend({
   render(h) {
     const editComponents = [
       this.$scopedSlots.input?.() || (
-        <el-input vModel={this.inputValue} size="mini"></el-input>
+        <el-input
+          style={{ minWidth: '30px' }}
+          vModel={this.inputValue}
+          size="mini"
+        ></el-input>
       ),
       <el-button size="mini" type="text" vOn:click={this.cancelHandler}>
         取消

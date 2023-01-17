@@ -11,7 +11,7 @@ export default {
   meta: {
     title: '订单',
     icon: 'sidebar-order',
-    roles: ['DRUG_STORE_ORDER', 'ORG_WEB_ORDER'],
+    roles: ['DRUG_STORE_ORDER', 'ORG_WEB_ORDER', 'XZ_ORG_XZ_ORDER'],
   },
   children: [
     {
@@ -23,13 +23,19 @@ export default {
         {
           path: 'orderList',
           component: () => import('@/views/pharmacy-order/AllOrder.vue'),
-          meta: { activeMenu: '/order/allorder', keepAlive: true },
+          meta: {
+            activeMenu: '/order/allorder',
+            keepAlive: true,
+            isBack: false,
+          },
           hidden: true,
+          name: 'order_allorder',
         },
         {
           path: 'orderdetail',
           component: () => import('@/views/pharmacy-order/OrderDetail.vue'),
           meta: { activeMenu: '/order/allorder' },
+          name: 'order_allorder_orderdetail',
           props: true,
           hidden: true,
         },
@@ -40,6 +46,7 @@ export default {
             title: '已通过处方详情',
           },
           hidden: true,
+          name: 'order_allorder_prescriptionDetails',
           props: true,
         },
       ],
@@ -56,8 +63,13 @@ export default {
         {
           path: 'orderList',
           component: () => import('@/views/pharmacy-order/ToCarryOrder.vue'),
-          meta: { activeMenu: '/order/tocarryorder', keepAlive: true },
+          meta: {
+            activeMenu: '/order/tocarryorder',
+            keepAlive: true,
+            isBack: false,
+          },
           hidden: true,
+          name: 'order_tocarryorder',
         },
         {
           path: 'orderdetail',
@@ -65,6 +77,7 @@ export default {
           meta: { activeMenu: '/order/tocarryorder' },
           props: true,
           hidden: true,
+          name: 'order_tocarryorder_orderdetail',
         },
       ],
     },
@@ -80,8 +93,13 @@ export default {
         {
           path: 'orderList',
           component: () => import('@/views/pharmacy-order/ToSendOrder.vue'),
-          meta: { activeMenu: '/order/tosendorder', keepAlive: true },
+          meta: {
+            activeMenu: '/order/tosendorder',
+            keepAlive: true,
+            isBack: false,
+          },
           hidden: true,
+          name: 'order_tosendorder',
         },
         {
           path: 'orderdetail',
@@ -89,6 +107,7 @@ export default {
           meta: { activeMenu: '/order/tosendorder' },
           props: true,
           hidden: true,
+          name: 'order_tosendorder_orderdetail',
         },
       ],
     },
@@ -96,7 +115,6 @@ export default {
       path: 'business',
       component: RouterView,
       redirect: '/order/business/list',
-      name: 'business',
       meta: {
         title: '机构业务订单',
         roles: ['ORG_WEB_ORDER_BUSINESS_ORDER'],
@@ -110,8 +128,10 @@ export default {
             title: '列表',
             activeMenu: '/order/business',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
+          name: 'order_business',
         },
         {
           path: 'detail/:id',
@@ -119,6 +139,7 @@ export default {
           meta: { title: '业务订单详情', activeMenu: '/order/business' },
           hidden: true,
           props: true,
+          name: 'order_business_detail',
         },
       ],
     },
@@ -126,7 +147,6 @@ export default {
       path: 'prescription',
       component: RouterView,
       redirect: '/order/prescription/list',
-      name: 'prescription',
       meta: {
         title: '机构处方单',
         roles: ['ORG_WEB_ORDER_PRESCRIPTION_MANAGEMENT'],
@@ -139,8 +159,10 @@ export default {
             title: '列表',
             activeMenu: '/order/prescription',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
+          name: 'order_prescription',
         },
         {
           path: 'detail/:id',
@@ -148,6 +170,7 @@ export default {
           meta: { title: '处方详情', activeMenu: '/order/prescription' },
           hidden: true,
           props: true,
+          name: 'order_prescription_detail',
         },
       ],
     },
@@ -155,7 +178,6 @@ export default {
       path: 'prescription-order',
       component: RouterView,
       redirect: '/order/prescription-order/list',
-      name: 'prescriptionOrder',
       meta: {
         title: '机构处方订单',
         roles: ['ORG_WEB_ORDER_PRESCRIPTION_ORDER'],
@@ -168,8 +190,10 @@ export default {
             title: '列表',
             activeMenu: '/order/prescription-order',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
+          name: 'order_prescriptionOrder',
         },
         {
           path: 'detail/:id',
@@ -180,6 +204,7 @@ export default {
           },
           hidden: true,
           props: true,
+          name: 'order_prescriptionOrder_detail',
         },
         {
           path: '/prescriptionDetails/:id',
@@ -189,18 +214,58 @@ export default {
           },
           hidden: true,
           props: true,
+          name: 'order_prescriptionOrder_prescriptionDetails',
         },
       ],
     },
-
-    // {
-    //   path: 'tocarryorder',
-    //   component: () => import('@/views/pharmacy-order/ToCarryOrder.vue'),
-    //   meta: {
-    //     title: '待自提订单',
-    //     roles: ['DRUG_STORE_ORDER_ORDER_TO_BE_PICKED_UP'],
-    //   },
-    // },
+    {
+      path: 'hcReservations',
+      component: RouterView,
+      meta: {
+        title: '心咨预约单',
+        roles: ['XZ_ORG_XZ_ORDER_XZ_ORDER_RESERVED'],
+      },
+      redirect: '/order/hcReservations/hcReservationsList',
+      children: [
+        {
+          path: 'hcReservationsList',
+          component: () =>
+            import('@/views/pharmacy-order/hcReservationsList.vue'),
+          meta: {
+            activeMenu: '/order/hcReservations',
+            keepAlive: true,
+            isBack: false,
+          },
+          hidden: true,
+          name: 'order_hcReservations_list',
+        },
+        {
+          path: 'hcReservationsDetail',
+          component: () =>
+            import('@/views/pharmacy-order/hcReservationsDetail.vue'),
+          meta: { activeMenu: '/order/hcReservations' },
+          name: 'order_hcReservations_detail',
+          props: true,
+          hidden: true,
+        },
+      ],
+    },
+    {
+      path: 'hcOrder',
+      component: () => import('@/views/pharmacy-order/hcOrder.vue'),
+      meta: {
+        title: '心咨订单',
+        roles: ['XZ_ORG_XZ_ORDER_XZ_ORDER_RECORD'],
+      },
+    },
+    {
+      path: 'hcBackOrder',
+      component: () => import('@/views/pharmacy-order/hcBackOrder.vue'),
+      meta: {
+        title: '后台订单',
+        roles: ['XZ_ORG_XZ_ORDER_XZ_NOPAY_ORDER_RECORD'],
+      },
+    },
     // {
     //   path: 'tosendorder',
     //   component: () => import('@/views/pharmacy-order/ToSendOrder.vue'),

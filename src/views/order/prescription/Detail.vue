@@ -14,6 +14,13 @@
       </el-steps>
     </header>
     <el-tabs v-model="activeName">
+      <el-tab-pane label="处方签" name="pdf" lazy>
+        <iframe
+          width="100%"
+          height="900"
+          :src="`${access_url}/mi/api/v1/rx/downloadRx?rxId=${$route.params.id}`"
+        ></iframe>
+      </el-tab-pane>
       <el-tab-pane label="处方信息" name="info" lazy>
         <PatinetInfo :orderInfo="orderInfo"></PatinetInfo>
         <PrescriptionInfo
@@ -22,6 +29,17 @@
           :prescriptionInfo="rpInfo"
         ></PrescriptionInfo>
         <InvoiceInfo v-if="!isEdit" :prescriptionInfo="rpInfo"></InvoiceInfo>
+      </el-tab-pane>
+      <el-tab-pane label="本次诊断" name="diagnosis">
+        <p>诊断：{{ orderInfo.diagnose }}</p>
+      </el-tab-pane>
+      <el-tab-pane
+        name="medicalRecord"
+        key="medicalRecord"
+        label="本次病历"
+        lazy
+      >
+        <MedicalRecord :orderId="orderInfo.orderId"></MedicalRecord>
       </el-tab-pane>
       <el-tab-pane
         v-if="orderInfo.bizType != 'CONSULT'"
@@ -58,9 +76,11 @@ import {
   PatinetInfo,
   PrescriptionInfo,
   TreatmentHistoryInfo,
+  MedicalRecord,
 } from '@/components/App'
 import * as prescription from '@/api/prescription'
 import { orderDoctorWebDetail } from '@/api/business'
+import { access_url } from '@/utils/wss-http'
 
 export default {
   name: 'Detail',
@@ -75,6 +95,7 @@ export default {
     PatinetInfo,
     PrescriptionInfo,
     TreatmentHistoryInfo,
+    MedicalRecord,
   },
   watch: {
     $route() {
@@ -83,6 +104,7 @@ export default {
   },
   data() {
     return {
+      access_url,
       orderId: '', // 订单号
       orderInfo: {}, // 订单信息
       statusMap: {
@@ -91,7 +113,7 @@ export default {
         REJECTED: '已驳回',
         PENDING_REVIEW: '待审核',
       }, // 处方状态
-      activeName: 'info', // 基础信息
+      activeName: 'pdf', // 基础信息
       rpInfo: { rpDrugList: [] }, // 单个处方药品列表
     }
   },

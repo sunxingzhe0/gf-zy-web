@@ -16,7 +16,7 @@ export default {
     {
       path: 'drugs',
       component: () => import('@/views/dictionary/drugs'),
-      name: 'drugs',
+      name: 'dictionary_drugs',
       meta: {
         title: '药品字典',
         roles: ['ORG_WEB_DICTIONARIES_DRUG_DICTIONARY'],
@@ -25,7 +25,7 @@ export default {
     {
       path: 'diagnosis',
       component: () => import('@/views/dictionary/diagnosis'),
-      name: 'diagnosis',
+      name: 'dictionary_diagnosis',
       meta: {
         title: '诊断字典',
         roles: ['ORG_WEB_DICTIONARIES_DIAGNOSTIC_DICTIONARY'],
@@ -34,14 +34,20 @@ export default {
     {
       path: 'unitmanage',
       component: () => import('@/views/dictionary/unit'),
-      name: 'unitManage',
-      meta: { title: '单位管理', roles: ['ORG_WEB_DICTIONARIES'] },
+      name: 'dictionary_unitManage',
+      meta: {
+        title: '单位管理',
+        roles: ['ORG_WEB_DICTIONARIES_UNIT_MANAGEMENT'],
+      },
     },
     {
       path: 'dispose',
       component: () => import('@/views/dictionary/dispose'),
-      name: 'dispose',
-      meta: { title: '处置字典', roles: ['ORG_WEB_DICTIONARIES'] },
+      name: 'dictionary_dispose',
+      meta: {
+        title: '处置字典',
+        roles: ['ORG_WEB_DICTIONARIES_DISPOSE_DICTIONARY'],
+      },
     },
   ],
 }

@@ -13,7 +13,6 @@
       <template v-slot:footertool>
         <el-button
           v-show="'PENDING_REVIEW' === type"
-          size="mini"
           type="primary"
           :disabled="!tableData.multipleSelection.length"
           @click="
@@ -27,7 +26,6 @@
         </el-button>
         <el-button
           v-show="'PENDING_REVIEW' === type"
-          size="mini"
           plain
           type="primary"
           :disabled="!tableData.multipleSelection.length"
@@ -44,9 +42,9 @@
 
       <template v-slot:fixed="{ row }">
         <router-link class="el-button el-button--text" :to="`detail/${row.id}`">
-          查看
+          审方
         </router-link>
-
+        <!-- 
         <el-button
           v-show="'PENDING_REVIEW' === type"
           type="text"
@@ -61,7 +59,7 @@
           @click="handleAudit([row.id], 'REJECTED')"
         >
           驳回
-        </el-button>
+        </el-button> -->
       </template>
     </List>
 
@@ -162,10 +160,12 @@
         <el-button type="primary" @click="hasAuthShow = false">确 定</el-button>
       </span>
     </el-dialog>
+    <QrCode ref="qrcode" />
   </div>
 </template>
 
 <script>
+import QrCode from '@/components/QrCode'
 import { List, mixin } from '@/components'
 import { invalidFieldSetFocus } from '@/utils'
 
@@ -185,12 +185,13 @@ const pre = {
 
 export default {
   inject: ['reload'],
-  name: 'Prescription',
+  name: 'prescription_pending',
   props: {
     type: String,
   },
   components: {
     List,
+    QrCode,
   },
   mixins: [mixin([{ fetchListFunction: webPageRpList }])],
   data() {
@@ -205,7 +206,6 @@ export default {
             options: [
               { label: '创建时间', value: 0 },
               { label: '提交时间', value: 1 },
-              // { label: '审核时间', value: 2 },
             ],
           },
           keys: ['timeType', 'startTime', 'endTime'],
@@ -437,28 +437,6 @@ export default {
     },
     type: function (val) {
       this.query.rpStatus = val
-      if ('PENDING_REVIEW' === val) {
-        this.filter.date.props.options = [
-          { label: '创建时间', value: 0 },
-          { label: '提交时间', value: 1 },
-        ]
-      } else {
-        this.filter.date.props.options = [
-          { label: '创建时间', value: 0 },
-          { label: '提交时间', value: 1 },
-          { label: '审核时间', value: 2 },
-        ]
-      }
-    },
-    $route() {
-      this.query = {
-        timeType: 0,
-        searchType: 0,
-        pageSize: 10,
-        currentNum: 1,
-        rpStatus: this.type,
-        pharmacyIds: this.$store.state.user.store.id,
-      }
     },
   },
   async beforeRouteEnter(to, from, next) {
@@ -507,13 +485,21 @@ export default {
       await Promise.all(
         ids.map(id => operateRp({ id, statusType, reason, reasonId })),
       )
-
-      this.$message({
-        type: 'success',
-        message: '完成',
-        showClose: true,
-      })
-      this.$_fetchTableData(webPageRpList)
+        .then(() => {
+          this.$message({
+            type: 'success',
+            message: '完成',
+            showClose: true,
+          })
+          this.$_fetchTableData(webPageRpList)
+        })
+        .catch(e => {
+          console.log(e, '错误信息')
+          const reg = new RegExp('CA-SIGN-ERROR')
+          if (reg.test(e)) {
+            this.$refs.qrcode.open() //打开二维码
+          }
+        })
     },
     async handleDialogOpen() {
       this.dialog.model = {

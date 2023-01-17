@@ -4,6 +4,10 @@ import { MessageBox } from 'element-ui'
 import { merge } from 'lodash'
 
 import store from '@/store'
+import { wss_url } from '@/utils/wss-http'
+console.log(wss_url, 'wss地址')
+
+console.log(store)
 
 import {
   userSyncData,
@@ -120,7 +124,7 @@ const messageTicket = {
   msgId: -1,
 }
 
-function Socket(url = process.env.VUE_APP_WSS_URL) {
+function Socket(url = wss_url) {
   this.IMessage = protobuf.Root.fromJSON(jsonDescriptor).lookupType('IMessage')
 
   this.url = url
@@ -184,7 +188,7 @@ Socket.prototype.reconnect = function () {
   if (this.reconnectTimer) return
   this.reconnectTimer = setTimeout(() => {
     if (store.state.user.socketToken) {
-      this.connect(process.env.VUE_APP_WSS_URL)
+      this.connect(wss_url)
     }
   }, 3000)
 }

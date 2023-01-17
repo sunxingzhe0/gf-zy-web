@@ -38,11 +38,12 @@ export default {
   },
   actions: {
     init({ rootState, dispatch }) {
-      //平台端不请求下面几个接口
+      //平台端不请求下面几个接口  没有角色也不请求
       console.log(arguments)
       if (
-        rootState.user.identityType &&
-        rootState.user.identityType === 'PLATFORM'
+        (rootState.user.identityType &&
+          rootState.user.identityType === 'PLATFORM') ||
+        !rootState.user.roleName
       ) {
         return
       }
@@ -58,7 +59,7 @@ export default {
         ...item,
         label: item.name,
         id: String(item.id),
-        value: String(item.id),
+        value: String(item.name),
       }))
       commit('SET_DRUG_WAYS', drugWays)
     },
@@ -87,7 +88,7 @@ export default {
       const drugTreatments = res.map(item => ({
         ...item,
         label: item.attrName,
-        value: String(item.attrId),
+        value: String(item.attrName),
       }))
       commit('SET_DRUG_TREATMENTS', drugTreatments)
     },
@@ -97,7 +98,7 @@ export default {
       const drugFrequencys = res.map(item => ({
         ...item,
         label: item.name,
-        value: String(item.id),
+        value: String(item.code),
       }))
       commit('SET_DRUG_FREQUENCYS', drugFrequencys)
     },

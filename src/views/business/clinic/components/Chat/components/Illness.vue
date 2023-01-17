@@ -63,7 +63,6 @@ export default {
       this.orderIllness = await orderIllness({
         orderId: this.orderId,
       })
-      console.log(this.orderIllness, '-----123---------')
     },
   },
 }

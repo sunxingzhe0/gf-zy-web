@@ -64,10 +64,17 @@
           name="3"
         >
         </el-tab-pane>
+        <!-- 8已被心咨使用 -->
         <el-tab-pane
           v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
-          label="在线咨询须知"
+          label="在线咨询（图文）须知"
           name="5"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])"
+          label="在线咨询（视频）须知"
+          name="9"
         >
         </el-tab-pane>
         <el-tab-pane
@@ -100,6 +107,24 @@
           name="zy_1"
         >
         </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ZY_ORG_SETTING_XUZHI_MANAGEMENT'])"
+          label="温馨提示"
+          name="zy_2"
+        >
+        </el-tab-pane>
+        <el-tab-pane
+          v-if="checkPermission(['ZY_ORG_SETTING_XUZHI_MANAGEMENT'])"
+          label="新冠核酸检测告知书"
+          name="zy_3"
+        >
+        </el-tab-pane>
+        <!-- <el-tab-pane
+          v-if="checkPermission(['ZY_ORG_SETTING_XUZHI_MANAGEMENT'])"
+          label="心咨患者知情同意书"
+          name="xz_1"
+        >
+        </el-tab-pane> -->
       </el-tabs>
     </div>
 
@@ -115,13 +140,14 @@
             show-word-limit
           ></el-input>
         </el-form-item>
-        <el-form-item label="正文" prop="content">
-          <ckeditor
+        <el-form-item label="正文">
+          <!-- <ckeditor
             :editor="editor"
             v-model="form.content"
             :config="{ language: 'zh-cn' }"
             @ready="onReady"
-          ></ckeditor>
+          ></ckeditor> -->
+          <div id="editor"></div>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submit">保存</el-button>
@@ -131,17 +157,18 @@
   </div>
 </template>
 <script>
-import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
+// import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn'
 import { getAgrList, addAgreement, editArg } from '@/api/setup'
 import { editTjIns, getTjIns } from '@/api/zyapi/index'
 import checkPermission from '@/utils/permission'
 import checkPermissionNum from '@/utils/permissionNum'
 import MyUploadAdapter from '@/utils/MyUploadAdapter.js'
+import E from 'wangeditor'
 export default {
   data() {
     return {
-      editor: ClassicEditor,
+      editor: '',
       active: checkPermission(['ORG_WEB_SET_UP_PROTOCOL_MANAGEMENT'])
         ? '4'
         : 'zy_0',
@@ -174,6 +201,7 @@ export default {
       if (res) {
         this.form.title = res.title
         this.form.content = res.content
+        this.editor.txt.html(res.content) //设置内容
         this.form.id = res.id
       } else {
         this.form.id = ''
@@ -184,6 +212,7 @@ export default {
     // 保存提交
     submit() {
       this.$refs.ruleForm.validate(async valid => {
+        this.form.content = this.editor.txt.html()
         if (valid) {
           // 有 id 则为编辑
           if (this.form.id) {
@@ -278,11 +307,16 @@ export default {
       }
     },
   },
+  mounted() {
+    this.editor = new E('#editor')
+    this.editor.create()
+  },
 }
 </script>
 <style lang="scss" scoped>
 .accountWrap {
   padding: 0;
+
   position: relative;
 
   .account_main {
@@ -290,6 +324,7 @@ export default {
     padding-left: 210px;
     ::v-deep.ck-content {
       min-height: 300px;
+      max-height: 480px;
     }
   }
   .el-tabs--border-card {
@@ -303,5 +338,8 @@ export default {
   ::v-deep.el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
     border: 1px solid transparent;
   }
+}
+::v-deep .el-form-item__content {
+  z-index: 99 !important;
 }
 </style>

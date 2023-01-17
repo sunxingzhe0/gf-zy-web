@@ -19,7 +19,7 @@
     </List>
     <!-- 弹框 -->
 
-    <WriteOff ref="writeOff" @hxOrderSuccess="getNewList"></WriteOff>
+    <WriteOff ref="writeOff" @hxOrderSuccess="getNewList()"></WriteOff>
   </section>
 </template>
 
@@ -28,7 +28,7 @@ import { List, mixin } from '@/components'
 import { getOrderList } from '@/api/order'
 import {
   roleChooseList,
-  deptChooseList,
+  deptOuterChooseList,
   drugStoreChooseList,
   titleChooseList,
 } from '@/api'
@@ -69,19 +69,12 @@ const pre = {
 }
 
 export default {
-  name: 'ToSendOrder',
+  name: 'order_tocarryorder',
   components: {
     List,
     WriteOff,
   },
   mixins: [mixin({ fetchListFunction: getOrderList })],
-  watch: {
-    $route() {
-      if (this.$route.query?.start_time && this.$route.query?.end_time) {
-        this.getNewList()
-      }
-    },
-  },
   created() {
     if (this.$route.query?.start_time && this.$route.query?.end_time) {
       this.getNewList()
@@ -321,21 +314,32 @@ export default {
   async beforeRouteEnter(to, from, next) {
     ;[pre.role, pre.dept, pre.store, pre.title] = await Promise.all([
       roleChooseList({ showUser: true }),
-      deptChooseList({ tree: false }),
+      deptOuterChooseList({ tree: false }),
       drugStoreChooseList(),
       titleChooseList(),
     ])
     next()
   },
   methods: {
-    getNewList() {
+    getNewList(flag) {
+      if (flag) {
+        this.query = {
+          pageSize: 10,
+          dateType: 0,
+          searchType: 0,
+          timeType: 0,
+          orderStatus: 'WAIT_TAKE',
+          isFilterMore: true,
+        }
+      }
       this.query = {
         ...this.query,
         startTime: this.$route.query.start_time,
         endTime: this.$route.query.end_time,
-        timeType: parseInt(this.$route.query.timeType),
+        timeType: this.$route.query.timeType
+          ? parseInt(this.$route.query.timeType)
+          : 0,
       }
-      this.$_fetchTableData()
     },
     // 点击查看更多
     async showMore(id) {

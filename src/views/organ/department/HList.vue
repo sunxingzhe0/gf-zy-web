@@ -6,6 +6,7 @@
       :columns="faList.columns"
       :tableData="faList.tableData"
       @expandChange="expandChange"
+      tableClass="hl-table"
     >
       <!-- <template v-slot:slot_title="{ row }">
         <el-button v-if="row.sonDeptList" type="text">{{
@@ -114,7 +115,7 @@
         label-width="80px"
         v-loading="addLoading"
       >
-        <el-form-item label="上级科室">
+        <!-- <el-form-item label="上级科室">
           <el-select
             v-model="form.pid"
             filterable
@@ -138,7 +139,7 @@
               >
             </el-option>
           </el-select>
-        </el-form-item>
+        </el-form-item> -->
         <el-form-item label="科室编码" v-if="form.id">
           <div>{{ form.id }}</div>
         </el-form-item>
@@ -155,7 +156,6 @@
           <el-select
             v-model="form.deptInners"
             filterable
-            multiple
             style="width: 100%"
             placeholder="请选择"
           >
@@ -182,6 +182,33 @@
               >
             </el-option>
           </el-select>
+          <!-- <el-select
+              v-model="form.deptListName"
+              multiple
+              filterable
+              :filter-method="handleFilter"
+              placeholder="请选择"
+              @remove-tag="removeTag"
+              style="width: 100%;"
+            >
+              <el-option :value="1" style="height: auto; padding: 0;">
+                <el-tree
+                  :data="innerDept"
+                  :props="defaultProps"
+                  show-checkbox
+                  ref="tree"
+                  node-key="id"
+                  default-expand-all
+                  @node-click="handleNodeClick"
+                  highlight-current
+                  current-node-key="node"
+                  :default-checked-keys="form.deptList"
+                  :filter-node-method="filterNode"
+                  @check="handleChcek"
+                >
+                </el-tree>
+              </el-option>
+            </el-select> -->
         </el-form-item>
         <el-form-item label="科室简介">
           <el-input
@@ -239,12 +266,8 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="importDialog.visible = false"
-            >取消</el-button
-          >
-          <el-button size="small" type="primary" @click="preservation">
-            保存
-          </el-button>
+          <el-button @click="importDialog.visible = false">取消</el-button>
+          <el-button type="primary" @click="preservation"> 确定 </el-button>
         </div>
       </template>
     </el-dialog>
@@ -286,6 +309,10 @@ export default {
   mixins: [mixin([{ fetchListFunction: deptOuterList, prop: 'faList' }])],
   data() {
     return {
+      defaultProps: {
+        children: 'next',
+        label: 'name',
+      },
       filter: {
         date: {
           props: {
@@ -315,23 +342,23 @@ export default {
             },
             keys: 'deptLevel',
           },
-          {
-            props: {
-              label: '所属科室',
-              options: [
-                { label: '不限', value: '' },
-                ...this.dept.map(_ => ({ label: _.name, value: _.id })),
-              ],
-            },
-            keys: 'faDeptId',
-          },
-          {
-            props: {
-              label: '子科室',
-              is: 'InputRange',
-            },
-            keys: ['sonDeptNumStart', 'sonDeptNumEnd'],
-          },
+          // {
+          //   props: {
+          //     label: '所属科室',
+          //     options: [
+          //       { label: '不限', value: '' },
+          //       ...this.dept.map(_ => ({ label: _.name, value: _.id })),
+          //     ],
+          //   },
+          //   keys: 'faDeptId',
+          // },
+          // {
+          //   props: {
+          //     label: '子科室',
+          //     is: 'InputRange',
+          //   },
+          //   keys: ['sonDeptNumStart', 'sonDeptNumEnd'],
+          // },
           {
             props: {
               label: '是否推荐',
@@ -343,13 +370,14 @@ export default {
             },
             keys: 'recommend',
           },
-          {
-            props: {
-              label: '科室医生',
-              is: 'InputRange',
-            },
-            keys: ['doctorNumStart', 'doctorNumEnd'],
-          },
+          // {
+          //   props: {
+          //     label: '科室医生',
+          //     isInteger: true,
+          //     is: 'InputRange',
+          //   },
+          //   keys: ['doctorNumStart', 'doctorNumEnd'],
+          // },
 
           {
             props: {
@@ -372,7 +400,7 @@ export default {
           pageSize: 10,
           currentNum: 1,
           deptLevel: '',
-          storeId: this.$route.query.id || '',
+          // storeId: this.$route.query.id || '',
         },
         columns: {
           index: {
@@ -442,6 +470,7 @@ export default {
         intro: '',
         pid: '',
         deptInners: [],
+        deptListName: [],
       },
       rules: {
         name: [{ required: true, message: '请输入科室名称' }],
@@ -468,6 +497,13 @@ export default {
         { label: '不限', value: '' },
         ...this.dept.map(_ => ({ label: _.name, value: _.id })),
       ]
+    },
+    form: {
+      handler() {
+        this.submitLoading = false
+      },
+      deep: true,
+      immediate: true,
     },
   },
   created() {},
@@ -520,11 +556,50 @@ export default {
     // 获取挂号科室
     async getInnerDept() {
       const res = await getDeptInner({
-        tree: false,
+        tree: true,
       })
-      console.log(res, '*****')
+      res.forEach(item => {
+        if (item.state) {
+          item.next && (item.disabled = true)
+        } else {
+          item.disabled = true
+        }
+        item.next &&
+          item.next.forEach(t => {
+            t.disabled = !t.state
+          })
+      })
       this.innerDept = res
       // this.innerDept = res.filter(item => item.state)
+    },
+    //触发筛选函数
+    handleFilter(data) {
+      this.$refs.tree.filter(data)
+    },
+    //筛选节点
+    filterNode(value, data) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
+    //点击树节点
+    handleNodeClick() {},
+    //树节点选中时
+    handleChcek() {
+      //这里两个true，1. 是否只是叶子节点 2. 是否包含半选节点（就是使得选择的时候不包含父节点）
+      const res = this.$refs.tree.getCheckedNodes(true, true)
+      this.form.deptInners = res.map(item => item.id)
+      this.form.deptListName = res.map(item => item.name)
+    },
+    //移除tag
+    removeTag(data) {
+      let res = this.$refs.tree.getCheckedNodes(true, true)
+      //删除tag移除项
+      res.forEach((item, index) => {
+        item.name === data && res.splice(index, 1)
+      })
+      this.form.deptInners = res.map(item => item.id)
+      //重新设置选中
+      this.$refs.tree.setCheckedNodes(this.form.deptInners)
     },
     // 排序 - 父科室
     async confirm(e, id) {
@@ -552,6 +627,7 @@ export default {
     cancel() {},
     // 编辑 、 新增弹框
     async add(row) {
+      this.submitLoading = false
       this.isAdd = true
       this.addLoading = true
       await this.getDept()
@@ -563,11 +639,12 @@ export default {
         this.form.name = row.name
         this.form.intro = row.intro
         this.form.pid = row.pid
-        this.form.deptInners = info.deptInners
-          ? info.deptInners.map(item => {
-              return item.id
-            })
-          : []
+        // this.form.deptInners = info.deptInners
+        //   ? info.deptInners.map(item => {
+        //       return item.id
+        //     })
+        //   : []
+        this.form.deptInners = info?.deptInners[0]?.id
         this.isInner = info.deptInners ? true : false
       } else {
         this.form.id = null
@@ -588,9 +665,14 @@ export default {
         if (valid) {
           this.submitLoading = true
           if (this.form.id) {
-            await deptOuterEdit({
-              ...this.form,
-            })
+            await deptOuterEdit(
+              Object.assign(
+                {
+                  ...this.form,
+                },
+                { deptInners: [this.form.deptInners] },
+              ),
+            )
             await this.getDept()
             this.$_fetchTableData(deptOuterList)
             this.isAdd = false
@@ -599,6 +681,7 @@ export default {
           } else {
             await deptOuterAdd({
               ...this.form,
+              deptInners: [this.form.deptInners],
               level: this.form.pid ? 2 : 1,
             })
             await this.getDept()
@@ -608,7 +691,7 @@ export default {
             this.submitLoading = false
           }
           this.isAdd = false
-          this.$message.success('操作成功!')
+          // this.$message.success('操作成功!')
         } else {
           return false
         }
@@ -713,7 +796,10 @@ export default {
 }
 </script>
 
-<style lang="scss" scope>
+<style lang="scss" scoped>
+.hl-table {
+  height: calc(100vh - 120px);
+}
 .el-table {
   .el-button--text {
     padding: 0;

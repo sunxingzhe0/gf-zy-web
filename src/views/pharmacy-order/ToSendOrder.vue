@@ -29,7 +29,7 @@ import Tosend from './components/Tosend'
 import { getOrderList } from '@/api/order'
 import {
   roleChooseList,
-  deptChooseList,
+  deptOuterChooseList,
   drugStoreChooseList,
   titleChooseList,
 } from '@/api'
@@ -69,7 +69,7 @@ const pre = {
 }
 
 export default {
-  name: 'ToSendOrder',
+  name: 'order_tosendorder',
   components: {
     List,
     Tosend,
@@ -115,11 +115,10 @@ export default {
       orderId: '',
     }
   },
-
   async beforeRouteEnter(to, from, next) {
     ;[pre.role, pre.dept, pre.store, pre.title] = await Promise.all([
       roleChooseList({ showUser: true }),
-      deptChooseList({ tree: false }),
+      deptOuterChooseList({ tree: false }),
       drugStoreChooseList(),
       titleChooseList(),
     ])

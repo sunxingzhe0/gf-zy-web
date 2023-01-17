@@ -51,13 +51,21 @@
 import { List, mixin, EditableText } from '@/components'
 import { getInfoList, delInfo, sortInfo, setInfoState } from '@/api/setup'
 export default {
+  name: 'setUp_information',
   components: {
     List,
     EditableText,
   },
   mixins: [mixin([{ fetchListFunction: getInfoList }])],
   watch: {
-    $route: 'getPath',
+    updateListInformation() {
+      this.$_fetchTableData()
+    },
+  },
+  computed: {
+    updateListInformation() {
+      return this.$store.state.updateList.updateListInformation
+    },
   },
   data() {
     this.filter = {
@@ -80,6 +88,7 @@ export default {
         {
           props: {
             label: '浏览',
+            isInteger: true,
             is: 'InputRange',
           },
           keys: ['startBrowse', 'endBrowse'],

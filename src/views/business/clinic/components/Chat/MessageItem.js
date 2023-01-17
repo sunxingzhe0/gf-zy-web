@@ -216,7 +216,7 @@ export default Vue.extend({
       case 'CRVIDEO':
         return (
           <div class="message__wrap message__text">
-            [在线复诊]：
+            [在线视频]：
             {props.body === 'accept'
               ? '已接受'
               : props.body === 'refuse'
@@ -271,6 +271,24 @@ export default Vue.extend({
           return ''
         }
       }
+
+      case 'SV':
+        return (
+          <div class="message__wrap request__wrap link">
+            <div class="request__content">
+              <span>已终止本次服务，诊查费将于1-3个工作日内原路退回。</span>
+            </div>
+          </div>
+        )
+
+      case 'CV':
+        return (
+          <div class="message__wrap request__wrap link">
+            <div class="request__content">
+              <span>已终止本次服务，诊查费将于1-3个工作日内原路退回。</span>
+            </div>
+          </div>
+        )
 
       default:
         return (

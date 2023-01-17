@@ -9,6 +9,7 @@
         filterable
         v-model="value.icdId"
         @change="changeHandler"
+        placeholder="请输入关键字搜索"
         :remote-method="loadDiagnosis"
       >
         <el-option

@@ -120,6 +120,9 @@ export default {
         this.form.content = ''
       }
       this.isreject = true
+      this.$nextTick(() => {
+        this.$refs.ruleForm.clearValidate()
+      })
     },
     rejectSubmit() {
       this.$refs.ruleForm.validate(async valid => {

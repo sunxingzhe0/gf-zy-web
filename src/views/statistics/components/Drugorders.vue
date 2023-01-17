@@ -24,11 +24,17 @@
       </el-col>
       <el-col :md="4" class="is-right">
         <el-button type="primary">导出数据</el-button>
-        <el-button type="info" @click="Refresh">刷新</el-button>
+        <el-button
+          type="info"
+          style="border-color: #f4f4f5"
+          plain
+          @click="Refresh"
+          >刷新</el-button
+        >
       </el-col>
     </el-row>
     <h3 class="view__title">药品销量TOP10</h3>
-    <el-row class="view__content">
+    <el-row class="view__content" v-loading="loading">
       <el-col :span="8">
         <div class="sortF">
           <el-radio-group v-model="saleSbaov" @change="hadleySca">
@@ -170,6 +176,7 @@ export default {
     }
 
     return {
+      loading: false,
       total: 0, //页数总数
       comment: {
         query: {
@@ -224,19 +231,21 @@ export default {
       this.mideLis()
     },
     //刷新
-    Refresh() {
-      ;(this.arrayS = ''), //业务类型
-        (this.typeDate = 1)
-      ;(this.date = [
-        formatDate(
-          new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 7),
-          'yyyyMMdd',
-        ),
-        formatDate(new Date(), 'yyyyMMdd'),
-      ]),
-        (this.active = 7)
-      this.mideLis()
-      this.hadleySca()
+    async Refresh() {
+      // ;(this.arrayS = ''), //业务类型
+      //   (this.typeDate = 1)
+      // ;(this.date = [
+      //   formatDate(
+      //     new Date().setTime(new Date().getTime() - 3600 * 1000 * 24 * 7),
+      //     'yyyyMMdd',
+      //   ),
+      //   formatDate(new Date(), 'yyyyMMdd'),
+      // ]),
+      //   (this.active = 7)
+      this.loading = true
+      await this.mideLis()
+      await this.hadleySca()
+      this.loading = false
     },
     handleDatePickerChange(val) {
       this.pickerOptions.shortcuts.some(({ text, onClick }) => {

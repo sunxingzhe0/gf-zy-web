@@ -93,7 +93,9 @@ export function isArray(arg) {
  */
 
 export function isPassword(str) {
-  const reg = /^[0-9a-zA-Z]{6,18}$/
+  // const reg = /^[0-9a-zA-Z]{6,18}$/
+  // const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,16}/
+  const reg = /(?=.*[0-9])(?=.*[A-Z])(?=.*[a-z])(?=.*[^a-zA-Z0-9]).{8,16}/
   return reg.test(str)
 }
 
@@ -122,4 +124,40 @@ export function isPhoneNumber(str) {
 export function isIDNumber(str) {
   const reg = /^[1-9]\d{5}(18|19|20)\d{2}((0[1-9])|(1[0-2]))(([0-2][1-9])|10|20|30|31)\d{3}[0-9Xx]$/
   return reg.test(str)
+}
+/**
+ * 根据身份证号得到姓别和精确计算年龄
+ */
+export function analyzeIDCard(IDCard) {
+  var sexAndAge = {}
+  //获取用户身份证号码
+  var userCard = IDCard
+  //如果身份证号码为undefind则返回空
+  if (!userCard || !isIDNumber(IDCard)) {
+    return sexAndAge
+  }
+  //获取性别
+  if (parseInt(userCard.substr(16, 1)) % 2 == 1) {
+    sexAndAge.sex = '男'
+  } else {
+    sexAndAge.sex = '女'
+  }
+  //获取出生年月日
+  // userCard.substring(6,10) + "-" + userCard.substring(10,12) + "-" + userCard.substring(12,14);
+  var yearBirth = userCard.substring(6, 10)
+  var monthBirth = userCard.substring(10, 12)
+  var dayBirth = userCard.substring(12, 14)
+  sexAndAge.birthday = `${yearBirth}-${monthBirth}-${dayBirth}`
+  //获取当前年月日并计算年龄
+  var myDate = new Date()
+  var monthNow = myDate.getMonth() + 1
+  var dayNow = myDate.getDay()
+  var age = myDate.getFullYear() - yearBirth
+  if (monthNow < monthBirth || (monthNow == monthBirth && dayNow < dayBirth)) {
+    age--
+  }
+  //得到年龄
+  sexAndAge.age = age
+  //返回性别和年龄
+  return sexAndAge
 }

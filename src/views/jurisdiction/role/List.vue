@@ -60,13 +60,15 @@ import { List, mixin } from '@/components'
 import { roleList, roleChangeState, roleDelete } from '@/api/authority'
 
 export default {
-  name: 'TableList',
+  name: 'jurisdiction_role',
   components: {
     List,
   },
   mixins: [mixin({ fetchListFunction: roleList })],
   watch: {
-    $route: 'getPath',
+    updateListRole() {
+      this.$_fetchTableData()
+    },
   },
   data() {
     return {
@@ -78,6 +80,9 @@ export default {
     }
   },
   computed: {
+    updateListRole() {
+      return this.$store.state.updateList.updateListRole
+    },
     filter() {
       return {
         date: {

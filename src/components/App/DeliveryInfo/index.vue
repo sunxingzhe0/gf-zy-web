@@ -15,6 +15,7 @@
           <div class="app-info-label">收货地址</div>
           <div class="app-info-value">
             {{ orderInfo.fullAddress || '-' }}
+            {{ orderInfo.receiverDetailAddress || '' }}
           </div>
         </div>
       </div>
@@ -26,28 +27,50 @@
         </div>
         <div class="app-info-item">
           <div class="app-info-label">发货方</div>
-          <div class="app-info-value">{{ orderInfo.pharmacyName || '-' }}</div>
+          <div class="app-info-value">
+            {{
+              orderInfo.expressInfoList[0]
+                ? orderInfo.expressInfoList[0].pharmacyName
+                : '-'
+            }}
+          </div>
         </div>
         <div class="app-info-item">
           <div class="app-info-label">发货方电话</div>
           <div class="app-info-value">
-            {{ orderInfo.pharmacyPhone || '-' }}
+            {{
+              orderInfo.expressInfoList[0]
+                ? orderInfo.expressInfoList[0].pharmacyPhone
+                : '-'
+            }}
           </div>
         </div>
       </div>
       <div class="app-info-row">
         <div class="app-info-item">
           <div class="app-info-label">物流公司</div>
-          <div class="app-info-value">{{ orderInfo.corpName || '-' }}</div>
+          <div class="app-info-value">
+            {{
+              orderInfo.expressInfoList[0]
+                ? orderInfo.expressInfoList[0].corpName
+                : '-'
+            }}
+          </div>
         </div>
         <div class="app-info-item">
           <div class="app-info-label">物流单号</div>
-          <div class="app-info-value">{{ orderInfo.expressNo || '-' }}</div>
+          <div class="app-info-value">
+            {{
+              orderInfo.expressInfoList[0]
+                ? orderInfo.expressInfoList[0].expressNo
+                : '-'
+            }}
+          </div>
         </div>
         <div class="app-info-item"></div>
       </div>
       <div class="app-info-row">
-        <div class="app-info-label">物流详情</div>
+        <!-- <div class="app-info-label">物流详情</div> -->
         <div class="app-info-value">
           <!-- <el-button type="text" @click="parent.isOpen = !parent.isOpen">{{
             parent.isOpen ? '收起' : '展开'

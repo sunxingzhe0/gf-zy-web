@@ -48,7 +48,7 @@ import WriteOff from './components/WriteOff'
 import { getOrderList } from '@/api/order'
 import {
   roleChooseList,
-  deptChooseList,
+  deptOuterChooseList,
   drugStoreChooseList,
   titleChooseList,
 } from '@/api'
@@ -88,7 +88,7 @@ const pre = {
 }
 
 export default {
-  name: 'AllOrder',
+  name: 'order_allorder',
   components: {
     List,
     Tosend,
@@ -122,18 +122,14 @@ export default {
       contentList: [],
     }
   },
-
   async beforeRouteEnter(to, from, next) {
     ;[pre.role, pre.dept, pre.store, pre.title] = await Promise.all([
       roleChooseList({ showUser: true }),
-      deptChooseList({ tree: false }),
+      deptOuterChooseList({ tree: false }),
       drugStoreChooseList(),
       titleChooseList(),
     ])
     next()
-  },
-  created() {
-    console.log(this.$store.state.user.store.list, '个人信息')
   },
   methods: {
     // 弹框子组件刷新列表方法

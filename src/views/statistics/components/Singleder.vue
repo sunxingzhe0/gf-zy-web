@@ -213,7 +213,7 @@ import moment from 'moment'
 import { isEqual } from 'lodash'
 import { mapState } from 'vuex'
 import { getStatistics, getStatisticS, statChart } from '@/api/statistics'
-import { deptChooseList } from '@/api'
+import { deptOuterChooseList } from '@/api'
 import echarts from 'echarts/lib/echarts'
 import 'echarts/lib/chart/line'
 import 'echarts/lib/component/tooltip'
@@ -429,9 +429,10 @@ export default {
 
     async roomListbtn() {
       //科室
-      let res = await deptChooseList({
+      let res = await deptOuterChooseList({
         tree: false,
       })
+      console.log(res)
       this.roomBsub = res
     },
     //统计图

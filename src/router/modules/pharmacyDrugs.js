@@ -20,20 +20,22 @@ export default {
       component: RouterView,
       redirect: '/drugs/drugsmanage/list',
       meta: { title: '药品管理', roles: ['DRUG_STORE_DRUGS_DRUG_MANAGEMENT'] },
-
       children: [
         {
           path: 'list',
+          name: 'drugs_drugsmanage',
           component: () => import('@/views/pharmacy-drugs/DrugsManage.vue'),
           hidden: true,
           meta: {
             keepAlive: true,
+            isBack: false,
             roles: ['DRUG_STORE_DRUGS_ORIGIN_MANAGEMENT'],
             activeMenu: '/drugs/drugsmanage',
           },
         },
         {
           path: 'AddNewDrugs',
+          name: 'drugs_drugsmanage_AddNewDrugs',
           component: () => import('@/views/pharmacy-drugs/AddNewDrugs.vue'),
           hidden: true,
           meta: {
@@ -46,6 +48,7 @@ export default {
           path: 'AddNewDrugstt',
           component: () => import('@/views/pharmacy-drugs/AddNewDrugs.vue'),
           hidden: true,
+          name: 'drugs_drugsmanage_AddNewDrugstt',
           meta: {
             title: '修改药品',
             // roles: ['DRUG_STORE_DRUGS_ORIGIN_MANAGEMENT'],
@@ -56,6 +59,7 @@ export default {
     },
     {
       path: 'placemanage',
+      name: 'drugs_placemanage',
       component: () => import('@/views/pharmacy-drugs/PlaceManage.vue'),
       meta: {
         title: '产地管理',
@@ -64,6 +68,7 @@ export default {
     },
     // {
     //   path: 'companymanage',
+    //   name:'drugs_companymanage',
     //   component: () => import('@/views/pharmacy-drugs/CompanyManage.vue'),
     //   meta: { title: '单位管理', roles: ['DRUG_STORE_DRUGS_UNIT_MANAGEMENT'] },
     // },

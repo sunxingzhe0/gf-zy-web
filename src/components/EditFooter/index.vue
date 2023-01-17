@@ -11,7 +11,6 @@ export default {
       <div class="c__edit-footer" {...data}>
         {props.empty ?? (
           <el-button
-            size="small"
             type="primary"
             plain
             vOn:click={emitBack.bind(parent, listeners)}

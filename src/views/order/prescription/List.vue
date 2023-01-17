@@ -52,7 +52,7 @@ import { List, mixin } from '@/components'
 import { getRpManage } from '@/api/order'
 import {
   roleChooseList,
-  deptChooseList,
+  deptOuterChooseList,
   drugStoreChooseList,
   titleChooseList,
 } from '@/api'
@@ -67,6 +67,7 @@ const pre = {
   title: [],
 }
 export default {
+  name: 'order_prescription',
   components: {
     List,
   },
@@ -239,12 +240,14 @@ export default {
           },
         },
       },
+      isFirstEnter: false,
     }
   },
+
   async beforeRouteEnter(to, from, next) {
     ;[pre.role, pre.dept, pre.store, pre.title] = await Promise.all([
       roleChooseList({ showUser: true }),
-      deptChooseList({ tree: false }),
+      deptOuterChooseList({ tree: false }),
       drugStoreChooseList(),
       titleChooseList(),
     ])

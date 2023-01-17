@@ -6,7 +6,7 @@
         <template v-slot:label>
           <div>
             <el-row class="tag-list">
-              <el-col :span="12">
+              <el-col :span="24">
                 报告编号：{{ item.reportNo || '暂无' }}
               </el-col>
               <!-- <el-col :span="12" class="is-right">

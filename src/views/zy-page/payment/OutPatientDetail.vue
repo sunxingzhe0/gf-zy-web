@@ -6,7 +6,9 @@
         style="margin-left: 10px; font-weight: nomal"
         size="mini"
         :type="infoData.pay ? 'success' : ''"
-        >{{ infoData.pay ? '已支付' : '待支付' }}</el-tag
+        >{{
+          infoData.pay ? '已支付' : infoData.pay == false ? '已退费' : '待支付'
+        }}</el-tag
       >
     </div>
     <div class="infoWrap">
@@ -107,7 +109,7 @@ export default {
   methods: {
     async getmzRpDetail() {
       this.infoData = await mzRpDetail({
-        type: 1,
+        type: this.$route.query.billStateName === 'REFUNDED' ? 2 : 1,
         billNo: this.$route.query.billNo,
         patientId: this.$route.query.patientId,
       })

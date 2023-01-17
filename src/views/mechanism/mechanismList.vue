@@ -24,6 +24,17 @@
       </template>
       <template v-slot:fixed="{ row }">
         <el-button size="mini" type="text" @click="edit(row)"> 编辑 </el-button>
+        <el-button
+          size="mini"
+          type="text"
+          @click="
+            ;(resetDialog.visible = true),
+              (resetDialog.model.id = row.id),
+              (resetDialog.account = row.account)
+          "
+        >
+          重置密码
+        </el-button>
       </template>
     </List>
     <!-- 新增or编辑 -->
@@ -32,7 +43,7 @@
       :visible.sync="dialog.visible"
       append-to-body
       custom-class="component__dialog"
-      @closed="handleClosed"
+      @closed="handleClosed('editForm')"
     >
       <!-- 表单项 -->
       <el-form
@@ -155,10 +166,47 @@
         </div>
       </template>
     </el-dialog>
+
+    <!-- 重置密码 -->
+    <el-dialog
+      title="重置密码"
+      :visible.sync="resetDialog.visible"
+      append-to-body
+      custom-class="component__dialog"
+      @closed="handleClosed('form')"
+    >
+      <el-form
+        ref="form"
+        :model="resetDialog.model"
+        :rules="rules"
+        label-width="100px"
+      >
+        <el-form-item prop="password" label="密码">
+          <el-input
+            type="password"
+            v-model="resetDialog.model.password"
+            placeholder="请输入8-16位密码，包含大小写字母、数字、特殊字符"
+          ></el-input>
+        </el-form-item>
+      </el-form>
+
+      <template v-slot:footer>
+        <div class="is-center">
+          <el-button size="small" @click="resetDialog.visible = false">
+            取消
+          </el-button>
+          <el-button size="small" type="primary" @click="resetConfirm('form')">
+            保存
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </section>
 </template>
 
 <script>
+import { invalidFieldSetFocus } from '@/utils'
+import { isPassword } from '@/utils/validate'
 import { List, mixin /* EditableText */ } from '@/components'
 //地名
 import {
@@ -173,14 +221,32 @@ import {
   editInfo,
   getInfo,
 } from '@/api/mechanismList'
-
+import { accountResetPassword } from '@/api/authority'
+import CryptoJS from 'crypto-js'
 export default {
   components: {
     List,
   },
   mixins: [mixin([{ fetchListFunction: mechanismList }])],
   data() {
+    const validatePassword = (rule, value, callback) => {
+      // const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,16}/
+      if (!isPassword(value)) {
+        callback(new Error('请输入8-16位密码，包含大小写字母、数字、特殊字符'))
+      } else {
+        callback()
+      }
+      // callback()
+    }
     return {
+      resetDialog: {
+        visible: false,
+        account: '',
+        model: {
+          id: '',
+          password: '',
+        },
+      },
       //地址数据
       options: regionData,
       //表单数据
@@ -225,7 +291,9 @@ export default {
         ],
         workNo: [{ required: false, message: '请输入工号', trigger: 'blur' }],
         account: [{ required: true, message: '请输入账号', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        password: [
+          { required: true, trigger: 'blur', validator: validatePassword },
+        ],
         userState: [
           { required: true, message: '请选择账号状态', trigger: 'change' },
         ],
@@ -248,6 +316,9 @@ export default {
     }
   },
   computed: {
+    account() {
+      return this.$store.state.user.account
+    },
     filter() {
       return {
         date: {
@@ -308,6 +379,40 @@ export default {
     },
   },
   methods: {
+    resetConfirm(formName) {
+      this.$refs[formName].validate(async (valid, invalidFields) => {
+        if (valid) {
+          this.resetDialog.loading = true
+          //加密
+          this.resetDialog.model.password = CryptoJS.MD5(
+            this.resetDialog.model.password,
+          ).toString()
+          await accountResetPassword(this.resetDialog.model).finally(() =>
+            setTimeout(() => (this.resetDialog.loading = false), 200),
+          )
+
+          console.log(this.account)
+          if (this.account == this.resetDialog.account) {
+            await this.$store.dispatch('user/logout')
+            this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+            this.$message({
+              type: 'success',
+              message: '修改成功，请重新登录',
+              showClose: true,
+            })
+          } else {
+            this.$message({
+              type: 'success',
+              message: '完成',
+              showClose: true,
+            })
+          }
+          this.resetDialog.visible = false
+        } else {
+          invalidFieldSetFocus(this.$refs[formName], invalidFields)
+        }
+      })
+    },
     //上传前-图片大小限制
     beforeAvatarUpload(file) {
       const isJPG = file.type === 'image/jpeg'
@@ -386,8 +491,8 @@ export default {
     },
 
     //取消
-    handleClosed() {
-      this.$refs.editForm.resetFields()
+    handleClosed(formName) {
+      this.$refs[formName].resetFields()
     },
     //确认
     submit(status) {

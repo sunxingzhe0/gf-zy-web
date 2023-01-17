@@ -37,9 +37,7 @@
     <div class="inputBox">
       <el-input placeholder="请输入兑换码" v-model="inputCode">
         <template slot="prepend">兑换码</template>
-        <template slot="append"
-          ><span @click="handleExchange">兑换</span></template
-        >
+        <span @click="handleExchange" slot="append">兑换</span>
       </el-input>
     </div>
     <!-- 表格 -->
@@ -230,19 +228,19 @@ export default {
     // 点击兑换
     async handleExchange() {
       if (!this.inputCode) return this.$message.warning('请输入兑换码！')
-      const res = await getExchangeInfo({
+      getExchangeInfo({
         code: this.inputCode,
         pharmacyId: this.$store.state.user.store.id,
-      }).catch(err => {
-        if (err == 'Error: CUSTOM:兑换码错误，请重新输入') {
+      })
+        .then(res => {
+          this.perInfo = res
+          this.tableData = res.contentList
+        })
+        .catch(() => {
           this.inputCode = ''
           this.perInfo = {}
           this.tableData = []
-        } else {
-          this.perInfo = res
-          this.tableData = res.contentList
-        }
-      })
+        })
     },
     //点击取消
     andleCancel() {
@@ -349,7 +347,14 @@ export default {
 ::v-deep .el-input-group__append {
   background: #fff;
   border: 1px solid $--color-primary;
-  color: $--color-primary;
+  padding: 0;
+  span {
+    padding: 0 20px;
+    color: $--color-primary;
+    height: 54px;
+    line-height: 54px;
+    display: inline-block;
+  }
 }
 
 .tableBox {

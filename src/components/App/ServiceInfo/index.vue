@@ -22,7 +22,7 @@
 
       <div class="app-info-item"></div>
     </div>
-    <div class="app-info-row" v-for="(item, index) in rows" :key="index">
+    <div class="app-info-row" v-for="(item, index) in rows" :key="index + '1'">
       <div class="app-info-item">
         <div class="app-info-label">
           {{ index === 0 ? '关联处方' : '' }}

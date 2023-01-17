@@ -78,6 +78,7 @@ export default {
         name: pre.role.name ?? '',
         state: pre.role.state ?? true,
       },
+      oldRoles: [],
     }
   },
   async beforeRouteEnter(to, from, next) {
@@ -93,6 +94,9 @@ export default {
   mounted() {
     this.$nextTick(() => {
       this.id && this.$refs.tree.setCheckedKeys(pre.role.permissionList ?? [])
+      this.oldRoles = JSON.parse(
+        JSON.stringify(this.$refs.tree.getCheckedKeys(true)),
+      )
     })
   },
   methods: {
@@ -109,16 +113,41 @@ export default {
             type: 'success',
             message: '完成',
             showClose: true,
+            duration: 1000,
           })
-
-          this.$router.push({
-            path: '/jurisdiction/role/list',
-            query: { flag: 1 },
-          })
+          if (this.model.id) {
+            if (!this.validateRoles()) return
+          }
+          // this.$router.push({
+          //   path: '/jurisdiction/role/list',
+          //   query: { flag: 1 },
+          // })
+          this.$store.dispatch('updateList/changeFlag', 'updateListRole')
+          this.$router.back()
         } else {
           invalidFieldSetFocus(this.$refs[formName], invalidFields)
         }
       })
+    },
+    //验证是否修改当前角色
+    validateRoles() {
+      console.log('调用')
+      const isRole = this.$store.state.user.roleList
+        .map(i => i.id)
+        .includes(this.model.id)
+      const islength =
+        this.oldRoles.length !== this.$refs.tree.getCheckedKeys(true).length
+
+      if (isRole && islength) {
+        this.$confirm('当前用户角色信息变化，请重新登录', '提示', {
+          type: 'warning',
+        }).then(async () => {
+          await this.$store.dispatch('user/logout')
+          this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+        })
+        return false
+      }
+      return true
     },
   },
 }

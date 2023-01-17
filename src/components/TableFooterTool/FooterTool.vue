@@ -1,7 +1,7 @@
 <template>
   <div class="c__tool">
     <el-row>
-      <el-col :md="9" class="left-btns" v-if="showLeft">
+      <el-col :span="9" class="left-btns" v-if="showLeft">
         <template v-if="tableRef">
           <el-checkbox
             :value="checked"
@@ -44,7 +44,7 @@
         <slot />
       </el-col>
       <el-col
-        :md="showLeft ? 15 : 24"
+        :span="showLeft ? 15 : 24"
         class="is-right"
         v-if="isList ? done : true"
       >
@@ -109,14 +109,14 @@ export default {
       pageSize: this.value[this.pageProps.pageSize],
     }
   },
-  /*   watch: {
-     value: {
+  watch: {
+    value: {
       handler: function (value) {
         this.currentPage = value[this.pageProps.currentPage]
       },
       deep: true,
     },
-  }, */
+  },
   computed: {
     showLeft() {
       return this.bats.length !== 0 || this.hasExport || !isEmpty(this.$slots)
@@ -131,6 +131,12 @@ export default {
     indeterminate() {
       return !this.checked && this.tableRef.selection?.length > 0
     },
+  },
+  mounted() {
+    this.$EventBus.$on('currentNumChange', data => {
+      console.log('收到', data)
+      this.currentPage = data
+    })
   },
   methods: {
     handleToggleSelection(checked) {

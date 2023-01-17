@@ -23,7 +23,11 @@
             <el-tooltip
               class="item"
               effect="dark"
-              :content="scope.row[item.props]"
+              :content="
+                Array.isArray(scope.row[item.props])
+                  ? scope.row[item.props].join(',')
+                  : scope.row[item.props]
+              "
               placement="top"
               v-if="
                 item.props === 'specimenPartName' || item.props === 'partIds'
@@ -79,9 +83,18 @@
           <!-- <template v-else-if="true"></template> -->
           <template v-else>
             <span v-if="item.props === 'price' && scope.row[item.props]"
-              >¥</span
+              >¥{{ scope.row[item.props] }}</span
             >
-            <span>{{ scope.row[item.props] || '--' }}</span>
+            <span v-else-if="item.props === 'specimenPartName'">{{
+              scope.row[item.props]
+                ? scope.row[item.props][0] == null
+                  ? '--'
+                  : Array.isArray(scope.row[item.props][0])
+                  ? scope.row[item.props].join('、')
+                  : scope.row[item.props]
+                : '--'
+            }}</span>
+            <span v-else>{{ scope.row[item.props] || '--' }}</span>
           </template>
         </template>
       </el-table-column>
@@ -138,6 +151,7 @@
       {{ renderBtns() }}
       <slot></slot>
     </div>
+    <QrCode ref="qrcode" />
   </div>
 </template>
 
@@ -153,6 +167,7 @@
                 labelIndex  number    显示的label索引
 @emit
 */
+import QrCode from '@/components/QrCode'
 import dayjs from 'dayjs'
 import { cloneDeep } from 'lodash'
 import PartsSelect from './PartsSelect'
@@ -195,7 +210,7 @@ export const Item = {
   doctorTitle: '', //医生职称
   status: 'DRAFT', //状态 DRAFT("草稿"),SUBMITTED("已提交"),NONEXECUTION("未执行"),EXECUTED("已执行"),CANCELLATION("已作废")
   payStatus: '', //支付状态
-  dictDisposeId: '', //选择的处置字典id 多个按逗号分隔
+  itemId: '', //选择的处置字典id 多个按逗号分隔
   dictDisList: [
     //选择的处置字典列表
     {
@@ -245,6 +260,7 @@ export default {
   name: 'Handle',
   components: {
     PartsSelect,
+    QrCode,
   },
   props: {
     item: {
@@ -339,11 +355,11 @@ export default {
           },
           {
             label: '部位',
-            multiple: true,
-            filterable: true,
-            component: 'el-select',
+            // multiple: true,
+            // filterable: true,
+            // component: 'el-select',
             props: 'specimenPartName',
-            placeholder: '请先选择检查方法',
+            // placeholder: '请先选择检查方法',
           },
         ],
         // 治疗
@@ -386,7 +402,7 @@ export default {
         }
         case 'EXAMINE':
           if (!data.methodName) return '请选择检查方法！'
-          if (!data.specimenPartName.length) return '请选择检查部位！'
+          if (!data.specimenPartName.length) return '检查部位不能为空！'
           break
         case 'CURE':
           if (!data.treatmentName) return '请选择治疗名称！'
@@ -405,10 +421,17 @@ export default {
         CARRYON_PRESC: 'X',
       }
       const { start, end } = this.computedTime([this.orderDate, this.orderTime])
+      console.log(this.tableData, 'table')
       const data = {
         end,
         start,
         id: this.tableData[0].id,
+        itemId: this.tableData[0].itemId,
+        itemCode: this.tableData[0].itemCode,
+        categoryCode: this.tableData[0].categoryCode,
+        categoryName: this.tableData[0].categoryName,
+        execDeptCode: this.tableData[0].execDeptCode,
+        execDeptName: this.tableData[0].execDeptName,
         type: this.tableData[0].type,
         price: this.tableData[0].price,
         remark: this.tableData[0].remark,
@@ -417,7 +440,9 @@ export default {
         methodName: this.tableData[0].methodName,
         execDeptName: this.tableData[0].execDeptName,
         name: this.tableData.map(item => item.itemName).join(),
-        dictDisposeId: this.tableData.map(item => item.dictDisposeId).join(),
+        specimenPartCode: this.tableData
+          .map(item => item.specimenPartCode)
+          .join(),
         specimenPartName: this.tableData
           .map(item => item.specimenPartName)
           .join(),
@@ -481,6 +506,7 @@ export default {
       res.anxious = String(res.anxious)
       res.start = res.start || res.startTime
       const list = cloneDeep(res.dictDisList)
+      console.log(list, 'list--------')
       delete res.endTime
       delete res.startTime
       delete res.dictDisList
@@ -498,9 +524,12 @@ export default {
       this.orderDate = arr[0]
       this.orderTime = arr[1]
       this.tableData = list.map(item => ({
-        ...item,
         ...res,
+        ...item,
+        specimenPartName: [res.specimenPartName],
       }))
+
+      console.log(this.tableData, 'tableData----')
       this.loadOptions(this.tableData[0])
       this.loadProjectInfo('categoryName', '')
       this.loadProjectTime()
@@ -509,6 +538,7 @@ export default {
       this.loadProjectInfo('itemName', res.itemName, 1)
       this.loadProjectInfo('methodName', res.methodName, 1)
       this.loadProjectInfo('categoryName', res.categoryName, 1)
+      // this.loadProjectInfo('specimenPartName', res.specimenPartName, 1)
     },
     fillDispose(key, option) {
       const keys = [
@@ -534,20 +564,21 @@ export default {
           item[key] = option[key]
         }
       })
-      item.dictDisposeId = option.id
+      item.itemId = option.itemId
       this.tableData = [item]
       this.loadProjectTime()
       this.loadPrice()
     },
     async loadPrice() {
       const price = await business.disposeGetPrice({
-        id: this.tableData[0].itemId, //处置字典id
+        itemId: this.tableData[0].itemId, //处置字典id
       })
       this.$set(this.tableData[0], 'price', price)
     },
     async loadProjectTime() {
+      console.log(this.tableData[0])
       const type = this.tableData[0].type
-      if (!this.tableData[0].itemId) return
+      // if (!this.tableData[0].itemId) return
       const res = await business.disposeDate({
         id: this.tableData.map(it => it.itemId).join(),
         type: this.tableData[0].type,
@@ -619,6 +650,7 @@ export default {
         currentNum: 1, //当前页码
         // sex: this.bizInfo.sex === '男' ? 1 : 0, //就诊人性别 男1/女0
       })
+
       const set = new Set()
       const arr = res
         .filter(item => {
@@ -632,6 +664,14 @@ export default {
           label: item[key],
         }))
       this.$set(this.options, key, arr)
+      console.log(this.options, 'options----')
+      //处置字典id
+      this.tableData[0].itemId = res[0].itemId
+      this.tableData[0].itemCode = res[0].itemCode
+      this.tableData[0].categoryCode = res[0].categoryCode
+      this.tableData[0].execDeptCode = res[0].execDeptCode
+      this.tableData[0].specimenPartCode = res[0].specimenPartCode
+
       // 只有一条数据则自动填充
       if (res.length === 1 && !options) this.fillDispose(key, res[0])
     },
@@ -645,7 +685,7 @@ export default {
       const { status, payStatus } = this.tableData[0]
       if (payStatus) {
         if (payStatus === 'NONPAID') {
-          btns.push({ type: 3, text: '撤回' })
+          // btns.push({ type: 3, text: '撤回' })
           btns.push({ type: 4, text: '作废' })
         }
       } else {
@@ -709,6 +749,7 @@ export default {
       }
     },
     chanegHandler(event, key) {
+      console.log(event, key, 'event')
       this.orderDate = ''
       this.orderTime = ''
       this.orderTimes = []
@@ -722,9 +763,11 @@ export default {
         this.tableData = [{ ...data, id, type }]
         this.loadProjectInfo('categoryName', '')
       } else {
+        console.log(key, '11')
         // 根据选择重置对应表单
         switch (key) {
           case 'itemName': {
+            //名称
             this.options.methodName = []
             this.options.specimenPartName = []
             const {
@@ -769,6 +812,7 @@ export default {
             break
           }
           case 'categoryName': {
+            //类别
             this.options.itemName = []
             this.options.methodName = []
             this.options.specimenPartName = []
@@ -787,6 +831,7 @@ export default {
             break
           }
           case 'specimenPartName': {
+            //标本
             this.loadProjectTime()
             this.loadPrice()
             break
@@ -861,11 +906,16 @@ export default {
         this.emiter('update')
         loading.close()
       } catch (e) {
-        console.log(e)
         loading.close()
+        console.log(e, '错误信息')
+        const reg = new RegExp('CA-SIGN-ERROR')
+        if (reg.test(e)) {
+          this.$refs.qrcode.open() //打开二维码
+        }
       }
     },
     async submitHandler() {
+      //处置提交
       let loading
       try {
         let res
@@ -894,8 +944,12 @@ export default {
         this.emiter('update')
         loading.close()
       } catch (e) {
-        console.log(e)
+        console.log(e, '错误信息')
         loading && loading.close()
+        const reg = new RegExp('CA-SIGN-ERROR')
+        if (reg.test(e)) {
+          this.$refs.qrcode.open() //打开二维码
+        }
       }
     },
     // emiter

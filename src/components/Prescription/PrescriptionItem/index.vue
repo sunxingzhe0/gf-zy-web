@@ -42,6 +42,19 @@
           plain
           size="mini"
           type="primary"
+          @click="openNewWeb(prescription)"
+          v-if="
+            (prescription.status === 'PENDING_REVIEW' ||
+              prescription.status === 'PASSED') &&
+            !operate
+          "
+        >
+          预览
+        </el-button>
+        <el-button
+          plain
+          size="mini"
+          type="primary"
           @click="withdrawPrescription"
           v-if="prescription.status === 'PENDING_REVIEW' && !operate"
         >
@@ -61,7 +74,10 @@
         <div class="prescription-table-header">
           <template v-for="(item, index) in tableHeader">
             <div
-              v-if="item.key !== 'operate' || prescription.status === 'DRAFT'"
+              v-if="
+                (item.key !== 'operate' || prescription.status === 'DRAFT') &&
+                item.key !== 'type'
+              "
               :key="'table-header-' + index"
               :style="columnStyle(item.key)"
               class="column-item"
@@ -69,7 +85,7 @@
             >
               <el-checkbox
                 v-if="item.key === 'checkbox' && operate !== 'adjust'"
-                :disabled="Boolean(!operate)"
+                :disabled="Boolean(!operate) && istemplatePage"
                 v-model="allChecked"
                 @change="checkedAll"
               ></el-checkbox>
@@ -93,7 +109,10 @@
                   :style="columnStyle(it.key)"
                   :key="'table-item-' + index + i"
                   :class="{ error: item[it.key + 'Error'] }"
-                  v-if="it.key !== 'operate' || prescription.status === 'DRAFT'"
+                  v-if="
+                    (it.key !== 'operate' || prescription.status === 'DRAFT') &&
+                    it.key !== 'type'
+                  "
                 >
                   <el-tooltip
                     effect="dark"
@@ -128,7 +147,7 @@
                           v-else-if="operate === 'temp' || operate === 'del'"
                         >
                           <el-checkbox
-                            :disabled="Boolean(!operate)"
+                            :disabled="Boolean(!operate) && istemplatePage"
                             v-show="!item.unsaved"
                             v-model="item.checked"
                             @change="checkItem"
@@ -145,7 +164,7 @@
                         <!-- 成组、提交 -->
                         <template v-else>
                           <el-checkbox
-                            :disabled="Boolean(!operate)"
+                            :disabled="Boolean(!operate) && istemplatePage"
                             v-show="!item.rowClass && !item.unsaved"
                             v-model="item.checked"
                             @change="checkItem"
@@ -159,6 +178,7 @@
                       <!-- component -->
                       <template v-else-if="it.component">
                         <component
+                          value-format="yyyy-MM-dd HH:mm:ss"
                           :type="it.type"
                           :is="it.component"
                           :remote="it.remote"
@@ -241,11 +261,14 @@
                         <span>{{ item[it.key] | filter(it.filter) }}</span>
                       </template>
                       <!-- 单量单位 -->
-                      <template v-if="it.key === 'singleDose'">
+                      <!-- <template v-if="it.key === 'singleDose'">
                         {{ item.singleDoseUnitText }}
+                      </template> -->
+                      <template v-if="it.key === 'singleDose'">
+                        {{ item.dosageUnitText }}
                       </template>
                       <!-- 疗程单位 -->
-                      <template v-if="it.key === 'treatment'">
+                      <template v-if="it.key === 'treatment' && item.treatment">
                         <el-select
                           v-model="item.treatmentUnit"
                           :disabled="!item.edit"
@@ -259,7 +282,7 @@
                         </el-select>
                       </template>
                       <!-- 总量单位 -->
-                      <template v-if="it.key === 'total'">
+                      <template v-if="it.key === 'total' && item.totalUnit">
                         <template v-if="scene === 'detail'">
                           {{ item.totalUnitText }}
                         </template>
@@ -298,21 +321,21 @@
           <el-button
             plain
             type="primary"
-            :disabled="Boolean(operate)"
+            :disabled="Boolean(operate) && istemplatePage"
             @click="$emit('operate', 'group')"
             >成组</el-button
           >
           <el-button
             plain
             type="primary"
-            :disabled="Boolean(operate)"
+            :disabled="Boolean(operate) && istemplatePage"
             @click="$emit('operate', 'unGroup')"
             >取消成组</el-button
           >
           <el-button
             plain
             type="danger"
-            :disabled="Boolean(operate)"
+            :disabled="Boolean(operate) && istemplatePage"
             @click="$emit('operate', 'del')"
             >{{ scene === 'template' ? '批量删除' : '删除' }}</el-button
           >
@@ -357,10 +380,11 @@ import shortid from 'shortid'
 import { mapState } from 'vuex'
 import { cloneDeep } from 'lodash'
 import { arr as array } from '@qietuzi/utils'
-
+import { access_url } from '@/utils/wss-http'
 import { Medicares } from '../enums'
 import * as apiPrescription from '@/api/prescription'
 import { TableHeader, ColumnWidth, DrugItem, ValidateKeys } from '../constant'
+import dayjs from 'dayjs'
 
 export default {
   props: {
@@ -397,9 +421,14 @@ export default {
       type: Boolean,
       default: true,
     },
+    istemplatePage: {
+      type: Boolean,
+      default: true,
+    },
   },
   data() {
     return {
+      access_url,
       oldTableData: [],
       status: {
         DRAFT: '草稿',
@@ -472,7 +501,7 @@ export default {
     if (this.scene === 'drugList') tableHeader.shift()
     if (this.scene === 'template') {
       this.validateKeys.pop()
-      tableHeader.splice(tableHeader.length - 5, 3)
+      tableHeader.splice(tableHeader.length - 5, 4)
     }
     if (this.scene === 'detail') {
       tableHeader.shift()
@@ -481,8 +510,17 @@ export default {
     this.tableHeader = tableHeader
   },
   methods: {
+    //处方签
+    openNewWeb(item) {
+      console.log(item.id, '处方单id')
+      // window.open(
+      //   'https://miapp.chuntaoyisheng.com/mi/api/v1/rx/downloadRx?rxId=W0246461',
+      // )
+      console.log(access_url, '地址------')
+      window.open(`${access_url}/mi/api/v1/rx/downloadRx?rxId=${item.id}`)
+    },
     watchHandler(newVal) {
-      console.log('更新')
+      console.log('更新', newVal)
       let rpDrugList = newVal.rpDrugList || []
       rpDrugList = rpDrugList.map(item => ({
         ...item,
@@ -619,8 +657,10 @@ export default {
     // 提示
     toolTipContent(item, key) {
       switch (key) {
-        case 'type':
-        case 'useWays':
+        // case 'type':
+        case 'useWays': {
+          return item.useWaysText
+        }
         case 'useFrequency': {
           let _key = 'drugTypes'
           if (key === 'useWays') {
@@ -630,20 +670,31 @@ export default {
           }
           const _item = array.findItem(this[_key], 'value', item[key])
           if (_item) return _item.label
-          break
+          return item.useFrequencyText
         }
         case 'medicare': {
           return Medicares[item[key]]
         }
+        // case 'singleDose': {
+        //   return String(
+        //     item.singleDoseUnitText
+        //       ? item[key] + item.singleDoseUnitText
+        //       : item[key],
+        //   )
+        // }
         case 'singleDose': {
-          return String(item[key] + item.singleDoseUnitText)
+          return String(
+            item.singleDoseUnitText
+              ? item[key] + item.singleDoseUnitText
+              : item[key],
+          )
         }
         case 'total': {
           const _item = array.findItem(item.totalUnits, 'value', item.totalUnit)
           if (_item) {
             return item.total + _item.label
           } else {
-            return item.total + item.totalUnitText
+            return item.totalUnit ? item.total + item.totalUnitText : item.total
           }
           // break
         }
@@ -688,12 +739,13 @@ export default {
           label: item.regularUnitText,
         },
       ]
-      if (item.split) {
-        options.unshift({
-          value: item.basicUnit,
-          label: item.basicUnitText,
-        })
-      }
+      //拆不拆零都用常规包装单位
+      // if (item.split) {
+      //   options.unshift({
+      //     value: item.basicUnit,
+      //     label: item.basicUnitText,
+      //   })
+      // }
       return options
     },
     computedDrugPrice(drug) {
@@ -704,6 +756,7 @@ export default {
         totalUnit,
         treatment,
         singleDose,
+        // basicDose,
         regularUnit,
         useFrequency,
         regularPackVolume,
@@ -711,7 +764,18 @@ export default {
       let frequency = this.drugFrequencys.find(
         item => item.value === useFrequency,
       )
+      if (frequency?.val) {
+        //频率时间执行方案保存
+        const execPlan = JSON.parse(frequency?.val)['时间方案']
+        console.log(
+          execPlan,
+          '频率时间执行方案---------------------------------',
+        )
+        drug.execPlan = execPlan
+      }
+
       frequency = frequency?.code
+      console.log(frequency, '-------------')
       if (treatment && singleDose && frequency) {
         total = Number(treatment) * Number(singleDose) * Number(frequency)
         // 不可拆零
@@ -792,7 +856,8 @@ export default {
       }
     },
     // 保存处方
-    async savePrescription(tips = true, callback) {
+    async savePrescription(tips = true, callback, isCloseLoading = false) {
+      console.log('111')
       let data = cloneDeep(this.tableData)
       data = data.filter(item => !item.unsaved)
       const delKeys = [
@@ -813,14 +878,19 @@ export default {
         this.prescription.status === 'DRAFT' &&
         this.prescription.template !== 'template'
       ) {
+        //时间格式转换(暂时不转了)
+        // data.forEach(v => {
+        //   v.executeTime = dayjs(v.executeTime).format('YYYYMMDDHHmmss')
+        // })
         await apiPrescription.editRp({
           rpDrugList: data,
           id: this.prescription.id,
         })
+        console.log(tips, '--------------------------')
+        if (tips) this.$message.success('操作成功！')
+        if (callback) callback()
+        this.$emit('update', { type: 'update', isCloseLoading })
       }
-      if (tips) this.$message.success('操作成功！')
-      if (callback) callback()
-      this.$emit('update', { type: 'update' })
     },
     // 删除处方
     async delPrescription(callback) {
@@ -871,6 +941,7 @@ export default {
     },
     // 组件 change 事件
     changeHandler(event, index, key) {
+      console.log(event, index, key)
       let drug = this.tableData[index]
       switch (key) {
         case 'type': {
@@ -881,6 +952,7 @@ export default {
           const _drug = this.tableData[index].nameOptions.find(
             item => item.value === event,
           )
+          console.log('——drug', _drug)
           if (!_drug) return
           drug = Object.assign({}, drug, {
             spec: _drug.drugSpec, // 药品规格
@@ -890,20 +962,25 @@ export default {
             type: _drug.manageCode, // 药品类型
             orgDrugId: _drug.value, // 机构药品id
             medicare: _drug.healthAttr, // 医保类型
-            singleDoseUnit: _drug.basicUnit, // 基本剂量
-            singleDoseUnitText: _drug.basicUnitText, // 基本剂量单位
+            singleDoseUnit: _drug.dosageUnit, // 基本剂量
+            dosageUnit: _drug.dosageUnit, // 基本剂量
+            singleDoseUnitText: _drug.dosageUnitText, // 基本剂量单位
+            dosageUnitText: _drug.dosageUnitText, // 基本剂量单位
             totalUnits: this.computedTotalUnit(_drug), // 总量单位
             regularPackVolume: _drug.regularPackVolume, // 常规包装规格
-            treatmentUnit: this.treatmentUnits[0].value, // 疗程单位
-            totalUnit: _drug.split ? _drug.basicUnit : _drug.regularUnit, // 总量单位
+            treatmentUnit: this.treatmentUnits[0].label, // 疗程单位
+            // totalUnit: _drug.split ? _drug.basicUnit : _drug.regularUnit, // 总量单位
+            totalUnit: _drug.regularUnit, // 拆不拆零都用常规包装单位
+            basicUnit: _drug.basicUnit,
             // 修改药品后=>清除单量、频次、疗程、总量、总价、药房、备注
             total: '',
             price: '',
             remark: '',
             useWays: '',
-            treatment: '',
+            treatment: '1',
             totalPrice: '',
             singleDose: '',
+            basicDose: '',
             useFrequency: '',
             receivePharmacy: '',
             receivePharmacyId: '',
@@ -921,24 +998,49 @@ export default {
             price: receivePharmacy.retailPrice,
             remark: receivePharmacy.remark || drug.remark,
             useWays: drug.useWays || receivePharmacy.ways,
+            availableInventory: receivePharmacy.availableInventory,
             singleDose: drug.singleDose || receivePharmacy.defaultUsage,
+            basicDose: drug.basicDose || receivePharmacy.basicDose,
             useFrequency: drug.useFrequency || receivePharmacy.frequency,
             receivePharmacy: receivePharmacy.label,
             receivePharmacyId: receivePharmacy.value,
           })
           const { total, totalPrice } = this.computedDrugPrice(drug)
+          console.log(totalPrice, 'totalPrice-------------1')
           drug.totalPrice = totalPrice
           drug.total = total
+          //如果当前药品在该药房无库存，需要提示并清空输入框
+          //可输入总量
+          const canInpTotal = Math.floor(
+            Number(receivePharmacy.availableInventory) /
+              Number(receivePharmacy.regularPackVolume),
+          )
+          drug.canInpTotal = canInpTotal
+          if (canInpTotal < 1) {
+            drug.total = ''
+            drug.totalPrice = '0.00'
+            this.$message.error('该药品库存不足，请选择其他药品！')
+            setTimeout(() => {
+              this.resetHandler(index)
+            }, 1000)
+          }
           break
         }
         case 'singleDose': {
-          drug.singleDose = parseInt(event)
+          // drug.singleDose = parseInt(event)
+          drug.singleDose = Number(event)
           const { total, totalPrice } = this.computedDrugPrice(drug)
           drug.totalPrice = totalPrice
           drug.total = total
+
           break
         }
         case 'total':
+          if (drug.total > drug.canInpTotal) {
+            drug.total = drug.canInpTotal
+            this.$message.error('库存不足，最大可输入' + drug.canInpTotal)
+          }
+        //改变总量穿透下来自动计算总价
         case 'totalUnit': {
           let totalPrice
           const {
@@ -946,19 +1048,21 @@ export default {
             price,
             split,
             totalUnit,
-            singleDoseUnit,
+            basicUnit,
+            // singleDoseUnit,
             regularPackVolume,
           } = drug
           if (split) {
-            if (totalUnit === singleDoseUnit) {
+            if (totalUnit === basicUnit) {
               totalPrice = Number(total) * Number(price)
             } else {
               totalPrice = Number(total) * Number(price) * regularPackVolume
             }
             totalPrice = totalPrice.toFixed(2)
           } else {
-            totalPrice = Number(total) * Number(price)
+            totalPrice = Number(total) * Number(price) * regularPackVolume
           }
+          console.log(totalPrice, drug, 'totalPrice-------------1')
           drug.totalPrice = totalPrice
           break
         }
@@ -1088,6 +1192,8 @@ export default {
           }
         })
         this.tableData = this.tableData.filter(item => !ids.has(item.id))
+        console.log('删除操作----------')
+        this.$emit('updateTemplate')
         try {
           if (this.scene !== 'template') {
             await this.savePrescription(false)
@@ -1151,6 +1257,7 @@ export default {
       } catch (e) {
         this.$set(this.tableData[index], 'unsaved', true)
       }
+      // this.$emit('updateTemplate')
     },
     // 重置药品 index
     resetHandler(index) {
@@ -1208,6 +1315,8 @@ export default {
       } finally {
         callback()
       }
+      console.log('处理完成--------')
+      this.$emit('updateTemplate')
     },
     // 药品调方
     async adjustHandler(index, target) {
@@ -1282,4 +1391,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 @import './index';
+::v-deep .el-input__prefix {
+  display: none;
+}
+::v-deep .el-date-editor.el-input {
+  width: 150px;
+}
 </style>

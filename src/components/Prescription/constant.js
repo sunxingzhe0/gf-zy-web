@@ -1,3 +1,4 @@
+import dayjs from 'dayjs'
 // 表头
 const TableHeader = [
   { text: '处方号', key: 'checkbox' },
@@ -25,8 +26,14 @@ const TableHeader = [
     text: '单次剂量',
     key: 'singleDose',
     component: 'el-input',
-    type: 'number',
+    type: 'text',
   },
+  // {
+  //   text: '单次剂量',
+  //   key: 'basicDose',
+  //   component: 'el-input',
+  //   type: 'text',
+  // },
   {
     text: '用药频次',
     key: 'useFrequency',
@@ -50,6 +57,12 @@ const TableHeader = [
     component: 'el-select',
   },
   { text: '备注', key: 'remark', component: 'el-input' },
+  {
+    text: '医嘱开始执行时间',
+    key: 'executeTime',
+    component: 'el-date-picker',
+    type: 'datetime',
+  },
   { text: '操作', key: 'operate' },
 ]
 
@@ -63,6 +76,7 @@ const ColumnWidth = {
   spec: 3,
   useWays: 3,
   singleDose: 3,
+  // basicDose: 3,
   useFrequency: 3,
   treatment: 3,
   total: 3,
@@ -71,6 +85,7 @@ const ColumnWidth = {
   totalPrice: 2,
   receivePharmacy: 3,
   remark: 4,
+  executeTime: 8,
   operate: '140px',
 }
 // 药品项
@@ -91,32 +106,36 @@ const DrugItem = {
   totalUnit: '', // 总量单位
   totalPrice: 0, // 药品总价
   singleDose: '', // 药品单量
+  basicDose: '', // 基本剂量
   useFrequency: '', // 用药频次
   treatmentUnit: '', //用药疗程单位
   singleDoseUnit: '', // 单量单位
+  dosageUnit: '', // 基本剂量单位
   receivePharmacy: '', // 药品药房
   receivePharmacyId: '', // 药品药房id
   singleDoseUnitText: '', // 药品单量单位文本
+  dosageUnitText: '', // 基本剂量单位文本
   // delte when submit
   edit: true, // 是否编辑
   target: '', // 调方目标
   unsaved: true, // 未保存
-  basicDose: '', // 最小剂量单位
   checked: false, // 选中
   totalUnits: [], // 总量单位
   nameOptions: [], // 名称选项
   nameLoading: false, // 加载名称中
   regularPackVolume: '', // 药品包装规格
   receivePharmacyOptions: [], // 药房选项
+  executeTime: dayjs().format('YYYY-MM-DD HH:mm:ss'),
 }
 
 const ValidateKeys = [
   'type',
   'name',
   'total',
-  'treatment',
+  // 'treatment',
   'useWays',
   'singleDose',
+  // 'basicDose',
   'useFrequency',
   'receivePharmacy',
 ]

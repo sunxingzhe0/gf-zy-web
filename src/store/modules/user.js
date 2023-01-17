@@ -6,12 +6,14 @@ import {
   removeToken,
   removezyToken,
 } from '@/utils/auth'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import { traverseTree } from '@/utils'
+import { clearAllCookie, setStorage, getStorage } from '@/utils/cacheutil'
 import router, { resetRouter } from '@/router'
 import { login, logout, getInfo, getRoles, codeLogin } from '@/api/user'
-
+import CryptoJS from 'crypto-js'
 const state = {
+  modifyPwd: getStorage('modifyPwd') || '',
   token: getToken(),
   zyToken: getzyToken(),
   name: '',
@@ -47,6 +49,7 @@ const state = {
   platformCode: '',
   //账户角色列表
   userTypeList: [],
+  keepLiveList: [], //缓存路由name
 }
 
 const mutations = {
@@ -61,6 +64,9 @@ const mutations = {
   },
   SET_ZYTOKEN: (state, token) => {
     state.zyToken = token
+  },
+  SET_PWDSTATE: (state, modifyPwd) => {
+    state.modifyPwd = modifyPwd
   },
   SET_INTRODUCTION: (state, introduction) => {
     state.introduction = introduction
@@ -146,26 +152,55 @@ const mutations = {
   SET_USERTYPE: (state, userTypeList) => {
     state.userTypeList = userTypeList
   },
+  SET_KEEPLIVELIST: (state, data) => {
+    state.keepLiveList = data
+  },
 }
 
 const actions = {
   // user login
   login({ commit }, userInfo) {
     const { account, password, code, imgCode } = userInfo
-    return new Promise((resolve, reject) => {
+    return new Promise((reslove, reject) => {
       login({
         account: account.trim(),
-        password: password,
+        password: CryptoJS.MD5(password).toString(),
+        // password: password,
         code,
         imgCode,
       })
-        .then(response => {
-          const { token, zyToken } = response
+        .then(async response => {
+          const { token, zyToken, modifyPwd } = response
           commit('SET_TOKEN', token)
           commit('SET_ZYTOKEN', zyToken)
+          commit('SET_PWDSTATE', modifyPwd)
+          setStorage('modifyPwd', modifyPwd)
           setToken(token)
           setzyToken(zyToken)
-          resolve()
+
+          if (modifyPwd) {
+            const confirm = await MessageBox({
+              title: '提示',
+              message:
+                '您已经长时间未更新密码了，为了您的账户安全请及时更新密码！',
+              type: 'warning',
+              showClose: false,
+              showCancelButton: false,
+              closeOnClickModal: false,
+              closeOnPressEscape: false,
+            })
+
+            if (confirm !== 'confirm') return
+            commit('SET_ACCOUNT', response.account)
+            commit('SET_ROLENAME', response.roleName)
+            commit('SET_ROLELIST', response.roleList)
+            setTimeout(() => {
+              //延时跳转，先关闭模态框
+              reslove()
+            }, 500)
+            return
+          }
+          reslove()
         })
         .catch(error => {
           console.log(error)
@@ -176,12 +211,37 @@ const actions = {
   codeLogin({ commit }, paylod) {
     return new Promise((reslove, reject) => {
       codeLogin(paylod)
-        .then(res => {
-          const { token, zyToken } = res
+        .then(async res => {
+          const { token, zyToken, modifyPwd } = res
           commit('SET_ZYTOKEN', zyToken)
           commit('SET_TOKEN', token)
+          commit('SET_PWDSTATE', modifyPwd)
+          setStorage('modifyPwd', modifyPwd)
           setzyToken(zyToken)
           setToken(token)
+          if (modifyPwd) {
+            const confirm = await MessageBox({
+              title: '提示',
+              message:
+                '您已经长时间未更新密码了，为了您的账户安全请及时更新密码！',
+              type: 'warning',
+              showClose: false,
+              showCancelButton: false,
+              closeOnClickModal: false,
+              closeOnPressEscape: false,
+              dangerouslyUseHTMLString: true,
+              distinguishCancelAndClose: true,
+            })
+            if (confirm !== 'confirm') return
+            commit('SET_ACCOUNT', res.account)
+            commit('SET_ROLENAME', res.roleName)
+            commit('SET_ROLELIST', res.roleList)
+            setTimeout(() => {
+              //延时跳转，先关闭模态框
+              reslove()
+            }, 500)
+            return
+          }
           reslove()
         })
         .catch(e => {
@@ -204,7 +264,9 @@ const actions = {
           if (!data) {
             reject('Verification failed, please Login again.')
           }
+
           commit('SET_LOGO', data.logo)
+          commit('SET_PWDSTATE', data.modifyPwd)
           commit('SET_MAIL', data.mail)
           commit('SET_NAME', data.username)
           commit('SET_AVATAR', data.avatar)
@@ -233,13 +295,16 @@ const actions = {
           commit('SET_ACCOUNT', data.account)
           commit('SET_IDENT', data.identityType)
           commit('SET_PHONE', data.phone)
+          localStorage.setItem('orgphone', data.phone)
           commit('SET_ROLENAME', data.roleName)
           commit('SET_ROLELIST', data.roleList)
           commit('SET_WORKHISTORY', data.workHistory)
           commit('SET_WORKNO', data.workNo)
           commit('SET_HASEXAMINE', data.hasExamine)
           commit('SET_HASAUTH', data.hasAuth)
-          dispatch('drug/init', null, { root: true })
+          if (!data.modifyPwd) {
+            dispatch('drug/init', null, { root: true })
+          }
           resolve(data)
         })
         .catch(error => {
@@ -302,12 +367,16 @@ const actions = {
             removeToken()
             removezyToken()
             resetRouter()
-
+            clearAllCookie()
+            // clearStorage()
             // reset visited views and cached views
             // to fixed https://github.com/PanJiaChen/vue-element-admin/issues/2485
             dispatch('tagsView/delAllViews', null, { root: true })
 
             resolve()
+            for (var i = 1; i < 100; i++) {
+              clearInterval(i)
+            }
           })
           .catch(error => {
             reject(error)
@@ -355,6 +424,16 @@ const actions = {
 
       resolve()
     })
+  },
+  addKeepLive({ state, commit }, paylod) {
+    if (!state.keepLiveList.includes(paylod)) {
+      state.keepLiveList.push(paylod)
+      commit('SET_KEEPLIVELIST', state.keepLiveList)
+    }
+  },
+  removeKeepLive({ state, commit }, paylod) {
+    const data = state.keepLiveList.filter(item => item !== paylod)
+    commit('SET_KEEPLIVELIST', data)
   },
 }
 

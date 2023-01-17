@@ -39,11 +39,56 @@
               >
                 <slot />
               </component>
-
+              <el-select
+                v-else-if="props.isTree"
+                size="mini"
+                v-bind="data.attrs"
+                v-on="data.on"
+                v-model="showName"
+                multiple
+                :filter-method="
+                  data => {
+                    handleFilter(data, keys)
+                  }
+                "
+                @remove-tag="
+                  data => {
+                    removeTag(data, keys)
+                  }
+                "
+              >
+                <el-option
+                  :value="values[keys]"
+                  style="height: auto; padding: 0"
+                >
+                  <el-tree
+                    :data="props.options"
+                    :props="props.treeProps"
+                    show-checkbox
+                    :ref="keys"
+                    node-key="id"
+                    default-expand-all
+                    @node-click="handleNodeClick"
+                    highlight-current
+                    current-node-key="node"
+                    :default-checked-keys="
+                      values[keys] ? values[keys].split(',') : []
+                    "
+                    :filter-node-method="filterNode"
+                    @check="handleChcek($event, keys)"
+                  >
+                    <!--  <span slot-scope="{ node, data }" class="custom-tree-node">
+                    <span>{{ data.name }}</span>
+                    <span>{{ data.resourceNum }}</span>
+                  </span> -->
+                  </el-tree>
+                </el-option>
+              </el-select>
               <el-select
                 v-else
                 size="mini"
                 v-bind="data.attrs"
+                :multiple="props.multiple"
                 v-on="data.on"
                 v-model="values[keys]"
               >
@@ -119,13 +164,24 @@
                   ref="dataPicker"
                   @focus="clearBtnTap"
                   clearable
-                  :type="data.time ? 'daterange' : 'datetimerange'"
-                  :format="data.time ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss'"
-                  :value-format="data.time ? 'yyyyMMdd' : 'yyyyMMddHHmmss'"
+                  :type="
+                    data.date.props.type ||
+                    (data.time ? 'daterange' : 'datetimerange')
+                  "
+                  :format="
+                    data.date.props.format ||
+                    (data.time ? 'yyyy-MM-dd' : 'yyyy-MM-dd HH:mm:ss')
+                  "
+                  :value-format="
+                    data.date.props.valueFormat ||
+                    (data.time ? 'yyyyMMdd' : 'yyyyMMddHHmmss')
+                  "
                   size="small"
-                  start-placeholder="开始日期"
-                  end-placeholder="结束日期"
-                  :picker-options="pickerOptions"
+                  start-placeholder="开始时间"
+                  end-placeholder="结束时间"
+                  :picker-options="
+                    data.isDisabledDate ? newPickerOptions : pickerOptions
+                  "
                   v-bind="data.date.props"
                   @change="resolveEmitChange"
                   :default-time="['00:00:00', '23:59:59']"
@@ -149,56 +205,7 @@
           </template>
         </el-col>
 
-        <el-col
-          v-bind="
-            alwaysShowBtn
-              ? { xs: 24, sm: 6, lg: 6, xl: 7 }
-              : {
-                  xs: 24,
-                  sm: hasDatePicker ? 12 : 24,
-                  lg: {
-                    span: hasDatePicker ? 10 : 16,
-                    offset: hasPopover ? 2 : 2,
-                  },
-                }
-          "
-          v-if="data.search"
-        >
-          <el-input
-            v-if="data.search"
-            class="input-with-select"
-            v-model="values[data.search.keys[1]]"
-            size="small"
-            placeholder="请输入内容"
-            clearable
-            @clear="resolveEmitChange"
-            @keyup.native.enter="resolveEmitChange"
-          >
-            <template v-slot:prepend>
-              <el-select
-                class="prepend-select"
-                v-model="values[data.search.keys[0]]"
-                size="small"
-                placeholder="请选择"
-                @change="values[data.search.keys[1]] = ''"
-              >
-                <el-option
-                  v-for="{ label, value } in data.search.props.options"
-                  :key="value"
-                  :label="label"
-                  :value="value"
-                ></el-option>
-              </el-select>
-            </template>
-            <template v-slot:append v-if="!data.search.props.hideBtn">
-              <el-button
-                icon="el-icon-search"
-                @click="resolveEmitChange"
-              ></el-button>
-            </template>
-          </el-input>
-        </el-col>
-
+        <!--  -->
         <el-col
           :xs="24"
           :sm="6"
@@ -235,6 +242,7 @@
             collapse-tags
             v-bind="data.attrs"
             style="width: 100%"
+            :style="data.style"
             :remote="props.remote"
             v-model="values[keys]"
             :multiple="props.multiple"
@@ -249,6 +257,58 @@
               :value="index ? index : value"
             ></el-option>
           </el-select>
+        </el-col>
+
+        <el-col
+          v-bind="
+            alwaysShowBtn
+              ? { xs: 24, sm: 6, lg: 6, xl: 7 }
+              : {
+                  xs: 24,
+                  sm: hasDatePicker ? 12 : 24,
+                  lg: {
+                    span: hasDatePicker ? 10 : 16,
+                    offset: hasPopover ? 2 : 2,
+                  },
+                }
+          "
+          v-if="data.search"
+        >
+          <el-input
+            style="max-width: 500px"
+            v-if="data.search"
+            class="input-with-select"
+            v-model="values[data.search.keys[1]]"
+            size="small"
+            :placeholder="data.search.props.placeholder || '请输入内容'"
+            clearable
+            @clear="resolveEmitChange"
+            @keyup.native.enter="resolveEmitChange"
+          >
+            <template v-slot:prepend>
+              <el-select
+                class="prepend-select"
+                style="min-width: 140px"
+                v-model="values[data.search.keys[0]]"
+                size="small"
+                placeholder="请选择"
+                @change="values[data.search.keys[1]] = ''"
+              >
+                <el-option
+                  v-for="{ label, value } in data.search.props.options"
+                  :key="value"
+                  :label="label"
+                  :value="value"
+                ></el-option>
+              </el-select>
+            </template>
+            <template v-slot:append v-if="!data.search.props.hideBtn">
+              <el-button
+                icon="el-icon-search"
+                @click="resolveEmitChange(data.search.isOtherPage)"
+              ></el-button>
+            </template>
+          </el-input>
         </el-col>
 
         <el-col
@@ -314,12 +374,16 @@ export default {
     },
   },
   data() {
-    this.pickerOptions = {
+    this.newPickerOptions = {
+      disabledDate(time) {
+        return time.getTime() > Date.now()
+      },
       shortcuts: [
         {
           text: '最近一周',
           onClick(picker) {
             const end = new Date()
+            end.setTime(end.getTime() - 1000)
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
             picker.$emit('pick', [start, end])
@@ -329,6 +393,7 @@ export default {
           text: '最近一个月',
           onClick(picker) {
             const end = new Date()
+            end.setTime(end.getTime() - 1000)
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
             picker.$emit('pick', [start, end])
@@ -338,6 +403,41 @@ export default {
           text: '最近三个月',
           onClick(picker) {
             const end = new Date()
+            end.setTime(end.getTime() - 1000)
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
+            picker.$emit('pick', [start, end])
+          },
+        },
+      ],
+    }
+    this.pickerOptions = {
+      shortcuts: [
+        {
+          text: '最近一周',
+          onClick(picker) {
+            const end = new Date()
+            end.setTime(end.getTime() - 1000)
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 7)
+            picker.$emit('pick', [start, end])
+          },
+        },
+        {
+          text: '最近一个月',
+          onClick(picker) {
+            const end = new Date()
+            end.setTime(end.getTime() - 1000)
+            const start = new Date()
+            start.setTime(start.getTime() - 3600 * 1000 * 24 * 30)
+            picker.$emit('pick', [start, end])
+          },
+        },
+        {
+          text: '最近三个月',
+          onClick(picker) {
+            const end = new Date()
+            end.setTime(end.getTime() - 1000)
             const start = new Date()
             start.setTime(start.getTime() - 3600 * 1000 * 24 * 90)
             picker.$emit('pick', [start, end])
@@ -360,6 +460,7 @@ export default {
     }
     return {
       values: {},
+      showName: '',
       isOpen: false,
     }
   },
@@ -384,6 +485,12 @@ export default {
     value: {
       handler: function () {
         this.cacheValue = cloneDeep(this.value)
+        console.log(this.value, '----')
+        if (
+          this.value.isOtherPage &&
+          (this.value.billTypes || this.value.status)
+        )
+          return //指定页面不清除筛选项
         this.setDefault(this.cacheValue, false)
       },
       immediate: true,
@@ -400,6 +507,38 @@ export default {
     document.body.removeEventListener('click', this.hiddenPopover)
   },
   methods: {
+    //触发筛选函数
+    handleFilter(data, key) {
+      this.$refs[key][0].filter(data)
+    },
+    //筛选节点
+    filterNode(value, data) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
+    //移除tag
+    removeTag(data, key) {
+      console.log()
+      let res = this.$refs[key][0].getCheckedNodes(true, true)
+      //删除tag移除项
+      res.forEach((item, index) => {
+        item.name === data && res.splice(index, 1)
+      })
+      this.values[key] = res.map(item => item.id).join(',')
+      //重新设置选中
+      this.$refs[key][0].setCheckedNodes(this.values[key].split(','))
+    },
+    //点击树节点
+    handleNodeClick() {},
+    //树节点选中时
+    handleChcek(data, key) {
+      console.log(this.$refs)
+      //这里两个true，1. 是否只是叶子节点 2. 是否包含半选节点（就是使得选择的时候不包含父节点）
+      const res = this.$refs[key][0].getCheckedNodes(true, true)
+      this.values[key] = res.map(item => item.id).join(',')
+      this.showName = res.map(item => item.name)
+      console.log(this.showName)
+    },
     clearBtnTap() {
       this.$nextTick(() => {
         // 点击清空按钮弹层不收起
@@ -489,9 +628,12 @@ export default {
 
       isClear && this.$emit('change', cacheValue)
     },
-    resolveEmitChange() {
+    resolveEmitChange(page) {
       const data = cloneDeep(this.values)
+      // this.values.currentNum = 1
       data.currentNum = 1
+
+      this.$EventBus.$emit('currentNumChange', 1)
       Object.entries(data).forEach(([key, value]) => {
         isArray(value) &&
           this.need2Split[key] &&
@@ -507,6 +649,26 @@ export default {
           delete data[key]
         }
       })
+      if (page) {
+        //对账页面处理多选参数
+        const params = JSON.parse(JSON.stringify(data))
+        if (Array.isArray(params.billTypes)) {
+          params.billTypes = params.billTypes.join(',')
+        }
+
+        if (Array.isArray(params.status)) {
+          params.status = params.status.join(',')
+        }
+        /*  */
+        this.$emit('change', params)
+        /*  */
+        // setTimeout(() => {
+        //   this.values.billTypes = data.billTypes
+        //   this.values.status = data.status
+        // }, 1000)
+        return
+      }
+
       this.$emit('change', data)
     },
 

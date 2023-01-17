@@ -42,6 +42,7 @@
     </el-dialog>
   </div>
 </template>
+
 <script>
 import { List, mixin, EditableText } from '@/components'
 import {

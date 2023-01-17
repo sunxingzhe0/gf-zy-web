@@ -13,10 +13,11 @@
             :filter="filter"
             :columns="setting.columns"
             :tableData="setting.tableData"
+            tableClass="setting-table"
           >
             <template v-slot:slot_doctorNum="{ row }">
               <router-link
-                class="el-button el-button--text el-button--mini"
+                class="el-button el-button--text"
                 :to="{
                   path: '/jurisdiction/account/list',
                   query: {
@@ -69,65 +70,125 @@
           </List>
         </div>
       </el-tab-pane>
+      <!-- 在线咨询 -->
+      <template v-if="'CONSULT' === type">
+        <el-tab-pane label="视频规则配置" name="VIDEO" lazy>
+          <el-form
+            :model="rulesForm"
+            :rules="rules"
+            ref="formset"
+            label-width="140px"
+            label-position="left"
+          >
+            <el-form-item label="服务有效期限" prop="servicePeriod">
+              <el-input
+                class="input"
+                v-model="rulesForm.servicePeriod"
+              ></el-input>
+              <el-select
+                v-model="rulesForm.servicePeriodUnit"
+                placeholder="请选择"
+                style="width: 80px"
+              >
+                <el-option value="H" label="时"></el-option>
+                <el-option value="M" label="分"></el-option>
+                <el-option value="D" label="日"></el-option>
+              </el-select>
+            </el-form-item>
 
-      <el-tab-pane v-if="'CONSULT' === type" label="规则配置" name="rule" lazy>
-        <el-form
-          :model="rulesForm"
-          :rules="rules"
-          ref="formset"
-          label-width="140px"
-          label-position="left"
-        >
-          <el-form-item label="服务有效期限" prop="servicePeriod">
-            <el-input
-              class="input"
-              v-model="rulesForm.servicePeriod"
-            ></el-input>
-            <el-select
-              v-model="rulesForm.servicePeriodUnit"
-              placeholder="请选择"
-              style="width: 80px"
-            >
-              <el-option value="H" label="时"></el-option>
-              <el-option value="M" label="分"></el-option>
-              <el-option value="D" label="日"></el-option>
-            </el-select>
-          </el-form-item>
+            <el-form-item label="咨询条数设置" prop="consultNum">
+              <el-input
+                class="input"
+                v-model="rulesForm.consultNum"
+                placeholder="请输入"
+              >
+              </el-input>
+              条
+            </el-form-item>
 
-          <el-form-item label="咨询条数设置" prop="consultNum">
-            <el-input
-              class="input"
-              v-model="rulesForm.consultNum"
-              placeholder="请输入"
-            >
-            </el-input>
-            条
-          </el-form-item>
+            <el-form-item label="业务介绍" prop="introduction">
+              <el-input
+                class="input"
+                type="textarea"
+                :autosize="{ minRows: 4, maxRows: 6 }"
+                maxlength="500"
+                v-model="rulesForm.introduction"
+                show-word-limit
+              ></el-input>
+            </el-form-item>
 
-          <el-form-item label="业务介绍" prop="introduction">
-            <el-input
-              class="input"
-              type="textarea"
-              :autosize="{ minRows: 4, maxRows: 6 }"
-              maxlength="500"
-              v-model="rulesForm.introduction"
-              show-word-limit
-            ></el-input>
-          </el-form-item>
+            <el-form-item>
+              <el-button @click="activeName = 'setting'">返回</el-button>
+              <el-button
+                type="primary"
+                :loading="pedding"
+                @click="submitRules('formset')"
+              >
+                保存
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+        <el-tab-pane label="图文规则配置" name="GRAPHIC" lazy>
+          <el-form
+            :model="rulesForm"
+            :rules="rules"
+            ref="formset"
+            label-width="140px"
+            label-position="left"
+          >
+            <el-form-item label="服务有效期限" prop="servicePeriod">
+              <el-input
+                class="input"
+                v-model="rulesForm.servicePeriod"
+              ></el-input>
+              <el-select
+                v-model="rulesForm.servicePeriodUnit"
+                placeholder="请选择"
+                style="width: 80px"
+              >
+                <el-option value="H" label="时"></el-option>
+                <el-option value="M" label="分"></el-option>
+                <el-option value="D" label="日"></el-option>
+              </el-select>
+            </el-form-item>
 
-          <el-form-item>
-            <el-button @click="activeName = 'setting'">返回</el-button>
-            <el-button
-              type="primary"
-              :loading="pedding"
-              @click="submitRules('formset')"
-            >
-              保存
-            </el-button>
-          </el-form-item>
-        </el-form>
-      </el-tab-pane>
+            <el-form-item label="咨询条数设置" prop="consultNum">
+              <el-input
+                class="input"
+                v-model="rulesForm.consultNum"
+                placeholder="请输入"
+              >
+              </el-input>
+              条
+            </el-form-item>
 
+            <el-form-item label="业务介绍" prop="introduction">
+              <el-input
+                class="input"
+                type="textarea"
+                :autosize="{ minRows: 4, maxRows: 6 }"
+                maxlength="500"
+                v-model="rulesForm.introduction"
+                show-word-limit
+              ></el-input>
+            </el-form-item>
+
+            <el-form-item>
+              <el-button @click="activeName = 'setting'">返回</el-button>
+              <el-button
+                type="primary"
+                :loading="pedding"
+                @click="submitRules('formset')"
+              >
+                保存
+              </el-button>
+            </el-form-item>
+          </el-form>
+        </el-tab-pane>
+      </template>
+
+      <!-- 在线复诊 -->
       <template v-if="'REPEAT_CLINIC' === type">
         <el-tab-pane label="视频规则配置" name="VIDEO" lazy>
           <el-form
@@ -350,7 +411,84 @@
           </el-form-item>
         </el-form>
       </el-tab-pane>
+      <el-tab-pane
+        v-if="'REPORT_READ' === type"
+        label="规则配置"
+        name="rule"
+        lazy
+      >
+        <el-form
+          :model="rulesForm"
+          :rules="rules"
+          ref="formset"
+          label-width="200px"
+          label-position="left"
+        >
+          <el-form-item label="服务有效期限" prop="servicePeriod">
+            <el-input
+              class="input"
+              v-model="rulesForm.servicePeriod"
+            ></el-input>
+            <el-select
+              v-model="rulesForm.servicePeriodUnit"
+              placeholder="请选择"
+              style="width: 80px"
+            >
+              <el-option value="H" label="时"></el-option>
+              <el-option value="M" label="分"></el-option>
+              <el-option value="D" label="日"></el-option>
+            </el-select>
+          </el-form-item>
 
+          <!-- <el-form-item label="接诊后截至" prop="endService">
+            <el-input class="input" v-model="rulesForm.endService"></el-input>
+            <el-select
+              v-model="rulesForm.endServiceUnit"
+              placeholder="请选择"
+              style="width: 80px;"
+            >
+              <el-option value="H" label="时"></el-option>
+              <el-option value="M" label="分"></el-option>
+              <el-option value="D" label="日"></el-option>
+            </el-select>
+          </el-form-item> -->
+
+          <el-form-item label="报告解读操作截至诊室关闭后" prop="readClose">
+            <el-input class="input" v-model="rulesForm.readClose"></el-input>
+            <el-select
+              v-model="rulesForm.readCloseUnit"
+              placeholder="请选择"
+              style="width: 80px"
+            >
+              <el-option value="H" label="时"></el-option>
+              <el-option value="M" label="分"></el-option>
+              <el-option value="D" label="日"></el-option>
+            </el-select>
+          </el-form-item>
+
+          <el-form-item label="业务介绍" prop="introduction">
+            <el-input
+              class="input"
+              type="textarea"
+              :autosize="{ minRows: 4, maxRows: 6 }"
+              maxlength="500"
+              v-model="rulesForm.introduction"
+              show-word-limit
+            ></el-input>
+          </el-form-item>
+
+          <el-form-item>
+            <el-button @click="activeName = 'setting'">返回</el-button>
+            <el-button
+              type="primary"
+              :loading="pedding"
+              @click="submitRules('formset')"
+            >
+              保存
+            </el-button>
+          </el-form-item>
+        </el-form>
+      </el-tab-pane>
       <el-tab-pane
         label="操作日志"
         name="log"
@@ -362,6 +500,7 @@
             v-model="log.query"
             :columns="log.columns"
             :tableData="log.tableData"
+            tableClass="account-table"
           >
           </List>
         </div>
@@ -369,11 +508,14 @@
     </el-tabs>
 
     <el-dialog
+      v-loading="dialogLoading"
       :title="`${form.configId ? '编辑业务' : '新增业务'} - ${
         type === 'CONSULT'
           ? '在线咨询'
           : type === 'REPEAT_CLINIC'
           ? '在线复诊'
+          : type === 'REPORT_READ'
+          ? '报告解读'
           : '慢病续方'
       }`"
       :visible.sync="isAdd"
@@ -392,7 +534,7 @@
           label-position="left"
         >
           <el-form-item label="形式" prop="bizWays" ref="bizWays">
-            <el-checkbox-group v-model="form.bizWays">
+            <el-checkbox-group v-model="form.bizWays" @change="changeBizWays">
               <el-checkbox
                 v-for="{ key, title, disabled } in bizWayEnums"
                 :key="key"
@@ -431,36 +573,69 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="适用科室" prop="deptIds" ref="deptIds">
+          <el-form-item label="适用科室" prop="deptLables" ref="deptIds">
             <el-select
-              v-model="form.deptIds"
+              v-model="deptLables"
               filterable
               multiple
+              :filter-method="handleFilter"
+              @remove-tag="removeTag"
               style="width: 100%"
               placeholder="请选择"
             >
-              <el-option
-                v-for="item in dept"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              >
+              <el-option :value="form.deptIds" style="height: auto; padding: 0">
+                <el-tree
+                  :data="dept"
+                  :props="defaultProps"
+                  show-checkbox
+                  ref="tree"
+                  node-key="id"
+                  default-expand-all
+                  @node-click="handleNodeClick"
+                  highlight-current
+                  current-node-key="node"
+                  :default-checked-keys="form.deptIds"
+                  :filter-node-method="filterNode"
+                  @check="handleChcek"
+                >
+                  <!--  <span slot-scope="{ node, data }" class="custom-tree-node">
+                    <span>{{ data.name }}</span>
+                    <span>{{ data.resourceNum }}</span>
+                  </span> -->
+                </el-tree>
               </el-option>
             </el-select>
-            <!-- <el-cascader
-              v-model="form.deptIds"
-              :options="dept"
-              :props="{
-                value: 'id',
-                label: 'name',
-                children: 'next',
-                multiple: true,
-              }"
-              style="width: 100%;"
-            >
-            </el-cascader> -->
           </el-form-item>
-          <el-form-item label="价格配置" prop="priceDto" ref="priceDto">
+          <!-- 价格配置更改 -->
+          <el-form-item label="价格配置">
+            <el-row>
+              <el-col :span="8" v-for="(v, vi) in form.newPriceDtos" :key="vi">
+                <el-form-item
+                  :label="v.label"
+                  label-width="50px"
+                  style="margin-right: 40px"
+                  :prop="`newPriceDtos.${vi}.itemIds`"
+                  :rules="newpriceDtoRules"
+                >
+                  <el-select
+                    @change="changeVal"
+                    v-model="v.itemIds"
+                    placeholder="请选择"
+                  >
+                    <el-option
+                      v-for="(it, iti) in feeOptions"
+                      :key="iti"
+                      :label="`${it.itemName} ¥ ${it.price}`"
+                      :value="it.id"
+                    >
+                    </el-option>
+                  </el-select>
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </el-form-item>
+          <!--  -->
+          <!-- <el-form-item label="价格配置" prop="priceDto" ref="priceDto">
             <el-row
               style="margin-bottom: 22px"
               v-for="({ titleId, title }, index) in form.priceDto"
@@ -487,7 +662,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-          </el-form-item>
+          </el-form-item> -->
 
           <el-form-item label="状态">
             <el-radio-group v-model="form.state">
@@ -506,13 +681,8 @@
       </el-scrollbar>
 
       <div slot="footer" class="is-center">
-        <el-button size="mini" @click="isAdd = false">取 消</el-button>
-        <el-button
-          size="mini"
-          type="primary"
-          :loading="pedding"
-          @click="submit('form')"
-        >
+        <el-button @click="isAdd = false">取 消</el-button>
+        <el-button type="primary" :loading="pedding" @click="submit('form')">
           确 定
         </el-button>
       </div>
@@ -534,16 +704,17 @@ import {
   backBizConfigInfo,
   findBizRulesInfo,
   updateBizRules,
+  getFeeItem,
 } from '@/api/business'
 import { loggerBillData } from '@/api/log'
-import { titleChooseList, deptChooseList } from '@/api'
+import { titleChooseList, deptOuterChooseList } from '@/api'
 import dialogBillDataf from './components/dialogBillData'
 const pre = {
   title: [],
 }
 
 export default {
-  name: 'InstitutionalConfiguration',
+  name: 'business_consult',
   props: {
     type: {
       type: String,
@@ -595,20 +766,20 @@ export default {
           },
           keys: 'bizWay',
         },
-        {
-          props: {
-            label: '业务最低价',
-            is: 'InputRange',
-          },
-          keys: ['lowBeginPrice', 'lowEndPrice'],
-        },
-        {
-          props: {
-            label: '业务最高价',
-            is: 'InputRange',
-          },
-          keys: ['highBeginPrice', 'highEndPrice'],
-        },
+        // {
+        //   props: {
+        //     label: '业务最低价',
+        //     is: 'InputRange',
+        //   },
+        //   keys: ['lowBeginPrice', 'lowEndPrice'],
+        // },
+        // {
+        //   props: {
+        //     label: '业务最高价',
+        //     is: 'InputRange',
+        //   },
+        //   keys: ['highBeginPrice', 'highEndPrice'],
+        // },
         {
           props: {
             label: '适用职称',
@@ -680,6 +851,7 @@ export default {
       ],
       endService: [{ required: true, message: '请输入', trigger: 'blur' }],
       closeClinic: [{ required: true, message: '请输入', trigger: 'blur' }],
+      readClose: [{ required: true, message: '请输入', trigger: 'blur' }],
       consultNum: [
         { required: true, message: '请设置咨询条数', trigger: 'blur' },
       ],
@@ -704,8 +876,24 @@ export default {
       },
       trigger: 'blur',
     }
-
+    this.newpriceDtoRules = {
+      validator: (rule, value, callback) => {
+        console.log(value, '值')
+        if (!value) {
+          callback(new Error('请选择价格'))
+        } else {
+          callback()
+        }
+      },
+      trigger: 'change',
+    }
     return {
+      dialogLoading: false,
+      //默认
+      defaultProps: {
+        children: 'next',
+        label: 'name',
+      },
       add_: '',
       activeName: this.$route.query.activeName ?? 'setting',
       isAdd: false,
@@ -753,6 +941,8 @@ export default {
               ? this.$store.state.user.orgId + 'FZ'
               : this.type == 'CARRYON_PRESC'
               ? this.$store.state.user.orgId + 'XF'
+              : this.type == 'REPORT_READ'
+              ? this.$store.state.user.orgId + 'JD'
               : '',
           bizType: this.type,
         },
@@ -766,6 +956,8 @@ export default {
         },
       },
       dept: [],
+      deptLables: [],
+      feeOptions: [],
       form: {
         bizType: this.type,
         bizWays: [],
@@ -774,6 +966,7 @@ export default {
         deptIds: [],
         priceDto: [],
         state: 1,
+        newPriceDtos: [],
       },
       pedding: false,
       rulesForm: {
@@ -781,6 +974,11 @@ export default {
         consultNum: '',
         introduction: '',
         unit: 'H',
+      },
+      formTypes: {
+        GRAPHIC: '图文',
+        VIDEO: '视频',
+        PHONE: '电话',
       },
     }
   },
@@ -806,7 +1004,7 @@ export default {
 
       return this.type === 'CONSULT'
         ? enums.map(item => {
-            item.key === 'VIDEO' && (item.disabled = true)
+            item.key === 'VIDEO' && (item.disabled = false)
             return item
           })
         : this.type === 'REPEAT_CLINIC'
@@ -816,6 +1014,7 @@ export default {
   },
   watch: {
     $route: function (val) {
+      this.getDeptList()
       const { activeName, businessRel } = val.query
       this.activeName = activeName || 'setting'
       this.setting.query.bizType = this.type
@@ -823,7 +1022,6 @@ export default {
       this.form.bizType = this.type
       this.add_ = businessRel
       // if (activeName === 'log') this.log.query.businessRel = businessRel
-
       this.setting.query = {
         pageSize: 10,
         currentNum: 1,
@@ -842,32 +1040,106 @@ export default {
         vm.handleClick({ name: to.query.activeName })
     })
   },
+  created() {
+    this.getDeptList()
+    this.getFeeItem()
+  },
   methods: {
+    //获取收费项目
+    async getFeeItem() {
+      this.feeOptions = await getFeeItem()
+    },
+    changeVal(e) {
+      console.log(e, 'itemid')
+      const price = this.feeOptions.filter(v => v.id == e)[0].price
+      console.log(price)
+      this.form.newPriceDtos.forEach(i => {
+        if (i.itemIds === e) {
+          i.price = price
+        }
+      })
+    },
+    changeBizWays(e) {
+      const list = e.map(i => {
+        return {
+          ways: i,
+          label: this.formTypes[i],
+          itemIds: '',
+        }
+      })
+      this.$set(this.form, 'newPriceDtos', list)
+      console.log(this.form.newPriceDtos)
+    },
+    //触发筛选函数
+    handleFilter(data) {
+      this.$refs.tree.filter(data)
+    },
+    //筛选节点
+    filterNode(value, data) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
+    //移除tag
+    removeTag(data) {
+      let res = this.$refs.tree.getCheckedNodes(true, true)
+      //删除tag移除项
+      res.forEach((item, index) => {
+        item.name === data && res.splice(index, 1)
+      })
+      this.form.deptIds = res.map(item => item.id)
+      //重新设置选中
+      this.$refs.tree.setCheckedNodes(this.form.deptIds)
+    },
+    //点击树节点
+    handleNodeClick() {},
+    //树节点选中时
+    handleChcek() {
+      //这里两个true，1. 是否只是叶子节点 2. 是否包含半选节点（就是使得选择的时候不包含父节点）
+      const res = this.$refs.tree.getCheckedNodes(true, true)
+      this.form.deptIds = res.map(item => item.id)
+      this.deptLables = res.map(item => item.name)
+    },
+
     //打开日志弹窗
     opanLog(row) {
       this.$refs.dialogBillData.open(row)
     },
     // 价格返回值转换
     pricechange(row) {
-      let str = ''
-      const arr = row.bizPrice.split('~')
-      str = arr[0].substring(1)
-      str = '¥' + Number(str).toFixed(2)
-      if (arr[0] !== arr[1]) {
-        str = str + '~' + Number(arr[1].substring(1)).toFixed(2)
+      if (!row.bizPrice) {
+        return '-'
       }
-      return str
+      let num = row.bizPrice.substring(1)
+      const price = '¥' + (Number(num) / 100).toFixed(2)
+      return price
     },
     handleClick({ name, $slots }) {
-      console.log(name)
       // this.$router.push({
       //   path: this.$route.path,
       //   query: {
       //     activeName: name,
       //   },
       // })
+      if (name == 'log') {
+        this.log.query = {
+          pageSize: 10,
+          currentNum: 1,
+          businessRel:
+            this.type == 'CONSULT'
+              ? this.$store.state.user.orgId + 'ZX'
+              : this.type == 'REPEAT_CLINIC'
+              ? this.$store.state.user.orgId + 'FZ'
+              : this.type == 'CARRYON_PRESC'
+              ? this.$store.state.user.orgId + 'XF'
+              : this.type == 'REPORT_READ'
+              ? this.$store.state.user.orgId + 'BG'
+              : '',
+          bizType: this.type,
+        }
+      }
 
       if (['rule', 'VIDEO', 'GRAPHIC'].includes(name)) {
+        this.tagName = name
         this.fetchRule({
           bizType: this.type,
           ...(name !== 'rule' ? { bizWay: name } : {}),
@@ -909,13 +1181,16 @@ export default {
       })
       return list
     },
-    async handleDialogOpen() {
-      const list = await deptChooseList({ tree: false })
-
+    //获取科室列表树形数据
+    async getDeptList() {
+      const list = await deptOuterChooseList({ tree: true })
+      list.forEach(item => {
+        item.next && (item.disabled = true)
+      })
       this.dept = list
-
+    },
+    handleDialogOpen() {
       // const deptIds = this.form.deptIds
-
       // if (deptIds.length) {
       //   this.form.deptIds = deptIds.map(deptId =>
       //     list.map(({ id }) => id).includes(deptId)
@@ -943,6 +1218,9 @@ export default {
      * @param onlyChild 是否单独使用form-item的resetField，（部分表单在清空后，prop引用的深层对象会被删除，导致验证找不到prop的路径）
      */
     handleDialogClosed(formName, onlyChild) {
+      this.deptLables = []
+      //清空选项
+      this.$refs.tree.setCheckedNodes([])
       if (onlyChild) {
         Object.keys(this[formName]).forEach(param => {
           this.$refs[param]?.resetField()
@@ -964,10 +1242,10 @@ export default {
           },
       )
     },
-    //新增业务
+    //新增编辑业务
     async add(row) {
+      this.isAdd = true
       if (!row) {
-        this.isAdd = true
         this.form = {
           bizType: this.type,
           bizWays: [],
@@ -979,7 +1257,7 @@ export default {
         }
         return
       }
-
+      this.dialogLoading = true
       const data = await backBizConfigInfo({ configId: row.configId })
       this.form = {
         ...this.form,
@@ -990,27 +1268,44 @@ export default {
         deptIds: data.deptIds,
         createDate: data.createDate,
         createUser: data.createUser,
-        priceDto: data.priceDto.reduce((_, item) => {
-          const _t = _.findIndex(({ titleId }) => titleId === item.titleId)
-
-          if (_t < 0) {
-            _.push({
-              title: item.titleName,
-              titleId: item.titleId,
-              price: {
-                [item.ways]: item.price,
-              },
-            })
-          } else {
-            _[_t].price[item.ways] = item.price
-          }
-
+        newPriceDtos: data.priceDto.reduce((_, item) => {
+          _.push({
+            ways: item.ways,
+            label: this.formTypes[item.ways],
+            itemIds: item.itemIds,
+            title: item.titleName,
+            titleId: item.titleId,
+            price: item.price,
+          })
           return _
         }, []),
+        // priceDto: data.priceDto.reduce((_, item) => {
+        //   const _t = _.findIndex(({ titleId }) => titleId === item.titleId)
+
+        //   if (_t < 0) {
+        //     _.push({
+        //       title: item.titleName,
+        //       titleId: item.titleId,
+        //       price: {
+        //         [item.ways]: item.price,
+        //       },
+        //     })
+        //   } else {
+        //     _[_t].price[item.ways] = item.price
+        //   }
+
+        //   return _
+        // }, []),
         state: data.state,
       }
-
-      this.isAdd = true
+      //选中项赋值
+      this.$nextTick(() => {
+        const res = this.$refs.tree.getCheckedNodes(true, true)
+        console.log(res, '选中项')
+        this.deptLables = res.map(item => item.name)
+        console.log(this.deptLables)
+      })
+      this.dialogLoading = false
     },
     submit(formName) {
       this.$refs[formName].validate(async (valid, invalidFields) => {
@@ -1032,7 +1327,7 @@ export default {
         //   deptIds: this.form.deptIds.map(ids => ids[ids.length - 1]),
         // })
         const form = this.form
-        await (this.form.configId ? updateBizConfig : addBizConfig)({
+        const params = {
           ...form,
           priceDto: this.form.priceDto.reduce((_, { titleId, price }) => {
             _.push(
@@ -1045,7 +1340,14 @@ export default {
 
             return _
           }, []),
-        }).finally(() => setTimeout(() => (this.pedding = false), 200))
+        }
+        // if (this.type === 'REPEAT_CLINIC' || this.type === 'CARRYON_PRESC') {
+        params.priceDto = params.newPriceDtos
+        // }
+        console.log(params, 'params')
+        await (this.form.configId ? updateBizConfig : addBizConfig)(
+          params,
+        ).finally(() => setTimeout(() => (this.pedding = false), 200))
 
         this.$message({
           type: 'success',
@@ -1067,6 +1369,7 @@ export default {
         closeClinicUnit: '',
         firstVideoUnit: '',
         orderTimeUnit: '',
+        readCloseUnit: '',
       }
       ;[
         'servicePeriod',
@@ -1074,6 +1377,7 @@ export default {
         'closeClinic',
         'firstVideo',
         'orderTime',
+        'readClose',
       ].forEach(key => {
         if (data[key]) {
           ;[this.rulesForm[key], this.rulesForm[key + 'Unit']] = data[
@@ -1084,12 +1388,14 @@ export default {
     },
 
     submitRules(formName) {
+    
       this.$refs[formName].validate(async (valid, invalidFields) => {
         if (valid) {
           this.pedding = true
           await updateBizRules({
-            bizType: this.type,
             ...this.rulesForm,
+            bizType: this.type,
+            bizWay: this.tagName,
             servicePeriod: [
               this.rulesForm.servicePeriod,
               this.rulesForm.servicePeriodUnit,
@@ -1103,7 +1409,10 @@ export default {
               this.rulesForm.closeClinic,
               this.rulesForm.closeClinicUnit,
             ].join(','),
-
+            readClose: [
+              this.rulesForm.readClose,
+              this.rulesForm.readCloseUnit,
+            ].join(','),
             firstVideo: [
               this.rulesForm.firstVideo,
               this.rulesForm.firstVideoUnit,
@@ -1135,8 +1444,14 @@ export default {
 }
 .accountWrap {
   padding: 0 !important;
+  .setting-table {
+    height: calc(100vh - 135px);
+  }
   .account_main {
     padding: 10px;
+    .account-table {
+      height: calc(100vh - 135px);
+    }
   }
   .el-tabs--border-card {
     border: 0;
@@ -1163,5 +1478,9 @@ export default {
       line-height: 28px;
     }
   }
+}
+::v-deep .el-tree-node__content {
+  height: 36px !important;
+  font-size: 14px;
 }
 </style>

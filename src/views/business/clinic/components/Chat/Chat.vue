@@ -19,7 +19,7 @@
         ref="scroller"
         :items="items"
         :min-item-size="54"
-        style="height: 500px;"
+        style="height: 500px"
       >
         <template #before>
           <infinite-loading
@@ -227,6 +227,14 @@
                   @click="handleClose"
                   >结束服务</el-button
                 >
+                <el-button
+                  v-if="!bizInfo.medical && bizInfo.status !== 'FINISH'"
+                  size="mini"
+                  type="danger"
+                  plain
+                  @click="handelDoctorStop"
+                  >终止服务</el-button
+                >
               </div>
 
               <transition name="page" v-if="bizInfo.wayType == 'VIDEO'">
@@ -261,6 +269,13 @@
                   >图片</el-button
                 >
               </el-upload>
+              <el-button
+                v-if="bizInfo.bizType == 'REPEAT_CLINIC'"
+                size="mini"
+                plain
+                @click.stop="synchro"
+                >同步病历</el-button
+              >
               <el-button
                 size="mini"
                 type="primary"
@@ -315,7 +330,7 @@
             </div>
           </el-tab-pane>
 
-          <el-tab-pane name="handle" lazy>
+          <el-tab-pane v-if="bizInfo.bizType != 'CONSULT'" name="handle" lazy>
             <template v-slot:label>
               <svg-icon
                 icon-class="chat-chuzhi"
@@ -324,9 +339,14 @@
               >处置</template
             >
             <Handle :bizInfo="{ ...bizInfo, sex: $attrs.sex }"></Handle>
+            <!-- <Disposes :bizInfo="{ ...bizInfo, sex: $attrs.sex }"></Disposes> -->
           </el-tab-pane>
 
-          <el-tab-pane name="roomOrder" lazy>
+          <el-tab-pane
+            v-if="bizInfo.bizType != 'CONSULT'"
+            name="roomOrder"
+            lazy
+          >
             <template v-slot:label>
               <svg-icon
                 icon-class="chat-yuyue"
@@ -391,11 +411,14 @@ import {
   historyMessage,
   uploadFile,
   finishChat,
+  doctorStop,
   beginChat,
   orderAudit,
   updateChatTime,
   video,
   clinicInfo,
+  oneSyncHisDisease,
+  getUserOnlineState,
 } from '@/api'
 import {
   findTemplateData,
@@ -408,6 +431,7 @@ import {
   Medical,
   RoomCountdown,
   Handle,
+  Disposes,
   RoomOrder,
 } from './components'
 import DragSize from '@/directive/drag-size'
@@ -452,6 +476,7 @@ export default {
     RP,
     RoomCountdown,
     Handle,
+    Disposes,
     RoomOrder,
   },
   directives: {
@@ -495,6 +520,9 @@ export default {
     }
 
     return {
+      isCanOpenMsg: true,
+      oldOrderId: '',
+      userStataus: false,
       clearValid: true,
       dialogTitle: '',
       duration: new Date(),
@@ -526,7 +554,7 @@ export default {
       height: 0,
 
       bizInfo: {},
-
+      tiemr: null,
       viewMessageDialogShow: false,
       viewMessageDialogComponent: '',
       viewMessageDialogData: null,
@@ -582,7 +610,9 @@ export default {
     },
 
     enableVideo() {
-      return this.$route.query.active === 'REPEAT_CLINIC'
+      const types = ['REPEAT_CLINIC', 'CONSULT']
+      if (!this.$route.query.active) return true
+      return types.includes(this.$route.query.active)
     },
 
     createParams() {
@@ -607,9 +637,12 @@ export default {
       oldValue && this.clean()
       value && this.init()
     },
-    orderId: function () {
+    orderId: function (val) {
       this.getClinicInfo()
       this.activeName = 'message'
+      setTimeout(() => {
+        this.oldOrderId = val
+      }, 1000)
     },
     closeTimeCompute(newVal) {
       if (newVal == '00 : 00 : 00') {
@@ -635,7 +668,36 @@ export default {
     removeResizeListener(this.$refs.wrap, this.calcSize)
   },
   methods: {
+    //同步病历
+    async synchro() {
+      try {
+        const confirm = await this.$confirm(
+          '是否同步HIS的病历数据(如果有的话)覆盖当前病历',
+          '提示',
+          { type: 'warning' },
+        )
+        if (confirm !== 'confirm') return
+        console.log('同步病历')
+        await oneSyncHisDisease({ orderId: this.orderId })
+        this.$message.success('操作成功！')
+      } catch (error) {
+        console.log(error)
+      }
+    },
+    //轮询读取用户在线状态(每次轮询前都需要清除上一个轮询)
+    getUserStatus(userId) {
+      clearInterval(this.tiemr)
+      this.userStataus = false
+      this.tiemr = setInterval(async () => {
+        this.userStataus = await getUserOnlineState({ userId })
+        console.log(this.userStataus)
+      }, 3000)
+    },
+    clearInterValChat() {
+      clearInterval(this.tiemr)
+    },
     async init() {
+      console.log('初始化')
       this.currentTimer = setInterval(() => {
         this.nowTime = new Date().getTime()
       }, 1000)
@@ -691,6 +753,15 @@ export default {
             this.items.splice(index, 1, newMsg)
           } else {
             this.items.push(newMsg)
+            //患者退款 关闭诊室 刷新接诊状态
+            if (
+              newMsg.childMessageType === 'CV' ||
+              newMsg.childMessageType === ''
+            ) {
+              // this.beginWork()
+              this.$emit('reloadConversationList')
+              this.getClinicInfo()
+            }
           }
         }
 
@@ -746,6 +817,7 @@ export default {
         }
         if (name === 'prescription' && this.$refs[name]) {
           this.$refs[name].cancel()
+          this.$refs[name].getPrescriptions()
         }
       }
       //是否验证
@@ -755,16 +827,50 @@ export default {
         this.clearValid = true
       }
     },
-    tabBeforeChange(activeName) {
-      if (this.bizInfo.status === 'FINISH' && activeName === 'roomOrder') {
-        this.$message.info('该服务已结束，不能进行诊间预约')
-        return false
-      }
-      if (activeName === 'prescription' && !this.bizInfo.diagnosis) {
-        this.$message.info('开立诊断，才能开立处方')
-        return false
-      }
-      return true
+    tabBeforeChange(activeName, oldActiveName) {
+      return new Promise(async (resolve, reject) => {
+        if (this.bizInfo.status === 'FINISH' && activeName === 'roomOrder') {
+          this.$message.info('该服务已结束，不能进行诊间预约')
+          reject(false)
+        }
+        if (activeName === 'prescription' && !this.bizInfo.diagnosis) {
+          this.$message.info('开立诊断，才能开立处方')
+          reject(false)
+        }
+
+        //需要验证的跳转
+        const validateKeys = [
+          'message',
+          'diagnosis',
+          'medicalRecord',
+          'prescription',
+          'handle',
+          'roomOrder',
+        ]
+        if (
+          ['diagnosis', 'medicalRecord'].includes(oldActiveName) &&
+          this.orderId === this.oldOrderId &&
+          validateKeys.includes(activeName) &&
+          this.isCanOpenMsg
+        ) {
+          const status = this.$refs[oldActiveName].validateChange()
+          if (!status) {
+            const confirm = await this.$confirm(
+              '您有未保存的内容，是否离开？',
+              '提示',
+              { type: 'warning' },
+            )
+            if (confirm) {
+              this.isCanOpenMsg = true
+              resolve(true)
+            } else {
+              reject(false)
+            }
+          }
+        }
+        this.isCanOpenMsg = true
+        resolve(true)
+      })
     },
     clean() {
       this.distance = -Infinity
@@ -796,6 +902,22 @@ export default {
       })
         .then(() => {
           finishChat({ orderId: this.orderId }).then(() => {
+            clearInterval(this.tiemr) //结束服务清除定时
+            this.clean()
+            this.$emit('close', this.bizInfo)
+          })
+        })
+        .catch(() => {})
+    },
+    //终止服务
+    handelDoctorStop() {
+      this.$confirm('确认终止服务？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+      })
+        .then(() => {
+          doctorStop({ orderId: this.orderId }).then(() => {
             this.clean()
             this.$emit('close', this.bizInfo)
           })
@@ -863,6 +985,9 @@ export default {
      * 输入框相关
      */
     handleCallVideo() {
+      if (!this.userStataus && !this.showVideo) {
+        return this.$message.error('当前患者已离线，无法发送视频。')
+      }
       this.sendMessage('CRVIDEO', this.showVideo ? 'leave' : '')
       this.$emit('toggle-video', this.showVideo ? false : this.sessionId)
 
@@ -935,6 +1060,7 @@ export default {
       this.range = window.getSelection().getRangeAt(0)
     },
     backMessage() {
+      this.isCanOpenMsg = false
       this.activeName = 'message'
       this.getClinicInfo()
     },
@@ -1039,6 +1165,7 @@ export default {
     sendMedical() {
       this.deleteInterval('interval')
       setTimeout(() => {
+        console.log('接收消息-1')
         this.$emit('reloadConversationList')
         this.getClinicInfo()
       }, 1000)
@@ -1046,28 +1173,36 @@ export default {
     },
 
     async getClinicInfo() {
-      const bizInfo = (await clinicInfo({ orderId: this.orderId })) ?? {}
-      this.bizInfo = { ...bizInfo }
+      try {
+        const bizInfo = (await clinicInfo({ orderId: this.orderId })) ?? {}
+        this.bizInfo = { ...bizInfo }
+        //获取诊室详情后开始轮询患者在线状态
+        if (bizInfo.userId) {
+          this.getUserStatus(bizInfo.userId)
+        }
 
-      const { status, startTime, closeTime } = bizInfo
-      let countDownTimestamp = null
+        const { status, startTime, closeTime } = bizInfo
+        let countDownTimestamp = null
 
-      if (status == 'APPOINTMENT' && startTime) {
-        countDownTimestamp = +new Date(startTime.replace(/-/g, '/'))
-      } else if (
-        ['WAIT_TREAT', 'IN_TREAT', 'FINISH'].includes(status) &&
-        closeTime
-      ) {
-        countDownTimestamp = +new Date(closeTime.replace(/-/g, '/'))
-      }
+        if (status == 'APPOINTMENT' && startTime) {
+          countDownTimestamp = +new Date(startTime.replace(/-/g, '/'))
+        } else if (
+          ['WAIT_TREAT', 'IN_TREAT', 'FINISH'].includes(status) &&
+          closeTime
+        ) {
+          countDownTimestamp = +new Date(closeTime.replace(/-/g, '/'))
+        }
 
-      if (countDownTimestamp) {
-        this.countDownFunc(countDownTimestamp)
-        this.interval = setInterval(() => {
+        if (countDownTimestamp) {
           this.countDownFunc(countDownTimestamp)
-        }, 1000)
-      } else {
-        this.interval && this.deleteInterval('interval')
+          this.interval = setInterval(() => {
+            this.countDownFunc(countDownTimestamp)
+          }, 1000)
+        } else {
+          this.interval && this.deleteInterval('interval')
+        }
+      } catch (error) {
+        this.deleteInterval('interval')
       }
     },
     countDownFunc(countDownTimestamp) {
@@ -1076,6 +1211,7 @@ export default {
       if (time <= 0) {
         this.deleteInterval('interval')
         this.$set(this.bizInfo, 'countDown', null)
+        console.log('接收消息-2')
         this.$emit('reloadConversationList')
         this.getClinicInfo()
         return
@@ -1119,8 +1255,12 @@ export default {
 .c__chat {
   .vue-recycle-scroller.ready .vue-recycle-scroller__item-view.demo {
     will-change: initial;
-    transform: initial !important;
-    top: 54px;
+    // transform: initial !important;
+    // top: 54px;
+  }
+  .el-dialog__body {
+    max-height: 550px;
+    overflow-y: scroll;
   }
   .begin-work {
     position: absolute;
@@ -1179,7 +1319,8 @@ export default {
 .c__chat-message-tips {
   width: 50%;
   position: absolute;
-  top: calc(100% - 260px - 36px);
+  // top: calc(100% - 260px - 36px);
+  top: calc(100% - 240px);
   right: 0;
   left: 0;
   padding: 0 20px;

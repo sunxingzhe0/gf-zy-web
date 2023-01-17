@@ -9,7 +9,10 @@
       <el-tab-pane
         label="基本信息"
         lazy
-        v-if="checkPermission(['DOC_WEB', 'DRUG_DOC', 'ORG_WEB'])"
+        v-if="
+          checkPermission(['DOC_WEB', 'DRUG_DOC', 'ORG_WEB']) &&
+          !$store.getters.modifyPwd
+        "
       >
         <div class="account_main">
           <base-info></base-info>
@@ -18,7 +21,9 @@
       <el-tab-pane
         label="实名信息"
         lazy
-        v-if="checkPermission(['DRUG_DOC', 'DOC_WEB'])"
+        v-if="
+          checkPermission(['DRUG_DOC', 'DOC_WEB']) && !$store.getters.modifyPwd
+        "
       >
         <div class="account_main">
           <real-name></real-name>
@@ -27,7 +32,9 @@
       <el-tab-pane
         label="资格证书"
         lazy
-        v-if="checkPermission(['DRUG_DOC', 'DOC_WEB'])"
+        v-if="
+          checkPermission(['DRUG_DOC', 'DOC_WEB']) && !$store.getters.modifyPwd
+        "
       >
         <div class="account_main">
           <qualification-info></qualification-info>
@@ -36,7 +43,9 @@
       <el-tab-pane
         label="其他信息"
         lazy
-        v-if="checkPermission(['DRUG_DOC', 'DOC_WEB'])"
+        v-if="
+          checkPermission(['DRUG_DOC', 'DOC_WEB']) && !$store.getters.modifyPwd
+        "
       >
         <div class="account_main">
           <other-info></other-info>
@@ -53,6 +62,9 @@ import realName from './components/realName'
 import qualificationInfo from './components/qualificationInfo'
 import otherInfo from './components/otherInfo'
 export default {
+  created() {
+    // this.isShowTab=this.$store.
+  },
   components: { accountInfo, baseInfo, realName, qualificationInfo, otherInfo },
   methods: {
     checkPermission,
@@ -76,5 +88,8 @@ export default {
   ::v-deep.el-tabs--border-card > .el-tabs__header .el-tabs__item.is-active {
     border: 1px solid transparent;
   }
+}
+::v-deep.v-modal {
+  position: none !important;
 }
 </style>

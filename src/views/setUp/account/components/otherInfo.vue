@@ -56,14 +56,14 @@
       </el-form-item>
 
       <el-form-item>
+        <el-button type="" v-show="isEdit" @click="getUnitIdList">
+          返回
+        </el-button>
         <el-button type="primary" v-show="!isEdit" @click="isEdit = !isEdit">
           修改
         </el-button>
         <el-button type="primary" v-show="isEdit" @click="submitForm">
           保存
-        </el-button>
-        <el-button type="" v-show="isEdit" @click="getUnitIdList">
-          取消
         </el-button>
       </el-form-item>
     </el-form>

@@ -85,12 +85,8 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="importDialog.visible = false"
-            >取消</el-button
-          >
-          <el-button size="small" type="primary" @click="preservation">
-            保存
-          </el-button>
+          <el-button @click="importDialog.visible = false">取消</el-button>
+          <el-button type="primary" @click="preservation"> 确定 </el-button>
         </div>
       </template>
     </el-dialog>
@@ -132,8 +128,8 @@
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisible = false" size="mini">取 消</el-button>
-        <el-button type="primary" @click="submit" size="mini">确 定</el-button>
+        <el-button @click="dialogVisible = false">取 消</el-button>
+        <el-button type="primary" @click="submit">确 定</el-button>
       </span>
     </el-dialog>
     <ApplicableDrugs ref="drug"></ApplicableDrugs>
@@ -283,7 +279,7 @@ export default {
     },
     //文件上传
     beforeUpload(file) {
-      let ExcalBar = ['xls', 'xlsm', 'xltx']
+      let ExcalBar = ['xls', 'xlsm', 'xltx', 'xlsx']
       const isExcal =
         ExcalBar.indexOf(file.name.substring(file.name.lastIndexOf('.') + 1)) >
         -1
@@ -320,6 +316,7 @@ export default {
           spinner: 'el-icon-loading',
           background: 'rgba(0, 0, 0, 0.7)',
         })
+
         // debugger
         importOriginExcel(this.fileData, {
           mechanismId: this.query.mechanismId,
@@ -414,7 +411,7 @@ export default {
 
 ::v-deep .el-textarea__inner {
   height: 80px;
-  resize: none !important;
+  // resize: none !important;
 }
 
 .operation {

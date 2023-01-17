@@ -453,3 +453,14 @@ export function findEvaluateData(params) {
     params,
   })
 }
+
+/**
+ * 解锁账号
+ */
+export function removeLoginLock(data) {
+  return request({
+    url: '/api/v1/account/removeLoginLock',
+    method: 'post',
+    data,
+  })
+}

@@ -1,11 +1,32 @@
 <template>
   <div class="has-logo">
-    <logo :collapse="isCollapse">
-      <el-image :src="FILE_URL(logo)" class="sidebar-logo" v-if="!isShowLogo">
-        <template slot="error">
-          <svg-icon icon-class="guanfang-logo" />
-        </template>
-      </el-image>
+    <!--  医技预约不需要 -->
+    <logo :collapse="isCollapse" v-if="!appointment">
+      <template>
+        <el-image
+          :src="FILE_URL(logo)"
+          :class="sidebar.opened ? 'sidebar-logo' : ''"
+          v-if="!isShowLogo"
+        >
+          <template slot="error">
+            <svg-icon icon-class="guanfang-logo" />
+          </template>
+        </el-image>
+        <div
+          v-if="sidebar.opened"
+          style="
+            font-size: 14px;
+            line-height: 0;
+            position: absolute;
+            bottom: 20px;
+            left: 0;
+            text-align: center;
+            width: 100%;
+          "
+        >
+          互联网医院
+        </div>
+      </template>
     </logo>
 
     <el-scrollbar wrap-class="scrollbar-wrapper menuWrap">
@@ -42,6 +63,7 @@ export default {
   data() {
     return {
       permissionRoutes: [],
+      appointment: /appointment/.test(window.location.href),
     }
   },
   computed: {
@@ -120,8 +142,8 @@ export default {
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  width: 50%;
-  height: 50%;
+  width: 65px;
+  height: 65px;
   vertical-align: middle;
   background: $--color-primary;
   border-radius: 50%;
@@ -129,8 +151,15 @@ export default {
 
   > svg {
     margin-right: 0 !important;
-    width: 60%;
-    height: 60%;
+    width: 65px;
+    height: 65px;
   }
+  .logo-text {
+    font-size: 14px !important;
+    line-height: 0 !important;
+  }
+}
+::v-deep .sidebar-logo-container {
+  line-height: 110px;
 }
 </style>

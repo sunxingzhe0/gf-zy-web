@@ -136,10 +136,10 @@ export default {
         {
           prop: 'useWays',
           label: '用药途径',
-          formatter: ({ useWays }) => {
-            const item = this.drugWays.find(item => item.value === useWays)
-            return item.label
-          },
+          // formatter: ({ useWays }) => {
+          //   const item = this.drugWays.find(item => item.value === useWays)
+          //   return item.label
+          // },
         },
         {
           prop: 'singleDose',
@@ -154,7 +154,7 @@ export default {
             const item = this.drugFrequencys.find(
               item => item.value === useFrequency,
             )
-            return item.label
+            return item ? item.label : useFrequency
           },
         },
         // treatment
@@ -162,10 +162,7 @@ export default {
           prop: 'treatment',
           label: '疗程',
           formatter: ({ treatment, treatmentUnit }) => {
-            const item = this.treatmentUnits.find(
-              item => item.value === treatmentUnit,
-            )
-            return String(treatment) + item.label
+            return String(treatment) + treatmentUnit
           },
         },
         {

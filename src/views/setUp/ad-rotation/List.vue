@@ -31,7 +31,7 @@
         <el-image
           style="height: 100px"
           :fit="'cover'"
-          :src="FILE_URL(row.picId)"
+          :src="FILE_URL(row.thumbnailId)"
           :preview-src-list="[FILE_URL(row.picId)]"
         ></el-image>
       </template>
@@ -76,7 +76,7 @@
             </el-image>
 
             <div class="uploader" v-else>
-              <i class="el-icon-picture-outline"></i>
+              <i class="el-icon-plus"></i>
               <div>添加照片</div>
             </div>
             <el-button class="changeImg" v-if="form.picId" type="primary"
@@ -138,6 +138,7 @@
 <script>
 // import { formatDate } from '@/utils'
 import { List, mixin, EditableText } from '@/components'
+import { compressImg } from '@/utils/compress'
 import urlList from '@/utils/appLink'
 import {
   getAdList,
@@ -166,7 +167,8 @@ export default {
       isAdd: false,
       options: urlList,
       form: {
-        picId: '64F46B174BDA4DB98836838C3B41392C',
+        // 64F46B174BDA4DB98836838C3B41392C
+        picId: '',
         linksType: '',
         skipLinks: '',
         seq: '',
@@ -208,18 +210,24 @@ export default {
   },
   methods: {
     // 自定义上传行为
-    httpRequest({ file, onProgress, onSuccess, onError }) {
-      console.log(11)
+    async httpRequest({ file, onProgress, onSuccess, onError }) {
+      const res = file.size / 1024 > 100 ? await compressImg(file, 100) : file
+      console.log(res, '图片-------')
       const formData = new FormData()
-      formData.append('file', file)
+      formData.append('file', res)
       console.log(file)
 
       uploadFile(formData, onProgress).then(onSuccess).catch(onError)
+      // thumbnailUpload(formData, onProgress)
+      //   .then(res => {
+      //     this.form.thumbnailId = res
+      //   })
+      //   .catch(() => {})
     },
     handleAvatarSuccess(res) {
       console.log(1111)
       console.log(res)
-
+      this.form.thumbnailId = res
       // this.form.imageUrl = URL.createObjectURL(file.raw)
       this.form.picId = res
     },
@@ -250,8 +258,9 @@ export default {
         this.form.state = row.state
       } else {
         // 如果不存在，则为新增，并清空数据
-        this.form.picId = 'E68111167F4340F0B55ED195637F95E5'
-        this.form.linksType = 1
+        // E68111167F4340F0B55ED195637F95E5
+        this.form.picId = ''
+        this.form.linksType = 0
         this.form.skipLinks = ''
         this.form.seq = 0
         this.form.state = true
@@ -372,6 +381,7 @@ export default {
   color: #666;
   i {
     font-size: 28px;
+    margin-bottom: 10px;
   }
 }
 

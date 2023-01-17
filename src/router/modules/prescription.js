@@ -18,7 +18,6 @@ export default {
       path: 'pending',
       component: RouterView,
       redirect: '/prescription/pending/list',
-      name: 'pending',
       meta: {
         title: '待审处方',
         roles: ['DRUG_DOC_PRESCRIPTION_PENDING_PRESCRIPTION'],
@@ -26,17 +25,20 @@ export default {
       children: [
         {
           path: 'list',
+          name: 'prescription_pending',
           component: () => import('@/views/prescription/PendingList.vue'),
           props: { type: 'PENDING_REVIEW' },
           meta: {
             title: '列表',
             activeMenu: '/prescription/pending',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
         },
         {
           path: 'detail/:id',
+          name: 'prescription_pending_detail',
           component: () => import('@/views/prescription/detail'),
           meta: { title: '处方详情', activeMenu: '/prescription/pending' },
           hidden: true,
@@ -48,7 +50,6 @@ export default {
       path: 'passed',
       component: RouterView,
       redirect: '/prescription/passed/list',
-      name: 'passed',
       meta: {
         title: '已通过处方',
         roles: ['DRUG_DOC_PRESCRIPTION_PRESCRIPTION_APPROVED'],
@@ -56,17 +57,20 @@ export default {
       children: [
         {
           path: 'list',
+          name: 'prescription_passed',
           component: () => import('@/views/prescription/List.vue'),
           props: { type: 'PASSED' },
           meta: {
             title: '列表',
             activeMenu: '/prescription/passed',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
         },
         {
           path: 'detail/:id',
+          name: 'prescription_passed_detail',
           component: () => import('@/views/prescription/detail'),
           meta: { title: '处方详情', activeMenu: '/prescription/passed' },
           hidden: true,
@@ -78,7 +82,6 @@ export default {
       path: 'rejected',
       component: RouterView,
       redirect: '/prescription/rejected/list',
-      name: 'rejected',
       meta: {
         title: '已驳回处方',
         roles: ['DRUG_DOC_PRESCRIPTION_PRESCRIPTION_REJECTED'],
@@ -86,17 +89,20 @@ export default {
       children: [
         {
           path: 'list',
+          name: 'prescription_passed',
           component: () => import('@/views/prescription/List.vue'),
           props: { type: 'REJECTED' },
           meta: {
             title: '列表',
             activeMenu: '/prescription/rejected',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
         },
         {
           path: 'detail/:id',
+          name: 'prescription_passed_detail',
           component: () => import('@/views/prescription/detail'),
           meta: { title: '处方详情', activeMenu: '/prescription/rejected' },
           hidden: true,

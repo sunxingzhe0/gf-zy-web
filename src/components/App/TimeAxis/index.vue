@@ -1,33 +1,27 @@
 <template>
-  <div class="timeList">
-    <div
-      class="group"
-      :class="{ active: index == isActive }"
-      v-for="(val, index) in tiemDatas"
-      :key="index"
-      @click="activeChange(index, val)"
-    >
-      <span>{{ val }}</span>
-      <div class="circular">
-        <div class="within"></div>
+  <div class="date-line">
+    <div class="date-line-wrap">
+      <el-button icon="el-icon-arrow-left" circle @click="prev"></el-button>
+      <div class="date-content" ref="dateRef">
+        <div
+          v-for="(item, index) in tiemDatas"
+          :key="index"
+          @click="changeDate(item, index)"
+          :ref="`dateItem${index}`"
+          :class="['date-item', isActive === index ? 'active' : '']"
+        >
+          <div>{{ item }}</div>
+        </div>
       </div>
+      <el-button icon="el-icon-arrow-right" circle @click="next"></el-button>
     </div>
   </div>
 </template>
-
 <script>
-/**
- * @author xingzhesun
- * @name   TimeAxis
- * @desc   时间轴
- * @props  tiemDatas          Array       时间轴数据
- * @emit   changeTime        选中时间
- */
 export default {
   props: {
     tiemDatas: {
       type: Array,
-      // default: [],
     },
   },
   data() {
@@ -35,63 +29,108 @@ export default {
       isActive: 0,
     }
   },
+  computed: {
+    // currentIndex: function () {
+    //   let currentIndex = 0
+    //   this.tiemDatas.forEach((item, index) => {
+    //     if (index === this.isActive) {
+    //       currentIndex = index
+    //     }
+    //   })
+    //   return currentIndex
+    // },
+  },
   methods: {
-    activeChange(index, val) {
+    changeDate(item, index) {
       this.isActive = index
-      console.log(val)
-      this.$emit('changeTime', val)
+      console.log(index)
+      // let dateRef = this.$refs.dateRef
+      // let itemTop = this.$refs[`dateItem${index}`][0].offsetLeft
+      // dateRef.scrollLeft = itemTop - 200
+      this.$emit('onchange', item)
+    },
+    next() {
+      if (this.isActive < this.tiemDatas.length - 1) {
+        this.isActive += 1
+        let dateRef = this.$refs.dateRef
+        let itemTop = this.$refs[`dateItem${this.isActive}`][0].offsetLeft - 40
+        if (itemTop > dateRef.offsetWidth - 120) {
+          dateRef.scrollLeft = itemTop
+        }
+        console.log(dateRef.offsetWidth, dateRef.scrollLeft)
+        this.$emit('onchange', this.tiemDatas[this.isActive])
+      }
+    },
+    prev() {
+      if (this.isActive > 0) {
+        console.log(this.isActive, '----')
+        this.isActive -= 1
+        let dateRef = this.$refs.dateRef
+        let itemTop = this.$refs[`dateItem${this.isActive}`][0].offsetLeft
+        dateRef.scrollLeft = itemTop - 120
+        this.$emit('onchange', this.tiemDatas[this.isActive])
+      }
     },
   },
 }
 </script>
-
 <style lang="scss" scoped>
-.timeList {
-  width: 100%;
+@import '~@/styles/_variables.scss';
+.date-line {
+  overflow: hidden;
+  padding-bottom: 3px;
+  margin-bottom: 30px;
+}
+.date-line-wrap {
   display: flex;
-  color: #7f7f7f;
-  margin-bottom: 40px;
-  .group {
-    // flex: 1;
-    width: 120px;
-    height: 46px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: 2px solid #f2f2f2;
-    position: relative;
-    font-size: 12px;
-    cursor: pointer;
-    .circular {
-      position: absolute;
-      left: 50%;
-      bottom: -4px;
-      margin-right: 4px;
-      width: 8px;
-      height: 8px;
-      background: #fff;
-      border-radius: 50%;
-      box-shadow: 0px 1px 6px 0px rgba(0, 0, 0, 0.38);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      .within {
-        width: 4px;
-        height: 4px;
-        border-radius: 50%;
-        background: #fff;
-      }
-    }
+  justify-content: space-between;
+  border-bottom: 1px solid #e6e6e6;
+  height: 46px;
+
+  .el-button {
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    margin-top: 10px;
   }
-  .active {
-    span {
-      transform: scale(1.3);
-      color: #27b2c1;
-    }
-    .circular {
-      transform: scale(1.5);
-      .within {
-        background: #27b2c1;
+  .date-content {
+    flex: 1;
+    overflow: scroll;
+    overflow-y: hidden;
+    display: flex;
+    height: 59px;
+    flex-flow: nowrap;
+    margin: 0 10px;
+    .date-item {
+      width: 120px;
+      text-align: center;
+      font-size: 14px;
+      flex: none;
+      line-height: 18px;
+      position: relative;
+      cursor: pointer;
+      &::after {
+        content: '';
+        width: 6px;
+        height: 6px;
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        margin-left: -3px;
+        background: #808080;
+        border-radius: 50%;
+      }
+      &.disable {
+        color: #d4d4d4;
+        &::after {
+          background: #d4d4d4;
+        }
+      }
+      &.active {
+        color: $--color-primary;
+        &::after {
+          background: $--color-primary;
+        }
       }
     }
   }

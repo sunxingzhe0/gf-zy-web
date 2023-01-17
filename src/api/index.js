@@ -62,6 +62,24 @@ export function uploadFile(data, onUploadProgress, params) {
 }
 
 /**
+ * 缩略图上传
+ * @param {object} data
+ * @param {binary} data.file
+ * @param {function} onUploadProgress
+ * @returns {Promise<string>} file id
+ * @param {String} uploadType NORMAL_UPLOAD("正常上传"),ANNEX("附件上传")
+ */
+export function thumbnailUpload(data, onUploadProgress, params) {
+  return request({
+    url: '/api/v1/file/thumbnailUpload',
+    method: 'post',
+    params,
+    data,
+    onUploadProgress,
+  })
+}
+
+/**
  * 查询会话成员
  * @param {object} params
  * @param {number} params.sessionId - 会话ID
@@ -215,6 +233,17 @@ export function historyMessage(params) {
 export function finishChat(params) {
   return request({
     url: '/api/v1/clinic/doctor/over',
+    method: 'get',
+    params,
+  })
+}
+/**
+ * 终止服务
+ * orderId
+ */
+export function doctorStop(params) {
+  return request({
+    url: '/api/v1/clinic/doctor/stop',
     method: 'get',
     params,
   })
@@ -378,7 +407,7 @@ export function roleChooseList(params) {
 }
 
 /**
- * 科室选择
+ * 科室选择（预约挂号科室）
  * @param {object} params
  * @param {boolean} params.tree	- 是否返回树形 tree true 按 一级科室-二级科室 拉出列表 false 则忽略有二级科室的一级科室，只返回二级科室以及没有子科室的一级科室
  * @returns {Promise<{ id: string, name: string }[]>}
@@ -391,6 +420,35 @@ export function deptChooseList(params) {
   })
 }
 
+/**
+ * 通用-选择心咨科室列表
+ * @param {object} params
+ * @param {boolean} params.tree	- 是否返回树形 tree true 按 一级科室-二级科室 拉出列表 false 则忽略有二级科室的一级科室，只返回二级科室以及没有子科室的一级科室
+ * @returns {Promise<{ id: string, name: string }[]>}
+ */
+export function deptXzChooseList(params) {
+  return request({
+    url: '/api/v1/deptXz/chooseList',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 科室选择（互联网科室）
+ * @param {object} params
+ * @param {boolean} params.tree	- 是否返回树形 tree true 按 一级科室-二级科室 拉出列表 false 则忽略有二级科室的一级科室，只返回二级科室以及没有子科室的一级科室
+ * @param {Boolean} params.showInner - 是否需要显示关联的院内科室信息 默认false
+ * @returns {Promise<{ id: string, name: string }[]>}
+ */
+export function deptOuterChooseList(params) {
+  return request({
+    url: '/api/v1/deptOuter/chooseList',
+    // url: '/api/v1/dept/chooseList', //目前都为院内科室，后面再改为互联网科室
+    method: 'get',
+    params,
+  })
+}
 /**
  * 职称选择
  * @returns {Promise<{ id: string, name: string }[]>}
@@ -513,6 +571,46 @@ export function clinicInfo(params) {
 export function getVideoStatus(params) {
   return request({
     url: '/api/v1/clinic/getVideoStatus',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 根据就诊流水号或住院号响应患者查看档案页面地址
+ */
+export function replyUrl(params) {
+  return request({
+    url: '/api/v1/archive/replyUrl',
+    method: 'get',
+    params,
+  })
+}
+
+//心咨--360视图链接
+export function getCdrHtmlUrl(params) {
+  return request({
+    url: '/api/v1/archive/getCdrHtmlUrl',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * @param {String} orderId 订单ID
+ */
+export function oneSyncHisDisease(data) {
+  return request({
+    url: `/api/v1/etcDisease/oneSyncHisDisease/${data.orderId}`,
+    method: 'post',
+    data,
+  })
+}
+
+//获取用户socket状态
+export function getUserOnlineState(params) {
+  return request({
+    url: '/api/v1/im/getUserOnlineState',
     method: 'get',
     params,
   })

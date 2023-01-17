@@ -8,13 +8,20 @@
           {{ statusText[rpInfo.status] }}
         </el-tag>
       </h3>
-      <el-steps :active="activeStep" align-center class="steps">
+      <!-- <el-steps :active="activeStep" align-center class="steps">
         <el-step title="创建" :description="rpInfo.createTime"></el-step>
         <el-step title="提交" :description="rpInfo.submitTime"></el-step>
         <el-step title="审核" :description="rpInfo.auditTime"></el-step>
-      </el-steps>
+      </el-steps> -->
     </header>
     <el-tabs v-model="activeName">
+      <el-tab-pane label="处方签" name="pdf" lazy>
+        <iframe
+          width="100%"
+          height="900"
+          :src="`${access_url}/mi/api/v1/rx/downloadRx?rxId=${$route.params.id}`"
+        ></iframe>
+      </el-tab-pane>
       <el-tab-pane label="处方信息" name="info" lazy>
         <PatinetInfo :orderInfo="orderInfo"></PatinetInfo>
         <PrescriptionInfo
@@ -22,26 +29,27 @@
           :prescriptionInfo="rpInfo"
         ></PrescriptionInfo>
         <InvoiceInfo :prescriptionInfo="rpInfo" :hasOrder="false"></InvoiceInfo>
-        <div class="fixed-btns">
-          <el-button @click="$router.back()" type="primary" plain>
-            返回
-          </el-button>
-          <el-button
-            v-if="rpInfo.status == 'PENDING_REVIEW'"
-            @click="action('PASSED')"
-            type="primary"
-          >
-            通过
-          </el-button>
-          <el-button
-            v-if="rpInfo.status == 'PENDING_REVIEW'"
-            @click="action('REJECTED')"
-            type="danger"
-            plain
-          >
-            驳回
-          </el-button>
-        </div>
+      </el-tab-pane>
+
+      <el-tab-pane
+        v-if="orderInfo.sessionId"
+        name="diagnosisRecord"
+        key="diagnosisRecord"
+        label="诊疗记录"
+        lazy
+      >
+        <ChatRecord :orderInfo="orderInfo"></ChatRecord>
+      </el-tab-pane>
+      <el-tab-pane label="本次诊断" name="diagnosis">
+        <p>诊断：{{ orderInfo.diagnose }}</p>
+      </el-tab-pane>
+      <el-tab-pane
+        name="medicalRecord"
+        key="medicalRecord"
+        label="本次病历"
+        lazy
+      >
+        <MedicalRecord :orderId="orderInfo.orderId"></MedicalRecord>
       </el-tab-pane>
       <el-tab-pane
         v-if="orderInfo.bizType != 'CONSULT'"
@@ -54,19 +62,28 @@
           :medicalId="orderInfo.historyMedicalId"
         ></TreatmentHistoryInfo>
       </el-tab-pane>
-      <el-tab-pane
-        v-if="orderInfo.sessionId"
-        name="diagnosisRecord"
-        key="diagnosisRecord"
-        label="诊疗记录"
-        lazy
-      >
-        <ChatRecord :orderInfo="orderInfo"></ChatRecord>
-      </el-tab-pane>
       <el-tab-pane label="操作日志" name="log" lazy>
         <OperateLog :businessId="id"></OperateLog>
       </el-tab-pane>
     </el-tabs>
+    <div class="fixed-btns">
+      <el-button @click="$router.back()" type="primary" plain> 返回 </el-button>
+      <el-button
+        v-if="rpInfo.status == 'PENDING_REVIEW'"
+        @click="action('PASSED')"
+        type="primary"
+      >
+        通过
+      </el-button>
+      <el-button
+        v-if="rpInfo.status == 'PENDING_REVIEW'"
+        @click="action('REJECTED')"
+        type="danger"
+        plain
+      >
+        驳回
+      </el-button>
+    </div>
     <el-dialog
       title="驳回原因"
       :visible.sync="dialog.visible"
@@ -138,10 +155,30 @@
         </el-button>
       </div>
     </el-dialog>
+    <el-dialog
+      v-loading="loading"
+      title="提示"
+      :visible.sync="centerDialogVisible"
+      width="30%"
+      :append-to-body="true"
+      center
+    >
+      <span>是否确认通过该处方审核？</span>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="centerDialogVisible = false">取 消</el-button>
+        <el-button :loading="loading" type="primary" @click="passPre"
+          >确 定</el-button
+        >
+      </span>
+    </el-dialog>
+    <QrCode ref="qrcode" />
   </section>
 </template>
 
 <script>
+import QrCode from '@/components/QrCode'
+import { access_url } from '@/utils/wss-http'
+
 import {
   operateRp,
   pageRefuse,
@@ -154,6 +191,7 @@ import {
   InvoiceInfo,
   PatinetInfo,
   PrescriptionInfo,
+  MedicalRecord,
   TreatmentHistoryInfo,
 } from '@/components/App'
 import { orderDoctorWebDetail } from '@/api/business'
@@ -170,9 +208,17 @@ export default {
     PatinetInfo,
     PrescriptionInfo,
     TreatmentHistoryInfo,
+    QrCode,
+    MedicalRecord,
   },
   data() {
     return {
+      access_url,
+      loading: false,
+      isSubmit: true,
+      statusType: '',
+      reason: '',
+      centerDialogVisible: false,
       rules: {
         reason: [
           { required: true, message: '请输入驳回原因', trigger: 'blur' },
@@ -201,7 +247,7 @@ export default {
         PENDING_REVIEW: '待审核',
         REJECTED: '已驳回',
       },
-      activeName: 'info', // 当前页签
+      activeName: 'pdf', // 当前页签
     }
   },
   computed: {
@@ -215,6 +261,36 @@ export default {
     this.getPreInfo()
   },
   methods: {
+    //passPre
+    async passPre() {
+      this.loading = true
+      try {
+        if (!this.isSubmit) return
+        this.isSubmit = false
+        await operateRp({
+          id: this.rpInfo.id,
+          statusType: this.statusType,
+          reason: this.reason,
+        })
+        this.$message.success('操作成功')
+        this.$store.dispatch(
+          'updateList/changeFlag',
+          'updateListFlagPendingPrescription',
+        )
+        this.isSubmit = true
+        this.$router.back()
+        this.loading = false
+      } catch (e) {
+        this.loading = false
+
+        this.isSubmit = true
+        console.log(e, '错误信息')
+        const reg = new RegExp('CA-SIGN-ERROR')
+        if (reg.test(e)) {
+          this.$refs.qrcode.open() //打开二维码
+        }
+      }
+    },
     open() {
       this.$refs.recode.open()
     },
@@ -261,19 +337,15 @@ export default {
         }
       })
     },
-    async action(statusType, reason) {
+    action(statusType, reason) {
+      this.statusType = statusType
+      this.reason = reason
       if (statusType == 'REJECTED' && !reason) {
         this.dialog.statusType = statusType
         this.dialog.visible = true
         return
       }
-      await operateRp({ id: this.rpInfo.id, statusType, reason })
-      this.$message.success('操作成功')
-      this.$store.dispatch(
-        'updateList/changeFlag',
-        'updateListFlagPendingPrescription',
-      )
-      this.$router.back()
+      this.centerDialogVisible = true
     },
     // 获取处方详情
     async getPreInfo() {

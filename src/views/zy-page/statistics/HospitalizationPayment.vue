@@ -84,6 +84,7 @@ export default {
             props: {
               label: '科室',
               is: 'el-select',
+              filterable: true,
               options: [
                 { label: '不限', value: '' },
                 ...pre.dept.map(_ => ({ label: _.name, value: _.syncCode })),

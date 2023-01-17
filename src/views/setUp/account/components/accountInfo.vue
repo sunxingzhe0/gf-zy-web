@@ -13,7 +13,7 @@
         <div class="text">{{ roleName }}</div>
       </el-form-item>
 
-      <el-form-item label="手机号">
+      <el-form-item label="手机号" v-if="!$store.getters.modifyPwd">
         <div class="text">
           {{ phone }}
           <el-button
@@ -78,6 +78,7 @@
             <el-input
               type="password"
               class="input"
+              placeholder="请输入原密码"
               v-model="formPwd.oldPassword"
               @blur="check"
             ></el-input>
@@ -98,6 +99,7 @@
           <el-input
             type="password"
             class="input"
+            placeholder="请输入8-16位密码，包含大小写字母、数字、特殊字符"
             v-model="formPwd.newPassword"
           ></el-input>
         </el-form-item>
@@ -105,16 +107,15 @@
           <el-input
             type="password"
             class="input"
+            placeholder="请确认新密码"
             v-model="formPwd.confirmPassword"
           ></el-input>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="closeDia" size="mini">取 消</el-button>
-        <el-button type="primary" @click="submitPwd" size="mini"
-          >确 定</el-button
-        >
-      </span>
+      <div slot="footer" class="dialog-footer is-center">
+        <el-button @click="closeDia">取 消</el-button>
+        <el-button type="primary" @click="submitPwd">确 定</el-button>
+      </div>
     </el-dialog>
 
     <!-- 修改手机号 -->
@@ -209,19 +210,17 @@
           </div>
         </el-form-item>
       </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogVisiblePhone = false" size="mini"
-          >取 消</el-button
-        >
-        <el-button type="primary" @click="submitPhone" size="mini"
-          >确 定</el-button
-        >
-      </span>
+      <div slot="footer" class="dialog-footer is-center">
+        <el-button @click="dialogVisiblePhone = false">取 消</el-button>
+        <el-button type="primary" @click="submitPhone">确 定</el-button>
+      </div>
     </el-dialog>
   </div>
 </template>
 <script>
 import { isPassword } from '@/utils/validate'
+import CryptoJS from 'crypto-js'
+
 import {
   editPassword,
   checkOldPwd,
@@ -263,11 +262,13 @@ export default {
   },
   data() {
     const validatePwd = (rule, value, callback) => {
+      // const reg = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[$@$!%*?&])[A-Za-z\d$@$!%*?&]{8,16}/
       if (!isPassword(value)) {
-        callback(Error('密码为6-18位，可用阿拉伯数字和英文字母'))
+        callback(new Error('请输入8-16位密码，包含大小写字母、数字、特殊字符'))
       } else {
         callback()
       }
+      // callback()
     }
     const validateNewPwd = (rule, value, callback) => {
       if (value != this.formPwd.newPassword) {
@@ -365,7 +366,8 @@ export default {
     // 预校验旧密码
     async check() {
       let res = await checkOldPwd({
-        oldPassword: this.formPwd.oldPassword,
+        // oldPassword: this.formPwd.oldPassword,
+        oldPassword: CryptoJS.MD5(this.formPwd.oldPassword).toString(),
       }).catch(error => {
         console.log(error)
       })
@@ -376,8 +378,8 @@ export default {
       this.$refs.formPwd.validate(async valid => {
         if (valid) {
           await editPassword({
-            oldPassword: this.formPwd.oldPassword,
-            password: this.formPwd.newPassword,
+            oldPassword: CryptoJS.MD5(this.formPwd.oldPassword).toString(),
+            password: CryptoJS.MD5(this.formPwd.newPassword).toString(),
           })
           this.$message.success('修改密码成功，请重新登录')
           this.dialogVisible = false
@@ -490,6 +492,7 @@ export default {
                   console.log(res2)
                   this.$message.success('修改手机号成功')
                   this.$store.commit('user/SET_PHONE', this.formPhone.newPhone)
+                  this.$store.dispatch('user/getInfo')
                   this.dialogVisiblePhone = false
                 })
                 // console.log(res)

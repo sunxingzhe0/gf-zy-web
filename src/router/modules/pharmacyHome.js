@@ -1,5 +1,3 @@
-/** When your routing table is too long, you can split it into small modules **/
-
 import Layout from '@/components/layout'
 import RouterView from '@/components/RouterView'
 
@@ -17,8 +15,12 @@ export default {
   children: [
     {
       path: 'workbench',
+      name: 'home_workbench',
       component: () => import('@/views/pharmacy-home/workbench/WorkBench.vue'),
-      meta: { title: '工作台', roles: ['DRUG_STORE_HOME_PAGE_WORKBENCH'] },
+      meta: {
+        title: '工作台',
+        roles: ['DRUG_STORE_HOME_PAGE_WORKBENCH'],
+      },
     },
     {
       path: 'writeoff',
@@ -26,11 +28,14 @@ export default {
       meta: {
         title: '核销记录',
         roles: ['DRUG_STORE_HOME_PAGE_WRITE_OFF_RECORDS'],
+        keepAlive: true,
+        isBack: false,
       },
       redirect: '/home/writeoff/writeofflist',
       children: [
         {
           path: 'writeofflist',
+          name: 'home_writeoff',
           component: () =>
             import('@/views/pharmacy-home/writeofflist/WriteoffList.vue'),
           meta: { activeMenu: '/home/writeoff', keepAlive: true },
@@ -38,6 +43,7 @@ export default {
         },
         {
           path: 'detail/:id',
+          name: 'home_writeoff_detail',
           component: () =>
             import('@/views/order/prescription-order/Detail.vue'),
           props: true,
@@ -46,6 +52,7 @@ export default {
         },
         {
           path: 'prescriptionDetails/:id',
+          name: 'home_writeoff_prescriptionDetails',
           component: () => import('@/views/order/business/Detail'),
           meta: {
             title: '业务订单详情',
@@ -55,6 +62,7 @@ export default {
         },
         {
           path: 'checkAccount/:id',
+          name: 'home_writeoff_checkAccount',
           component: () => import('@/views/jurisdiction/account/Detail'),
           props: true,
           meta: {

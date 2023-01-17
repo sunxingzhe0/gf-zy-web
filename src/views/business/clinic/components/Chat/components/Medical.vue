@@ -1,7 +1,7 @@
 <template>
   <section class="wrap">
     <template v-if="!saveTemplate.visible">
-      <el-scrollbar>
+      <el-scrollbar ref="scrollbar">
         <el-tabs
           ref="tabs"
           v-model="activeName"
@@ -21,7 +21,6 @@
             style="height: 100%"
             ref="form"
             :model="form"
-            v-if="clearValid"
           >
             <template v-for="(t, m) in tabs">
               <template v-for="(item, index) in Object.keys(form)">
@@ -106,6 +105,7 @@
                     v-model="form[item]"
                     :maxlength="formRules[item] && formRules[item].maxLength"
                     show-word-limit
+                    :ref="item"
                     placeholder="请输入内容"
                     style="width: 80%"
                   ></el-input>
@@ -235,7 +235,7 @@
           <el-menu :default-openeds="importTemplate.active">
             <el-submenu
               v-for="({ name, label }, index) in templateTabs"
-              :key="name"
+              :key="index"
               :index="'' + index"
             >
               <template slot="title">{{ label }}</template>
@@ -247,7 +247,10 @@
                   :key="tempId"
                   :index="'' + idx"
                 >
-                  <el-radio-group v-model="importTemplate.selected[name]">
+                  <el-radio-group
+                    v-model="importTemplate.selected[name]"
+                    @change="chaangeVal"
+                  >
                     <el-radio :label="idx">
                       {{ tempName }}
                     </el-radio>
@@ -327,6 +330,7 @@
         @saveBtn="diagnosisSave"
       ></Diagnosis>
     </el-dialog>
+    <QrCode ref="qrcode" />
   </section>
 </template>
 
@@ -338,6 +342,7 @@ import {
   importDiseaseTemp,
   findDiagnosisInClinic,
 } from '@/api/business'
+import QrCode from '@/components/QrCode'
 import { addEtcDiseaseTemp } from '@/api/template'
 import Diagnosis from './Diagnosis'
 export default {
@@ -346,34 +351,44 @@ export default {
     orderId: String,
     clearValid: Boolean,
   },
-  components: { Diagnosis },
+  components: { Diagnosis, QrCode },
   data() {
     return {
+      oldData: null,
+      isSubmit: true,
       activeName: '',
       tabs: [
         {
-          name: 'mainSuit',
-          label: '主诉',
+          name: 'seeWay',
+          label: '就诊方式',
         },
         {
-          name: 'nowDisease',
-          label: '现病史',
+          name: 'illness',
+          label: '病情',
         },
-        {
-          name: 'hisDisease',
-          label: '既往史',
-        },
-        {
-          name: 'phyCheck',
-          label: '体格检查',
-        },
+        // {
+        //   name: 'mainSuit',
+        //   label: '主诉',
+        // },
+        // {
+        //   name: 'nowDisease',
+        //   label: '现病史',
+        // },
+        // {
+        //   name: 'hisDisease',
+        //   label: '既往史',
+        // },
+        // {
+        //   name: 'phyCheck',
+        //   label: '体格检查',
+        // },
         {
           name: 'supCheck',
           label: '辅助检查',
         },
         {
           name: 'dtoList',
-          label: '诊断',
+          label: '初步诊断',
         },
         {
           name: 'dealIdea',
@@ -386,10 +401,12 @@ export default {
         },
       },
       form: {
-        mainSuit: '',
-        nowDisease: '',
-        hisDisease: '',
-        phyCheck: '',
+        seeWay: '',
+        illness: '',
+        // mainSuit: '',
+        // nowDisease: '',
+        // hisDisease: '',
+        // phyCheck: '',
         supCheck: '',
         dtoList: [],
         dealIdea: '',
@@ -400,11 +417,13 @@ export default {
         list: null,
         active: [],
         selected: {
+          seeWay: 0,
+          illness: 0,
           dtoList: 0,
-          mainSuit: 0,
-          nowDisease: 0,
-          hisDisease: 0,
-          phyCheck: 0,
+          // mainSuit: 0,
+          // nowDisease: 0,
+          // hisDisease: 0,
+          // phyCheck: 0,
           supCheck: 0,
           dealIdea: 0,
         },
@@ -432,12 +451,12 @@ export default {
         },
         ...this.tabs,
       ])
-      tabs.splice(6, 1)
+      tabs.splice(4, 1)
       return tabs
     },
     saveTemplateTabs() {
       const tabs = Array.from(this.tabs)
-      tabs.splice(5, 1)
+      tabs.splice(3, 1)
       return tabs
     },
   },
@@ -447,8 +466,14 @@ export default {
         this.getDiseaseInClinic()
       }
     },
+    clearValid() {
+      this.$nextTick(() => {
+        this.$refs.form.clearValidate()
+      })
+    },
     'importTemplate.selected.dtoList': {
       handler(value, oldValue) {
+        console.log(value, oldValue, '----------------')
         if (value > 0 && value != oldValue) {
           for (const key in this.importTemplate.selected) {
             this.importTemplate.selected[key] = value
@@ -458,20 +483,9 @@ export default {
     },
     'importTemplate.selected': {
       handler(value) {
-        const {
-          dealIdea,
-          mainSuit,
-          nowDisease,
-          hisDisease,
-          phyCheck,
-          supCheck,
-        } = value
-        if (
-          [mainSuit, nowDisease, hisDisease, phyCheck, supCheck].every(
-            _ => _ === dealIdea,
-          )
-        ) {
-          this.importTemplate.selected.dtoList = dealIdea
+        const { seeWay, illness, dtoList, supCheck } = value
+        if ([seeWay, illness, dtoList, supCheck].every(_ => _ === supCheck)) {
+          this.importTemplate.selected.dtoList = supCheck
         } else {
           this.importTemplate.selected.dtoList = 0
         }
@@ -480,17 +494,24 @@ export default {
     },
   },
   created() {
-    console.log(123, '===1111111===')
     if (this.orderId) {
       this.getDiseaseInClinic()
     }
   },
   methods: {
+    //验证是否更改过病历
+    validateChange() {
+      return JSON.stringify(this.form) === JSON.stringify(this.oldData)
+    },
+    chaangeVal(e) {
+      console.log(e)
+    },
     handleTabClick({ name }) {
-      this.$refs.tabs.$el
-        .querySelector(`#${name}`)
-        ?.scrollIntoView({ behavior: 'smooth' })
-      this.activeName = name
+      const height = this.$refs.tabs.$el.querySelector(`#${name}`).offsetTop
+      this.$refs.scrollbar.wrap.scrollTo({
+        top: height,
+        behavior: 'smooth',
+      })
     },
     async getDiseaseInClinic() {
       const data = await findDiseaseInClinic({ orderId: this.orderId })
@@ -505,6 +526,8 @@ export default {
     // 诊断
     async getfindDiagnosisInClinic() {
       this.form.dtoList = await findDiagnosisInClinic({ orderId: this.orderId })
+      //暂存病历
+      this.oldData = JSON.parse(JSON.stringify(this.form))
     },
     async save() {
       this.$refs.form.validate(async valid => {
@@ -524,22 +547,33 @@ export default {
       })
     },
     submit() {
-      this.$refs.form.validate(async valid => {
-        if (!valid) {
-          return
-        }
+      //病例提交（暂不需要签名）
+      if (!this.isSubmit) {
+        this.$message.error('请勿重复提交！')
+      }
+      // this.$refs.qrcode.open() //打开二维码
+      this.isSubmit = false
+      try {
+        this.$refs.form.validate(async valid => {
+          if (!valid) {
+            return
+          }
 
-        const { createTime, memberId } = this.$attrs
-        const medicalId = await submitDisease(
-          Object.assign({}, this.form, {
-            orderId: this.orderId,
-            medicalTime: createTime,
-            userId: memberId,
-          }),
-        )
-
-        this.$emit('send', { medicalId })
-      })
+          const { createTime, memberId } = this.$attrs
+          const medicalId = await submitDisease(
+            Object.assign({}, this.form, {
+              orderId: this.orderId,
+              medicalTime: createTime,
+              userId: memberId,
+            }),
+          )
+          this.$message.success('提交成功！')
+          this.$emit('send', { medicalId }) //病例不再发送socket
+          this.isSubmit = true
+        })
+      } catch (error) {
+        this.isSubmit = true
+      }
     },
     async openDialog() {
       this.importTemplate.visible = true

@@ -17,18 +17,25 @@ export default {
   children: [
     {
       path: 'allorder',
+      name: 'pharmacyorder_allorder',
       component: RouterView,
       meta: { title: '全部订单' },
       redirect: '/pharmacyorder/allorder/orderList',
       children: [
         {
           path: 'orderList',
+          name: 'pharmacyorder_allorder_orderList',
           component: () => import('@/views/pharmacy-order/AllOrder.vue'),
-          meta: { activeMenu: '/pharmacyorder/allorder', keepAlive: true },
+          meta: {
+            activeMenu: '/pharmacyorder/allorder',
+            keepAlive: true,
+            isBack: false,
+          },
           hidden: true,
         },
         {
           path: 'orderdetail',
+          name: 'pharmacyorder_allorder_orderdetail',
           component: () => import('@/views/pharmacy-order/OrderDetail.vue'),
           props: true,
           hidden: true,
@@ -37,13 +44,15 @@ export default {
     },
     {
       path: 'tocarryorder',
+      name: 'pharmacyorder_tocarryorder',
       component: () => import('@/views/pharmacy-order/ToCarryOrder.vue'),
-      meta: { title: '待自提订单', keepAlive: true },
+      meta: { title: '待自提订单' },
     },
     {
       path: 'tosendorder',
+      name: 'pharmacyorder_tosendorder',
       component: () => import('@/views/pharmacy-order/ToSendOrder.vue'),
-      meta: { title: '待发货订单', keepAlive: true },
+      meta: { title: '待发货订单' },
     },
   ],
 }

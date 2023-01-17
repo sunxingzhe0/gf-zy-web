@@ -27,7 +27,8 @@
         </div>
       </div>
     </div>
-    <div class="app-info-row full">
+    <!-- 改动前的病历 -->
+    <!-- <div class="app-info-row full">
       <div class="app-info-item">
         <div class="app-info-label">主诉</div>
         <div class="app-info-value">
@@ -70,6 +71,47 @@
     <div class="app-info-row full">
       <div class="app-info-item">
         <div class="app-info-label">诊断</div>
+        <div class="app-info-value">
+          {{ medicalRecord.diagnosis || '-' }}
+        </div>
+      </div>
+    </div>
+    <div class="app-info-row full">
+      <div class="app-info-item">
+        <div class="app-info-label">处理意见</div>
+        <div class="app-info-value">
+          {{ medicalRecord.dealIdea || '-' }}
+        </div>
+      </div>
+    </div> -->
+    <!-- 改动后的病历 -->
+    <div class="app-info-row full">
+      <div class="app-info-item">
+        <div class="app-info-label">就诊方式</div>
+        <div class="app-info-value">
+          {{ medicalRecord.seeWay || '-' }}
+        </div>
+      </div>
+    </div>
+    <div class="app-info-row full">
+      <div class="app-info-item">
+        <div class="app-info-label">病情</div>
+        <div class="app-info-value">
+          {{ medicalRecord.illness || '-' }}
+        </div>
+      </div>
+    </div>
+    <div class="app-info-row full">
+      <div class="app-info-item">
+        <div class="app-info-label">辅助检查</div>
+        <div class="app-info-value">
+          {{ medicalRecord.supCheck || '-' }}
+        </div>
+      </div>
+    </div>
+    <div class="app-info-row full">
+      <div class="app-info-item">
+        <div class="app-info-label">初次诊断</div>
         <div class="app-info-value">
           {{ medicalRecord.diagnosis || '-' }}
         </div>

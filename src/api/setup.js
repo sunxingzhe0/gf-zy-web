@@ -591,6 +591,25 @@ export function titleList(params) {
   })
 }
 
+// --------------------------------------心咨业务设置--------------------------------
+
+// 列表
+export function getBasicConfList() {
+  return request({
+    url: '/api/v1/counseling/basicConf/list',
+    method: 'get',
+  })
+}
+
+// 编辑
+export function editBasicConf(data) {
+  return request({
+    url: '/api/v1/counseling/basicConf/edit',
+    method: 'POST',
+    data,
+  })
+}
+
 // --------------------------------------公共接口--------------------------------
 
 // 公告通知列表

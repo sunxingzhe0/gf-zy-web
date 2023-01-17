@@ -48,6 +48,7 @@
           v-model="basicInfo.query"
           :columns="basicInfo.columns"
           :tableData="basicInfo.tableData"
+          v-if="$route.query.patientId"
         >
           <template v-slot:slot_userName="{ row }">
             <el-image :src="FILE_URL(row.avatar)">
@@ -60,9 +61,9 @@
             <span class="name">{{ row.userName }}</span>
           </template>
 
-          <template v-slot:slot_patientAtt="{ row }">
+          <!-- <template v-slot:slot_patientAtt="{ row }">
             <span>{{ row.child ? '就诊人、监护人' : '就诊人' }}</span>
-          </template>
+          </template> -->
         </List>
       </el-tab-pane>
       <el-tab-pane label="服务订单" name="service" lazy>
@@ -142,7 +143,7 @@
         />
       </el-tab-pane>
       <el-tab-pane label="就诊记录" name="treat" lazy>
-        <TimeAxis :tiemDatas="tiemDatas" @changeTime="changeTime" />
+        <TimeAxis :tiemDatas="tiemDatas" @onchange="changeTime" />
         <ul class="card-wrapper treat" v-loading="isQuery">
           <li
             v-for="{
@@ -224,7 +225,7 @@ import {
 //类型枚举
 import types from '../enumsList'
 export default {
-  name: 'Detail',
+  name: 'patient_mine_detail',
   props: {
     id: String,
     patientId: String,
@@ -298,9 +299,9 @@ export default {
             prop: 'slot_userName',
             minWidth: 160,
           },
-          patientAtt: {
-            prop: 'slot_patientAtt',
-          },
+          // patientAtt: {
+          //   prop: 'slot_patientAtt',
+          // },
           sex: {
             formatter(row) {
               return row.sex == 0 ? '女' : row.sex == 1 ? '男' : ''
@@ -409,12 +410,23 @@ export default {
           createTime: {
             minWidth: 160,
           },
+          userDesc: {
+            formatter(row) {
+              return row.userDesc.substring(0, row.userDesc.indexOf(','))
+            },
+          },
+          index: {
+            hidden: true,
+          },
         },
       },
     }
   },
   async created() {
-    this.init()
+    console.log(23455)
+    if (this.$route.query.patientId) {
+      this.init()
+    }
   },
 
   watch: {
@@ -433,14 +445,15 @@ export default {
       this.clientType = this.$store.state.user.platform
       this.getPatientInfo()
       this.clinicRoomList()
-      this.$nextTick(() => {
-        this.activeName = 'basicInfo'
-      })
+      this.activeName = 'basicInfo'
+      // this.$nextTick(() => {
+      //   this.activeName = 'basicInfo'
+      // })
       //请求列表数据
       this.getInformationList()
       this.getOrderList()
       //先请求时间轴数据
-      await this.getMedicalTimeGroup()
+      await this.getMedicalTimeGroupList()
       this.medicalList()
     },
     //切换菜单
@@ -605,7 +618,7 @@ export default {
       }
     },
     //时间线数据
-    async getMedicalTimeGroup() {
+    async getMedicalTimeGroupList() {
       let res = await getMedicalTimeGroup({
         patientId: this.$route.query.patientId,
       })
@@ -631,7 +644,7 @@ export default {
     },
   },
   activated() {
-    console.log(this.$_fetchTableData, '--------------------')
+    console.log('info------')
   },
   //判断跳转来源是否缓存页面
   beforeRouteEnter(to, from, next) {
@@ -650,6 +663,7 @@ export default {
       next()
     } else {
       next(vm => {
+        console.log('info1111111')
         vm.init()
       })
     }

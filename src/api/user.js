@@ -74,3 +74,21 @@ export function codeLogin(params) {
     data: params,
   })
 }
+
+//获取签名二维码code
+export function generateCodeMark(params) {
+  return request({
+    url: '/api/v1/cloud/generateCodeMark',
+    method: 'get',
+    params,
+  })
+}
+
+//轮询二维码扫描结果
+export function pollingMonitor(params) {
+  return request({
+    url: '/api/v1/cloud/pollingMonitor',
+    method: 'get',
+    params,
+  })
+}

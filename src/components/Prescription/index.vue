@@ -121,6 +121,7 @@
       :visible.sync="historyPrescriptionShow"
     >
     </HistoryPrescription>
+    <QrCode ref="qrcode" />
   </div>
 </template>
 <script>
@@ -129,6 +130,7 @@
 @name           Prescription
 @desc           完整处方组件
 @props
+
                 orderId       订单id
                 inClinic      是否处于诊室
                 createParams  创建处方参数
@@ -136,7 +138,7 @@
 */
 import { mapState } from 'vuex'
 import { cloneDeep } from 'lodash'
-
+import QrCode from '@/components/QrCode'
 import DrugsList from './DrugsList'
 import CommonDrugs from './CommonDrugs'
 import { saveRpTemplate } from '@/api/template'
@@ -147,6 +149,9 @@ import SaveAsTemp, { TempParams } from './SaveAsTemp'
 import HistoryPrescription from './HistoryPrescription'
 import { rpList, saveRp, submitRp } from '@/api/prescription'
 
+import { findBizRulesInfo } from '@/api/business'
+import { clinicInfo } from '@/api'
+import dayjs from 'dayjs'
 export default {
   components: {
     DrugsList,
@@ -155,6 +160,7 @@ export default {
     PrescriptionItem,
     PrescriptionTemp,
     HistoryPrescription,
+    QrCode,
   },
   props: {
     inClinic: {
@@ -165,6 +171,7 @@ export default {
       type: String,
       default: '',
     },
+
     createParams: {
       type: Object,
       require: true,
@@ -194,12 +201,68 @@ export default {
         { text: '保存', type: 'save', disabled: false },
         { text: '提交', type: 'submit', disabled: false },
       ],
+      bizInfo: {},
+      limitAll: [],
     }
   },
   computed: {
     ...mapState('user', ['dept']),
   },
+  created() {
+    this.getRuleAll()
+  },
   methods: {
+    //验证是否可提交处方
+    validateRomm() {
+      return new Promise((resolve, reject) => {
+        if (this.bizInfo.status != 'FINISH') {
+          resolve(1)
+        }
+        // 筛选出规则时间
+        const reule =
+          this.bizInfo.bizType === 'CARRYON_PRESC'
+            ? this.limitAll[2]
+            : this.limitAll.find(
+                v =>
+                  v.bizType === this.bizInfo.bizType &&
+                  v.bizWay === this.bizInfo.wayType,
+              )
+        const unitTypes = {
+          M: 'minute',
+          D: 'day',
+          H: 'hour',
+        }
+        const units = reule
+          ? [
+              Number(reule.closeClinic.split(',')[0]),
+              unitTypes[reule.closeClinic.split(',')[1]],
+            ]
+          : []
+        console.log(units, 'units------------------------')
+        if (dayjs() > dayjs(this.bizInfo.realFinishTime).add(...units)) {
+          reject('结束诊室已超时，无法提交处方')
+        } else {
+          resolve(1)
+        }
+      })
+    },
+
+    //获取全部规则限制
+    async getRuleAll() {
+      this.limitAll = await Promise.all([
+        findBizRulesInfo({
+          bizType: 'REPEAT_CLINIC',
+          bizWay: 'GRAPHIC',
+        }),
+        findBizRulesInfo({
+          bizType: 'REPEAT_CLINIC',
+          bizWay: 'VIDEO',
+        }),
+        findBizRulesInfo({
+          bizType: 'CARRYON_PRESC',
+        }),
+      ])
+    },
     //总量单位处理
     computedTotalUnit(item) {
       const options = [
@@ -301,6 +364,7 @@ export default {
       try {
         const res = await rpList({ orderId: this.orderId })
         this.prescriptions = res || []
+        console.log(3)
         setTimeout(() => {
           this.updateOperates()
           this.computedPrice()
@@ -418,6 +482,7 @@ export default {
     },
     // 单处方组件内部事件
     async updateHandler(event) {
+      console.log(event, '更新-=============')
       switch (event.type) {
         // 复制处方时先判断是否有空白处方单
         case 'copy': {
@@ -465,6 +530,12 @@ export default {
           this.computedPrice()
           break
         }
+        case 'update': {
+          this.getPrescriptions(
+            Reflect.has(event, 'isCloseLoading') ? event.isCloseLoading : false,
+          )
+          break
+        }
       }
       this.updateOperates()
     },
@@ -474,45 +545,62 @@ export default {
         this.savaHandler()
       } else {
         try {
+          await this.validateRomm()
           // 判断是否有未保存的药品 // 判断是否有未填写的项目
           let confirm = ''
+          let savePreState = null
           let refItem = this.$refs['prescription-item']
           let refItems = Array.isArray(refItem) ? refItem : [refItem]
+          console.log(refItems, '111')
           for (let i = 0; i < refItems.length; i++) {
             if (refItems[i].validate(undefined, true)) {
               confirm = await this.$confirm(
-                '当前还有未保存的药品信息即将丢失，是否继续操作？',
+                '当前还有未保存的药品信息，是否保存？',
                 '提示',
                 {
                   type: 'warning',
                 },
               )
+              if (confirm === 'confirm') {
+                this.savaHandler()
+                savePreState = 1
+              }
               break
             }
           }
           if (!confirm || confirm === 'confirm') {
-            this.operate = type
-            if (type === 'adjust') {
-              const targets = []
-              this.prescriptions.forEach((item, index) => {
-                if (item.status === 'DRAFT') {
-                  const tableData = refItems[index].tableData.filter(
-                    item => !item.unsaved,
-                  )
-                  targets.push({
-                    value: index,
-                    label: 'RP' + (index + 1),
-                    cap: 5 - tableData.length,
-                    receivePharmacyId: tableData[0]?.receivePharmacyId,
+            this.loading = true
+            setTimeout(
+              () => {
+                this.operate = type
+                if (type === 'adjust') {
+                  const targets = []
+                  this.prescriptions.forEach((item, index) => {
+                    if (item.status === 'DRAFT') {
+                      const tableData = refItems[index].tableData.filter(
+                        item => !item.unsaved,
+                      )
+                      targets.push({
+                        value: index,
+                        label: 'RP' + (index + 1),
+                        cap: 5 - tableData.length,
+                        receivePharmacyId: tableData[0]?.receivePharmacyId,
+                      })
+                    }
                   })
+                  this.targets = targets
+                  this.adjustDatas = []
                 }
-              })
-              this.targets = targets
-              this.adjustDatas = []
-            }
+                this.loading = false
+              },
+              savePreState ? 2000 : 0,
+            )
           }
         } catch (e) {
-          console.log(e)
+          console.log(e, 'err----------------')
+          if (e === '结束诊室已超时，无法提交处方') {
+            this.$message.error('结束诊室已超过规则限制时间，无法提交处方')
+          }
           // nothing
         }
       }
@@ -810,6 +898,7 @@ export default {
       // 判断是否有未填写的项目
       for (let i = 0; i < refItems.length; i++) {
         if (refItems[i].validate()) {
+          console.log(refItems[i])
           return this.$message.error('处方未填写完整，请检查处方信息！')
         }
       }
@@ -884,6 +973,8 @@ export default {
         如果并方时没有多余处方单，则自动新建一个处方单，如果并方后有空白处方单，则删除该空白处方单
     */
     async submitHandler() {
+      //处方提交
+
       try {
         let refItem = this.$refs['prescription-item']
         let refItems = Array.isArray(refItem) ? refItem : [refItem]
@@ -999,10 +1090,10 @@ export default {
           if (delIds.includes(item.prescription.id)) {
             await item.delPrescription(function () {})
           } else {
-            await item.savePrescription(false, function () {})
+            await item.savePrescription(false, function () {}, true)
           }
         }
-        await this.getPrescriptions(true)
+        // await this.getPrescriptions(true)
         // 6、提交
         await this.submitToServe(subIds)
         await this.getPrescriptions(true)
@@ -1011,9 +1102,13 @@ export default {
           this.loading = false
         })
       } catch (e) {
-        await this.getPrescriptions(true)
+        // await this.getPrescriptions(true) //不拉取处方列表，会去勾选
         this.loading = false
-        console.log(e)
+        console.log(e, '错误信息')
+        const reg = new RegExp('CA-SIGN-ERROR')
+        if (reg.test(e)) {
+          this.$refs.qrcode.open() //打开二维码
+        }
       }
     },
     /* 由于提交的时候有个异步操作
@@ -1088,6 +1183,8 @@ export default {
         if (this.orderId) {
           this.loading = true
           await this.getPrescriptions(true)
+          console.log(this.orderId, '------')
+          this.bizInfo = (await clinicInfo({ orderId: this.orderId })) ?? {}
           if (copyId) {
             setTimeout(() => {
               const index = this.prescriptions.findIndex(

@@ -15,6 +15,44 @@ export function fetchList(params) {
 }
 
 /**
+ * 获取患者所有卡
+ patientId://患者id
+ */
+export function getAllCard(params) {
+  return request({
+    url: '/api/v1/myPatient/getAllCard',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 换绑就诊卡
+"patientId":"3345F53F70AF447C9CECACCE29DD7FCB",    //患者id
+"cardNo":"243657"
+ */
+export function changeCard(data) {
+  return request({
+    url: '/api/v1/myPatient/changeCard',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 就诊次数->就诊列表
+ * @param {string} patientId//患者id
+ * @param {string} sourceType  //调用端来源 0:医生端/1:机构端
+ */
+export function medicalListByPatientId(params) {
+  return request({
+    url: '/api/v1/myPatient/list/medicalListByPatientId',
+    method: 'get',
+    params,
+  })
+}
+
+/**
  * 推送消息
  * @param {Arrays}  memberIds  memberId集合
  * @param {Arrays}  memberNames  患者姓名集合

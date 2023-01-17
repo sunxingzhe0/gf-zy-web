@@ -34,6 +34,7 @@ export default function (config) {
         filename = headers['content-disposition'].match(
           /filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/,
         )[1]
+        filename = decodeURIComponent(filename)
       } else {
         filename = decodeURIComponent(headers.attachment)
       }

@@ -45,6 +45,7 @@
       :close-on-click-modal="false"
       :visible.sync="editShow"
       width="70%"
+      @closed="handleDialogClosed('form', true)"
     >
       <el-form :model="form" :rules="rules" ref="ruleForm" label-width="110px">
         <el-row :gutter="30">
@@ -64,13 +65,27 @@
                   :type="item.type || ''"
                   v-model="form[item.key]"
                   :multiple="item.multiple"
+                  :filter-method="
+                    data => {
+                      handleFilter(data, item.key)
+                    }
+                  "
+                  @remove-tag="
+                    data => {
+                      removeTag(data, item.key)
+                    }
+                  "
                   :disabled="item.key === 'id'"
                   :allow-create="item.allowCreate"
                   :placeholder="
                     item.component === 'el-input' ? '请输入' : '请选择'
                   "
                 >
-                  <template v-if="item.component === 'el-select'">
+                  <template
+                    v-if="
+                      item.component === 'el-select' && item.key != 'deptNames'
+                    "
+                  >
                     <el-option
                       v-for="(it, i) in options[item.key]"
                       :disabled="it.disabled"
@@ -78,6 +93,32 @@
                       :value="it.value"
                       :key="i"
                     >
+                    </el-option>
+                  </template>
+                  <template v-else>
+                    <el-option
+                      :value="form.deptIds"
+                      style="height: auto; padding: 0"
+                    >
+                      <el-tree
+                        :data="options.deptIds"
+                        :props="item.props"
+                        show-checkbox
+                        ref="tree"
+                        node-key="id"
+                        default-expand-all
+                        @node-click="handleNodeClick"
+                        highlight-current
+                        current-node-key="node"
+                        :default-checked-keys="form.deptIds"
+                        :filter-node-method="filterNode"
+                        @check="handleChcek($event, item.key)"
+                      >
+                        <!--  <span slot-scope="{ node, data }" class="custom-tree-node">
+                    <span>{{ data.name }}</span>
+                    <span>{{ data.resourceNum }}</span>
+                  </span> -->
+                      </el-tree>
                     </el-option>
                   </template>
                 </component>
@@ -159,12 +200,8 @@
       </el-form>
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="importDialog.visible = false"
-            >取消</el-button
-          >
-          <el-button size="small" type="primary" @click="preservation">
-            保存
-          </el-button>
+          <el-button @click="importDialog.visible = false">取消</el-button>
+          <el-button type="primary" @click="preservation">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -185,7 +222,7 @@ import {
 import { cloneDeep } from 'lodash'
 import { typeLists } from '@/api/drugs'
 import { List, mixin } from '@/components'
-import { selDepartment } from '@/api/setup'
+import { deptChooseList } from '@/api/index'
 
 const Drug = {
   id: '', // 药品ID
@@ -204,6 +241,7 @@ const Drug = {
   divided: false, // 是否分次
   price: '', // 建议零售价
   deptIds: [], // 科室适用范围
+  deptNames: [],
   pharmacyIds: [], // 药房适用范围
 }
 
@@ -219,7 +257,6 @@ export default {
           props: {
             label: '药品代码',
             is: 'el-input',
-            noColon: true,
           },
           keys: 'code',
         },
@@ -227,7 +264,6 @@ export default {
           props: {
             label: '药品名称',
             is: 'el-input',
-            noColon: true,
           },
           keys: 'name',
         },
@@ -459,11 +495,18 @@ export default {
         },
 
         {
-          key: 'deptIds',
+          key: 'deptNames',
           multiple: true,
+          showLable: 'deptNames',
           desc: '科室适用范围',
           label: '科室适用范围',
           component: 'el-select',
+          tree: true,
+          props: {
+            children: 'next',
+            label: 'name',
+            value: 'id',
+          },
         },
         {
           multiple: true,
@@ -547,7 +590,7 @@ export default {
       const dosageUnit = []
       const regularUnit = []
       res.list.forEach(item => {
-        item.value = item.id
+        item.value = item.unitName
         item.label = item.unitName
         const types = item.typeList
         if (types.includes('DOSAGE_UNIT')) {
@@ -574,15 +617,74 @@ export default {
       }))
       this.$set(this.options, 'pharmacyIds', pharmacyIds)
     },
+    //触发筛选函数
+    handleFilter(data, key) {
+      if (key == 'deptNames') {
+        this.$refs.tree[0].filter(data)
+      }
+    },
+    //筛选节点
+    filterNode(value, data) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
+    //移除tag
+    removeTag(data, key) {
+      if (key == 'deptNames') {
+        let res = this.$refs.tree[0].getCheckedNodes(true, true)
+        //删除tag移除项
+        res.forEach((item, index) => {
+          item.name === data && res.splice(index, 1)
+        })
+        this.form.deptIds = res.map(item => item.id)
+        //重新设置选中
+        this.$refs.tree[0].setCheckedNodes(this.form.deptIds)
+      }
+    },
+    //点击树节点
+    handleNodeClick() {},
+    //树节点选中时
+    handleChcek(data, key) {
+      //这里两个true，1. 是否只是叶子节点 2. 是否包含半选节点（就是使得选择的时候不包含父节点）
+      const res = this.$refs.tree[0].getCheckedNodes(true, true)
+      this.form.deptIds = res.map(item => item.id)
+      this.form[key] = res.map(item => item.name)
+    },
     // 获取科室适用范围
     async getDeptList() {
-      let res = await selDepartment({})
-      const deptIds = res.map(item => ({
-        ...item,
-        value: item.id,
-        label: item.name,
-      }))
-      this.$set(this.options, 'deptIds', deptIds)
+      let res = await deptChooseList({ tree: true, type: 'WEB' })
+      res.forEach(item => {
+        if (item.state) {
+          item.next && (item.disabled = true)
+        } else {
+          item.disabled = true
+        }
+        item.next &&
+          item.next.forEach(t => {
+            t.disabled = !t.state
+          })
+      })
+      this.$set(this.options, 'deptIds', res)
+      console.log(this.options.deptIds)
+    },
+    deptState(list) {
+      list.forEach(i => {
+        i.state = !i.state
+        if (i.deptInner) {
+          this.deptState(i.deptInner)
+        }
+      })
+    },
+    handleDialogClosed(formName, onlyChild) {
+      //清空选项
+      this.$refs.tree[0].setCheckedNodes([])
+      if (onlyChild) {
+        Object.keys(this[formName]).forEach(param => {
+          this.$refs[param]?.resetField()
+        })
+        return
+      }
+      this.$refs[formName].resetFields()
     },
     // 剂量单位、基本包装单位、常规包装单位快捷添加
     // 先校验是否有此单位
@@ -721,26 +823,6 @@ export default {
   input[type='number']::-webkit-outer-spin-button,
   input[type='number']::-webkit-inner-spin-button {
     -webkit-appearance: none;
-  }
-  .item-label.is-right {
-    height: 32px;
-    padding: 0 15px;
-    margin-right: 0;
-    color: #8c8c8c;
-    line-height: 30px;
-    border-radius: 4px;
-    border-right: none;
-    width: unset !important;
-    border: 1px solid #dcdfe6;
-    border-top-right-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-  .item-label.is-right + .el-input {
-    .el-input__inner {
-      border-left: none;
-      border-top-left-radius: 0;
-      border-bottom-left-radius: 0;
-    }
   }
 }
 </style>

@@ -2,6 +2,7 @@
   <div>
     <!-- 弹框 -->
     <el-dialog
+      v-loading="loading"
       :title="diaTitle"
       :visible.sync="dialogVisible"
       width="80%"
@@ -68,12 +69,26 @@
           </el-table-column>
           <el-table-column prop="name" label="药品名称"> </el-table-column>
           <el-table-column prop="spec" label="规格"> </el-table-column>
-          <el-table-column prop="useWays" label="用药途径"> </el-table-column>
+          <el-table-column prop="useWays" label="用药途径">
+            <template slot-scope="scoped">{{
+              scoped.row.useWaysText || ''
+            }}</template>
+          </el-table-column>
           <el-table-column prop="singleDose" label="单次剂量">
+            <template slot-scope="scoped">{{
+              scoped.row.singleDose + scoped.row.singleDoseUnitText
+            }}</template>
           </el-table-column>
           <el-table-column prop="useFrequency" label="用药频次">
+            <template slot-scope="scoped">{{
+              scoped.row.useFrequencyText || ''
+            }}</template>
           </el-table-column>
-          <el-table-column label="总量"> </el-table-column>
+          <el-table-column prop="useFrequency" label="总量">
+            <template slot-scope="scoped">{{
+              scoped.row.total + scoped.row.totalUnitText
+            }}</template>
+          </el-table-column>
           <el-table-column label="医保">
             <template slot-scope="scoped"
               >{{
@@ -178,14 +193,21 @@
         <el-button type="primary" @click="handleSubmit">确 定</el-button>
       </span>
     </el-dialog>
+    <QrCode ref="qrcode" />
   </div>
 </template>
 <script>
 import { toSend, exList, submitEx, editExpress } from '@/api/order'
+import QrCode from '@/components/QrCode'
+
 export default {
+  components: {
+    QrCode,
+  },
   name: 'Tosend',
   data() {
     return {
+      loading: false,
       // 获取物流列表接口数据
       exListC: [],
       selEx: '',
@@ -240,14 +262,16 @@ export default {
       }
       for (let i = 0; i < res.contentList.length; i++) {
         res.contentList[i].exType = 1
-        for (let j = 0; j < this.ruleForm.exList1.length; j++) {
-          if (res.contentList[i].exType == j + 1) {
-            let arr = []
-            arr.push(res.contentList[i].id)
-            this.ruleForm.exList1[j].rpContentList = arr
-          }
-        }
+        // for (let j = 0; j < this.ruleForm.exList1.length; j++) {
+        //   if (res.contentList[i].exType == j + 1) {
+        //     let arr = []
+        //     arr.push(res.contentList[i].id)
+        //     this.ruleForm.exList1[j].rpContentList = arr
+        //   }
+        // }
       }
+      this.ruleForm.exList1[0].rpContentList = res.contentList.map(i => i.id)
+      console.log(this.ruleForm.exList1[0].rpContentList, '-----')
       this.toSend = res
     },
     // 物流列表
@@ -314,24 +338,36 @@ export default {
     },
     // 提交新增包裹
     async handleSubmit() {
-      if (this.diaTitle == '更新物流') {
-        await editExpress({
-          orderId: this.orderId,
-          pharmacyId: this.$store.state.user.store.id,
-          expressList: this.ruleForm.exList1,
-        })
-      } else {
-        await submitEx({
-          expressList: this.ruleForm.exList1,
-          orderId: this.orderId,
-          pharmacyId: this.$store.state.user.store.id,
-        })
-      }
-      this.dialogVisible = false
+      this.loading = true
+      try {
+        if (this.diaTitle == '更新物流') {
+          await editExpress({
+            orderId: this.orderId,
+            pharmacyId: this.$store.state.user.store.id,
+            expressList: this.ruleForm.exList1,
+          })
+        } else {
+          await submitEx({
+            expressList: this.ruleForm.exList1,
+            orderId: this.orderId,
+            pharmacyId: this.$store.state.user.store.id,
+          })
+        }
+        this.dialogVisible = false
 
-      this.$message.success('提交成功！')
-      this.$emit('getOrderList')
-      // this.$_fetchTableData(getOrderList)
+        this.$message.success('提交成功！')
+        this.$emit('getOrderList')
+        // this.$_fetchTableData(getOrderList)
+        this.loading = false
+      } catch (e) {
+        this.loading = false
+
+        console.log(e, '错误信息')
+        const reg = new RegExp('CA-SIGN-ERROR')
+        if (reg.test(e)) {
+          this.$refs.qrcode.open() //打开二维码
+        }
+      }
     },
     // 关闭时的回调
     closeDialog() {

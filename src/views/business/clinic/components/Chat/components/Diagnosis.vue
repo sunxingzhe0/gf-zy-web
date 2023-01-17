@@ -45,15 +45,16 @@
                   :style="{ width: template ? '' : '450px' }"
                 >
                   <el-input
-                    placeholder="前缀"
-                    style="max-width: 110px"
+                    placeholder="编码"
+                    style="max-width: 150px"
+                    disabled
                     v-model="tableData[scoped.$index].prefixName"
                   ></el-input>
                   <el-form-item>
                     <el-select
                       remote
                       :style="{
-                        minWidth: '220px',
+                        minWidth: '180px',
                         marginLeft: '10px',
                         width: template ? 'calc(100% - 240px)' : '',
                       }"
@@ -72,8 +73,8 @@
                       @change="e => onDiagnosisChange(e, scoped.$index)"
                     >
                       <el-option
-                        v-for="item in options"
-                        :key="item.diagnosisCode"
+                        v-for="(item, index) in options"
+                        :key="index"
                         :label="item.diagnosisName"
                         :value="item"
                       >
@@ -86,11 +87,18 @@
                       </el-option>
                     </el-select>
                   </el-form-item>
-                  <el-input
-                    placeholder="后缀"
-                    style="margin-left: 10px; max-width: 110px"
-                    v-model="tableData[scoped.$index].suffixName"
-                  ></el-input>
+                  <el-tooltip
+                    class="item"
+                    effect="dark"
+                    :content="tableData[scoped.$index].suffixName"
+                    placement="top-end"
+                  >
+                    <el-input
+                      placeholder="描述"
+                      style="margin-left: 10px; max-width: 110px"
+                      v-model="tableData[scoped.$index].suffixName"
+                    ></el-input>
+                  </el-tooltip>
                 </div>
               </template>
             </el-table-column>
@@ -307,14 +315,15 @@ export default {
           label: '西医',
           value: 'WEST_MEDICINE',
         },
-        {
-          label: '中医证型',
-          value: 'CH_MEDICINE_CARD',
-        },
-        {
-          label: '中医病名',
-          value: 'CH_MEDICINE_NAME',
-        },
+        /* 调试修改001  诊断类别只显示西医*/
+        // {
+        //   label: '中医证型',
+        //   value: 'CH_MEDICINE_CARD',
+        // },
+        // {
+        //   label: '中医病名',
+        //   value: 'CH_MEDICINE_NAME',
+        // },
       ],
       selectValue: '',
       tableData: [],
@@ -324,6 +333,7 @@ export default {
       moveData: [],
       hasSubmit: false,
       value: [],
+      oldData: null,
     }
   },
   created() {
@@ -341,7 +351,9 @@ export default {
     draftList: {
       handler(val) {
         if (this.template) {
+          console.log(val, 'temp')
           this.tableData = val
+          console.log(val, '1111')
           this.dynamicValidateForm.tableData = val
         }
       },
@@ -350,6 +362,11 @@ export default {
     },
   },
   methods: {
+    //验证是否更改过诊断
+    validateChange() {
+      const { params, data } = this.confirm()
+      return JSON.stringify(this.oldData) === JSON.stringify(data)
+    },
     // computedDisabled(index, type) {
     // if (!tableData[scoped.$index - 1]) {
     //   return true
@@ -391,7 +408,7 @@ export default {
             it.label = '诊断' + (index + 1) + '-' + (t + 1)
           })
           item.childDtos.push({
-            label: '诊断' + (index + 1) + '-' + (item.childDtos.length + 1),
+            label: '诊断' + (index + 1) + '-' + (item.childDtos?.length + 1),
           })
         })
       }, 30)
@@ -455,7 +472,7 @@ export default {
           if (item.indexCode == e[0]) {
             console.log(item)
             if (item.childDtos) {
-              moveIndex = index + item.childDtos.length + 1
+              moveIndex = index + item.childDtos?.length + 1
             } else {
               moveIndex = index + 1
             }
@@ -496,12 +513,22 @@ export default {
       const clinicList = this.isMedical
         ? this.draftList
         : await findDiagnosisInClinic({ orderId: this.orderId })
+      console.log(clinicList, '===============')
       this.tableData = clinicList
         .map((item, index) => {
-          for (let i = 0; i < item.childDtos.length; i++) {
+          if (!item.childDtos) {
+            item.childDtos = []
+          }
+          for (let i = 0; i < item.childDtos?.length; i++) {
             item.childDtos[i].parent = item.indexCode
           }
-          return [Object.assign(item, { indexCode: index }), ...item.childDtos]
+          return [
+            Object.assign(item, {
+              indexCode: index,
+              prefixName: item.diagCode, //编码赋值
+            }),
+            ...item.childDtos,
+          ]
         })
         .flat()
       this.dynamicValidateForm.tableData = this.tableData
@@ -517,6 +544,10 @@ export default {
         this.hasSubmit = true
       }
       this.getAllClassify()
+
+      //保存诊断信息 ---------
+      const { params, data } = this.confirm()
+      this.oldData = JSON.parse(JSON.stringify(data))
     },
     searchDiagnosis: debounce(function (query) {
       this.loading = true
@@ -562,7 +593,7 @@ export default {
         )[0]
         this.tableData = data
           .map(item => {
-            for (let i = 0; i < item.childDtos.length; i++) {
+            for (let i = 0; i < item.childDtos?.length; i++) {
               item.childDtos[i].parent = item.indexCode
             }
             return [item, ...item.childDtos]
@@ -668,6 +699,7 @@ export default {
     },
     onDiagnosisChange(e, index) {
       Object.assign(this.tableData[index], {
+        prefixName: e.diagnosisCode, //前缀带入编码
         diagCode: e.diagnosisCode,
         diagnosisCode: e.diagnosisCode,
         diagnosisName: e.diagnosisName,
@@ -755,31 +787,32 @@ export default {
         return
       }
 
-      this.$confirm(
-        '该诊断将会覆盖已被应用的病历、处方，是否确认操作?',
-        '提示',
-        {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning',
-        },
-      ).then(async () => {
-        this.isSubmit = true
-        let isname = 0
-        this.tableData.forEach(item => {
-          if (!item.diagnosisName) {
-            isname++
-          }
-        })
-        if (isname > 0) {
-          this.$message.error('诊断病名不能为空')
-          return
+      // this.$confirm(
+      //   '该诊断将会覆盖已被应用的病历、处方，是否确认操作?',
+      //   '提示',
+      //   {
+      //     confirmButtonText: '确定',
+      //     cancelButtonText: '取消',
+      //     type: 'warning',
+      //   },
+      // ).then(async () => {
+      this.isSubmit = true
+      let isname = 0
+      this.tableData.forEach(item => {
+        if (!item.diagnosisName) {
+          isname++
         }
-        const { params, data } = this.confirm()
-        await submitDiagnosis(params, data)
-
-        this.$emit('send')
       })
+      if (isname > 0) {
+        this.$message.error('诊断病名不能为空')
+        return
+      }
+      const { params, data } = this.confirm()
+      await submitDiagnosis(params, data)
+      this.$message.success('提交成功！')
+
+      this.$emit('send') //诊断病例不再发送socket
+      // })
     },
     handleImport() {
       this.$refs.diagnosisDialog.visibleToggle()

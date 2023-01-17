@@ -55,11 +55,8 @@
 
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="mini" @click="dialog.visible = false">
-            取消
-          </el-button>
+          <el-button @click="dialog.visible = false"> 取消 </el-button>
           <el-button
-            size="mini"
             type="primary"
             :loading="dialog.loading"
             @click="submit('form')"

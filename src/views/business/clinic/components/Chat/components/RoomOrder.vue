@@ -40,7 +40,7 @@
         <div class="flex-between">
           <div class="left choose_doctor">
             <div class="flex">
-              <div class="item">
+              <!--  <div class="item">
                 <el-select
                   v-model="form.orgId"
                   placeholder="请选择"
@@ -55,7 +55,8 @@
                   >
                   </el-option>
                 </el-select>
-              </div>
+              </div> -->
+              <!-- 科室 -->
               <div class="item">
                 <el-select
                   v-model="form.deptId"
@@ -88,10 +89,11 @@
                 </el-select>
               </div>
             </div>
+            <!-- 医生 -->
             <div class="flex">
               <div class="item">
                 <el-select
-                  v-model="form.doctorId"
+                  v-model="form.scheduleNo"
                   @change="selectDoctor"
                   placeholder="请选择"
                   size="mini"
@@ -100,8 +102,8 @@
                   <el-option
                     v-for="(item, index) in doctors"
                     :key="'doctor-' + index"
-                    :label="item.doctorName"
-                    :value="item.doctorId"
+                    :label="`${item.doctorName}(${item.sbsj})`"
+                    :value="item.scheduleNo"
                   >
                   </el-option>
                 </el-select>
@@ -141,21 +143,21 @@
             </template>
           </div>
         </div>
-        <div class="time_list flex">
-          <template v-if="noType === form.resourceNo">
+        <div class="time_list flex" v-loading="isLoading">
+          <template>
             <div
               v-for="(item, index) in schedue"
               @click="selectSchedue(index)"
               :key="'schedue-' + index"
               class="item"
               :class="{
-                disabled: !item.leaveNo,
+                disabled: !item.beginTime,
                 active: index === schedueIndex,
                 passtime: compareTime(item.endTime, item.leaveNo),
               }"
             >
-              <p v-if="!item.leaveNo" class="title">约满</p>
-              <p v-else class="title">余 {{ item.leaveNo }}</p>
+              <!-- <p v-if="!item.leaveNo" class="title">约满</p> -->
+              <!-- <p v-else class="title">余 {{ item.leaveNo }}</p> -->
               <p>{{ item.beginTime }}-{{ item.endTime }}</p>
             </div>
             <div class="complement"></div>
@@ -168,10 +170,7 @@
             <div class="complement"></div>
             <div class="complement"></div>
           </template>
-          <Empty
-            v-if="noType !== form.resourceNo || !schedue.length"
-            style="margin: 40px auto;"
-          ></Empty>
+          <Empty v-if="!schedue.length" style="margin: 40px auto"></Empty>
         </div>
       </div>
       <footer class="is-right">
@@ -221,6 +220,7 @@ export default {
   },
   data() {
     return {
+      isLoading: false,
       form: {
         fee: '', // 诊疗费用
         orgId: '', // 机构id
@@ -231,6 +231,7 @@ export default {
         shiftCode: '', // 班别
         visitDate: '', // 出诊日期
         scheduleNo: '', // 排班号（非必填）
+        docInfo: {},
         numberCode: '', // 号别(同resourceNo)
         resourceNo: '普通', // 号源类型
         // bizInfo
@@ -247,7 +248,7 @@ export default {
       depts: [], // 科室列表
       dates: [], // 预约日期
       doctors: [], // 医师列表
-      schedue: [], // 时段于号
+      schedue: [], // 号源
       doctorTitle: '', // 医师职称
 
       dateIndex: 0, // 日期索引
@@ -314,11 +315,12 @@ export default {
         return item.id
       }
     },
+    //初始化
     async init() {
       this.form = {
         ...this.form,
         orgId: this.platformCode, // 取医院id
-        // deptId: this.user.dept.id, // 取医院科室id
+        deptId: /* this.user.dept.id */ '', // 取医院科室id
         roomId: this.bizInfo.roomId, // 诊室id
         userId: this.bizInfo.userId, // 用户id
         creator: this.bizInfo.doctorId, // 创建人id
@@ -334,19 +336,22 @@ export default {
       this.dateIndex = 0
       this.doctorTitle = ''
       await this.getOrgList()
-      await this.getDeptList() //赋值院内id
-      await this.getDoctorList()
-      // console.log(this.form.deptId, '院内id=====')
-      if (!this.form.deptId) return
-      Promise.all([this.getReverseDeptDate()]).then(() => this.getSchedueList())
+      await this.getDeptList() //获取科室列表
+      await this.getReverseDeptDate() //获取可选时段
+      await this.getDoctorList() //获取医生列表
+      await this.getSchedueList() //获取号源
     },
     // 获取机构列表
     async getOrgList() {
       this.orgs = await appointment.getHospInfo()
+      console.log(this.orgs, '机构列表')
     },
     // 获取科室列表
     async getDeptList() {
-      this.depts = await appointment.getDeptList(this.form.orgId)
+      this.depts = await appointment.getDeptList(
+        this.form.orgId,
+        this.platformCode,
+      )
       // 默认第一个科室
       const deptId = this._findFirstChild(this.depts[0])
       this.$set(this.form, 'deptId', deptId)
@@ -381,12 +386,19 @@ export default {
       this.doctors = await appointment.getDoctorList({
         orgId: this.form.orgId,
         deptId: this.form.deptId,
+        endDate: this.dates[this.dateIndex].value, // 预约结束时间"
+        beginDate: this.dates[this.dateIndex].value, // 预约开始时间"
       })
-      if (this.user.dept.id !== this.form.deptId) {
-        this.form.doctorId = this.doctors[0]?.doctorId
+      console.log(this.doctors, '医生列表---')
+      if (!this.doctors.length) {
+        this.schedue = []
       }
+      //默认选择第一个
+      this.form.doctorId = this.doctors[0].doctorId
+      this.form.scheduleNo = this.doctors[0].scheduleNo
+      this.form.docInfo = this.doctors[0]
     },
-    // 获取医师排班
+    // 获取号源
     async getSchedueList() {
       if (!this.form.doctorId) {
         this.schedue = []
@@ -395,31 +407,40 @@ export default {
         return
       }
       try {
-        const res = await appointment.getReverseDocInfo({
-          resource: 1,
+        this.isLoading = true
+        const res = await appointment.getDocFsInfo({
           orgId: this.form.orgId,
           deptId: this.form.deptId,
           doctorId: this.form.doctorId,
-          endDate: this.dates[this.dateIndex].value, // 预约结束时间"
-          beginDate: this.dates[this.dateIndex].value, // 预约开始时间"
+          scheduleNo: this.form.scheduleNo,
+          visitDate: this.dates[this.dateIndex].value,
         })
+        this.schedue = res
+        console.log(this.schedue, '号源列表====')
+        // this.$forceUpdate()
+        this.isLoading = false
         if (res.length) {
-          const doctor = res[0]
-          const schecdule = res[0].scheduleLists[0]
-
-          this.noType = schecdule.noType
-          this.doctorTitle = doctor.docTitle
-          this.schedue = schecdule.fsInfo.map(item => ({
-            ...item,
-            leaveNo: Number(item.leaveNo),
-            scheduleNo: schecdule.scheduleNo,
-          })) // 时段于号
-          const firstIndex = this.schedue.findIndex(item => item.leaveNo)
-          this.schedueIndex = firstIndex !== -1 ? firstIndex : ''
-          const regFee =
-            schecdule.noType !== '专家' ? schecdule.regFee : schecdule.expertFee
-          this.$set(this.form, 'resourceNo', schecdule.noType)
-          this.$set(this.form, 'fee', Number(regFee).toFixed(2)) // 诊疗费用
+          // const doctor = this.docInfo
+          // const schecdule = doctor.scheduleLists[0]
+          // this.noType = schecdule.noType == '1' ? '普通' : '专家'
+          // // this.doctorTitle = doctor.docTitle || ''
+          // // this.schedue = schecdule.fsInfo
+          // //   ? schecdule.fsInfo.map(item => ({
+          // //       ...item,
+          // //       leaveNo: Number(item.leaveNo),
+          // //       scheduleNo: schecdule.scheduleNo,
+          // //     }))
+          // //   : [] // 时段于号
+          // // const firstIndex = this.schedue.findIndex(item => item.leaveNo)
+          // // this.schedueIndex = firstIndex !== -1 ? firstIndex : ''
+          // const regFee =
+          //   schecdule.noType !== '专家' ? schecdule.regFee : schecdule.expertFee
+          // this.$set(
+          //   this.form,
+          //   'resourceNo',
+          //   schecdule.noType == '1' ? '普通' : '专家',
+          // )
+          // this.$set(this.form, 'fee', Number(regFee).toFixed(2)) // 诊疗费用
         } else {
           this.schedue = []
           this.doctorTitle = ''
@@ -442,20 +463,30 @@ export default {
         'doctorId',
         this.form.doctorId,
       )
+      this.form.sbsj = this.form.docInfo.sbsj
+      this.form.doctorTitle = this.form.docInfo.docTitle
+      this.form.fee = this.form.docInfo.scheduleLists[0].regFee
       this.form.deptName = dept?.name
       this.form.orgName = hospital?.hospName
-      this.form.doctorTitle = this.doctorTitle
       this.form.doctorName = doctor?.doctorName
       this.form.patientName = this.bizInfo.memberName
       this.form.visitDate = this.dates[this.dateIndex].value
+      this.form.startTime = this.schedue[this.schedueIndex].beginTime // 预约开始日期
       this.form.endTime = this.schedue[this.schedueIndex].endTime // 预约结束日期
       this.form.periodNo = this.schedue[this.schedueIndex].periodNo // 分时号
-      this.form.shiftCode = this.schedue[this.schedueIndex].shiftName // 班别
-      this.form.startTime = this.schedue[this.schedueIndex].beginTime // 预约开始日期
+      this.form.shiftCode = this.schedue[this.schedueIndex].shiftCode // 班别
       this.form.numberCode = this.schedue[this.schedueIndex].scheduleNo
       this.form.scheduleNo = this.schedue[this.schedueIndex].scheduleNo
 
       const msg = this.validate()
+      console.log(this.form, 'retrn--------')
+      //当天且已过时
+      if (
+        dayjs().format('YYYY-MM-DD') === this.form.visitDate &&
+        dayjs().isAfter(dayjs(`${this.form.visitDate} ${this.form.endTime}`))
+      ) {
+        return this.$message.error('当前时段已过期，请选择其他时段')
+      }
       if (msg) return this.$message.error(msg)
       await appointment.save(this.form)
       this.$emit('toogleTab', 'message')
@@ -468,25 +499,35 @@ export default {
       if (!this.form.periodNo) return '分时号不能为空！'
       return ''
     },
-    // 选择科室=>更新医师列表、更新可选日期、更新号源列表
+    // 选择科室=>更新可选日期=>更新医师列表=>更新号源列表
     selectDept() {
-      Promise.all([this.getDoctorList(), this.getReverseDeptDate()]).then(() =>
+      Promise.all([this.getReverseDeptDate(), this.getDoctorList()]).then(() =>
         this.getSchedueList(),
       )
     },
-    // 选择医师=>刷新号源
-    selectDoctor() {
+    // 选择医生=>刷新号源
+    selectDoctor(e) {
+      //赋值医生id （因为加了上下午，需要根绝号源id筛选出医生id）
+      this.doctors.forEach(i => {
+        if (i.scheduleNo === e) {
+          this.form.scheduleNo = i.scheduleNo
+          this.form.doctorId = i.doctorId
+          this.form.docInfo = i
+        }
+      })
+
       this.getSchedueList()
     },
-    // 选择日期=>刷新号源
-    selectDay(index) {
+    // 选择日期=>刷新医生=>刷新号源
+    async selectDay(index) {
       if (index < 0 || index > 6) return
       this.dateIndex = index
+      await this.getDoctorList()
       this.getSchedueList()
     },
     // 选择时段
     selectSchedue(index) {
-      if (!this.schedue[index].leaveNo) {
+      /* if (!this.schedue[index].leaveNo) {
         return this.$message.warning('当前时段没有余号了，请选择其他时段！')
       }
       if (
@@ -496,7 +537,7 @@ export default {
         )
       ) {
         return this.$message.warning('请选择其他时间段')
-      }
+      } */
       this.schedueIndex = index
     },
     compareTime(end, leaveNo) {
@@ -657,6 +698,9 @@ export default {
   justify-content: space-between;
   .item {
     flex-shrink: 0;
+    display: flex;
+    justify-content: center;
+    align-content: center;
     width: 138px;
     height: 60px;
     // background-color: #f2f2f2;
@@ -670,6 +714,9 @@ export default {
     cursor: pointer;
     p {
       margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
     .title {
       font-size: 16px;
@@ -687,6 +734,7 @@ export default {
     border: 1px solid $--color-primary;
     background-color: rgba(10, 178, 193, 0.1);
     color: $--color-primary;
+    background: #fff;
   }
   .passtime {
     background: #f2f2f2;

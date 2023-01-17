@@ -44,31 +44,41 @@ export default {
         pageSize: 10,
         currentNum: 1,
         type: '',
+        timeType: 1,
       },
     }
   },
   computed: {
     filter() {
       return {
-        inline: [
-          {
-            props: {
-              label: '报告日期',
-              is: 'el-date-picker',
-            },
-            data: {
-              attrs: {
-                type: 'datetimerange',
-                valueFormat: 'yyyyMMddHHmmss',
-                size: 'small',
-                startPlaceholder: '开始日期',
-                endPlaceholder: '结束日期',
-                defaultTime: ['00:00:00', '23:59:59'],
-              },
-            },
-
-            keys: ['startTime', 'endTime'],
+        date: {
+          props: {
+            options: [
+              { label: '报告日期', value: 0 },
+              { label: '查询日期', value: 1 },
+            ],
           },
+          keys: ['timeType', 'startTime', 'endTime'],
+        },
+        inline: [
+          // {
+          //   props: {
+          //     label: '报告日期',
+          //     is: 'el-date-picker',
+          //   },
+          //   data: {
+          //     attrs: {
+          //       type: 'datetimerange',
+          //       valueFormat: 'yyyyMMddHHmmss',
+          //       size: 'small',
+          //       startPlaceholder: '开始日期',
+          //       endPlaceholder: '结束日期',
+          //       defaultTime: ['00:00:00', '23:59:59'],
+          //     },
+          //   },
+
+          //   keys: ['startTime', 'endTime'],
+          // },
           {
             props: {
               label: '报告类型',
@@ -80,6 +90,18 @@ export default {
               ],
             },
             keys: 'type',
+          },
+          {
+            props: {
+              label: '患者姓名',
+              is: 'el-input',
+            },
+            data: {
+              attrs: {
+                placeholder: '请输入',
+              },
+            },
+            keys: 'name',
           },
         ],
       }
@@ -150,3 +172,4 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped></style>

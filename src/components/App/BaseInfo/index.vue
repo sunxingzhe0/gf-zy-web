@@ -30,12 +30,14 @@
       </div>
     </div>
     <div class="app-info-row">
-      <div class="app-info-item">
+      <div class="app-info-item" style="color: #333">
         <div class="app-info-label">接诊医生</div>
         <div class="doctor">
-          <div class="app-info-value">{{ treatmentInfo.deptName }}</div>
-          <div class="app-info-value">{{ treatmentInfo.doctorName }}</div>
-          <div class="app-info-value">{{ treatmentInfo.title }}</div>
+          <div>{{ treatmentInfo.deptName }}</div>
+          <div class="app-info-value" style="text-align: center">
+            {{ treatmentInfo.doctorName }}
+          </div>
+          <div>{{ treatmentInfo.title }}</div>
         </div>
       </div>
       <div class="app-info-item">

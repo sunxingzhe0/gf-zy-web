@@ -23,7 +23,7 @@ export default {
     {
       path: 'account',
       component: () => import('@/views/setUp/account/index'),
-      name: 'account',
+      name: 'setUp_account',
       meta: {
         title: '个人信息',
         roles: [
@@ -38,7 +38,6 @@ export default {
     {
       path: 'systemMsg',
       component: RouterView,
-      name: 'systemMsg',
       redirect: '/set-up/systemMsg/list',
       meta: {
         title: '系统消息',
@@ -54,16 +53,19 @@ export default {
       children: [
         {
           path: 'list',
+          name: 'message_systemMsg',
           component: () => import('@/views/message/systemMsg/index'),
           meta: {
             title: '列表',
             activeMenu: '/set-up/systemMsg',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
         },
         {
           path: 'detail',
+          name: 'message_systemMsg_detail',
           component: () => import('@/views/message/systemMsg/detail'),
           meta: { title: '消息详情', activeMenu: '/set-up/systemMsg' },
           hidden: true,
@@ -74,7 +76,6 @@ export default {
       path: 'notice',
       component: RouterView,
       redirect: '/set-up/notice/list',
-      name: 'notice',
       meta: {
         title: '公告通知',
         isrolesM: true,
@@ -88,17 +89,20 @@ export default {
       children: [
         {
           path: 'list',
+          name: 'message_notice',
           component: () => import('@/views/message/notice/list'),
           meta: {
             title: '列表',
             activeMenu: '/set-up/notice',
             keepAlive: true,
+            isBack: false,
           },
 
           hidden: true,
         },
         {
           path: 'detail',
+          name: 'message_notice_detail',
           component: () => import('@/views/message/notice/detail'),
           meta: { title: '通知详情', activeMenu: '/set-up/notice' },
           hidden: true,
@@ -117,34 +121,38 @@ export default {
     {
       path: 'announcements',
       component: RouterView,
-      name: 'announcements',
       redirect: '/set-up/announcements/list',
       meta: { title: '公告管理', roles: ['ORG_WEB_SET_UP_ANNOUNCE'] },
       children: [
         {
           path: 'list',
+          name: 'setUp_announcements',
           component: () => import('@/views/setUp/announcements/List'),
           meta: {
             title: '列表',
             activeMenu: '/set-up/announcements',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
         },
         {
           path: 'add',
+          name: 'setUp_announcements_add',
           component: () => import('@/views/setUp/announcements/Add'),
           meta: { title: '新增公告', activeMenu: '/set-up/announcements' },
           hidden: true,
         },
         {
           path: 'edit',
+          name: 'setUp_announcements_edit',
           component: () => import('@/views/setUp/announcements/Add'),
           meta: { title: '编辑公告', activeMenu: '/set-up/announcements' },
           hidden: true,
         },
         {
           path: 'detail',
+          name: 'setUp_announcements_detail',
           component: () => import('@/views/setUp/announcements/Detail'),
           meta: { title: '公告详情', activeMenu: '/set-up/announcements' },
           hidden: true,
@@ -154,7 +162,7 @@ export default {
     {
       path: 'journal',
       component: () => import('@/views/setUp/journal/index'),
-      name: 'journal',
+      name: 'setUp_journal',
       meta: {
         title: '日志管理',
         roles: [
@@ -168,7 +176,7 @@ export default {
     {
       path: 'business',
       component: () => import('@/views/setUp/business/list'),
-      name: 'business',
+      name: 'setUp_business',
       meta: {
         title: '业务设置',
         roles: [
@@ -182,7 +190,7 @@ export default {
     {
       path: 'agreement',
       component: () => import('@/views/setUp/agreement/index'),
-      name: 'agreement',
+      name: 'setUp_agreement',
       meta: {
         title: '协议须知',
         roles: [
@@ -195,19 +203,18 @@ export default {
     {
       path: 'ad-rotation',
       component: () => import('@/views/setUp/ad-rotation/List'),
-      name: 'ad-rotation',
+      name: 'setUp_adRotation',
       meta: { title: '广告轮播', roles: ['ORG_WEB_SET_UP_AD_ROTATION'] },
     },
     {
       path: 'column',
       component: () => import('@/views/setUp/column/List'),
-      name: 'column',
+      name: 'setUp_column',
       meta: { title: '首页栏目', roles: ['ORG_WEB_SET_UP_HOME_PAGE_COLUMN'] },
     },
     {
       path: 'information',
       component: RouterView,
-      name: 'information',
       redirect: '/set-up/information/list',
       meta: {
         title: '资讯管理',
@@ -216,28 +223,33 @@ export default {
       children: [
         {
           path: 'list',
+          name: 'setUp_information',
           component: () => import('@/views/setUp/information/List'),
           meta: {
             title: '列表',
             activeMenu: '/set-up/information',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
         },
         {
           path: 'add',
+          name: 'setUp_information_add',
           component: () => import('@/views/setUp/information/Add'),
           meta: { title: '新增资讯', activeMenu: '/set-up/information' },
           hidden: true,
         },
         {
           path: 'edit',
+          name: 'setUp_information_detail',
           component: () => import('@/views/setUp/information/Add'),
           meta: { title: '编辑资讯', activeMenu: '/set-up/information' },
           hidden: true,
         },
         {
           path: 'detail',
+          name: 'setUp_information_detail',
           component: () => import('@/views/setUp/information/Detail'),
           meta: { title: '资讯详情', activeMenu: '/set-up/information' },
           hidden: true,

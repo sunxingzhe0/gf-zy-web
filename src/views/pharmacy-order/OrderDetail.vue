@@ -7,8 +7,19 @@
           {{ statusText[detailInfo.orderStatus] || '已关闭' }}
         </el-tag>
       </h3>
+      <!-- 退款订单 -->
+      <template v-if="detailInfo.refundFlag">
+        <el-steps :active="3" align-center class="steps">
+          <el-step
+            title="提交订单"
+            :description="detailInfo.createTime"
+          ></el-step>
+          <el-step title="付款" :description="detailInfo.paymentTime"></el-step>
+          <el-step title="退款" :description="detailInfo.refundTime"></el-step>
+        </el-steps>
+      </template>
       <!-- 自提订单 -->
-      <template v-if="detailInfo.expressMode === 0">
+      <template v-else-if="detailInfo.expressMode === 0">
         <el-steps :active="activeStep" align-center class="steps">
           <el-step
             title="提交订单"

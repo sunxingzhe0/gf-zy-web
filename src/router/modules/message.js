@@ -18,7 +18,6 @@ export default {
     {
       path: 'systemMsg',
       component: RouterView,
-      name: 'systemMsg',
       redirect: '/message/systemMsg/list',
       meta: {
         title: '系统消息',
@@ -33,7 +32,9 @@ export default {
             title: '列表',
             activeMenu: '/message/systemMsg',
             keepAlive: true,
+            isBack: false,
           },
+          name: 'message_systemMsg',
           hidden: true,
         },
         {
@@ -41,6 +42,7 @@ export default {
           component: () => import('@/views/message/systemMsg/detail'),
           meta: { title: '消息详情', activeMenu: '/message/systemMsg' },
           hidden: true,
+          name: 'message_systemMsg_detail',
         },
       ],
     },
@@ -48,7 +50,6 @@ export default {
       path: 'notice',
       component: RouterView,
       redirect: '/message/notice/list',
-      name: 'notice',
       meta: {
         title: '公告通知',
         isroles: true,
@@ -62,14 +63,17 @@ export default {
             title: '列表',
             activeMenu: '/message/notice',
             keepAlive: true,
+            isBack: false,
           },
           hidden: true,
+          name: 'message_notice',
         },
         {
           path: 'detail',
           component: () => import('@/views/message/notice/detail'),
           meta: { title: '通知详情', activeMenu: '/message/notice' },
           hidden: true,
+          name: 'message_notice_detail',
         },
       ],
     },

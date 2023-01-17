@@ -39,7 +39,7 @@ export default {
           props: {
             options: [{ label: '创建时间', value: 0 }],
           },
-          keys: ['dateType', 'start', 'end'],
+          keys: ['dateType', 'startTime', 'endTime'],
         },
         search: {
           props: {
@@ -67,6 +67,7 @@ export default {
           {
             props: {
               label: '取消预约次数',
+              isInteger: true,
               is: 'InputRange',
             },
             keys: ['cancelStart', 'cancelEnd'],
@@ -74,6 +75,7 @@ export default {
           {
             props: {
               label: '爽约次数',
+              isInteger: true,
               is: 'InputRange',
             },
             keys: ['doveStart', 'doveEnd'],

@@ -61,29 +61,39 @@ export default {
   computed: {
     filter() {
       return {
-        inline: [
-          {
-            props: {
-              label: '预约就诊日期',
-              is: 'el-date-picker',
-            },
-            data: {
-              attrs: {
-                type: 'datetimerange',
-                valueFormat: 'yyyyMMddHHmmss',
-                size: 'small',
-                startPlaceholder: '开始日期',
-                endPlaceholder: '结束日期',
-                defaultTime: ['00:00:00', '23:59:59'],
-              },
-            },
-
-            keys: ['startTime', 'endTime'],
+        date: {
+          props: {
+            options: [
+              { label: '预约时间', value: 0 },
+              { label: '创建时间', value: 1 },
+            ],
           },
+          keys: ['timeType', 'startTime', 'endTime'],
+        },
+        inline: [
+          // {
+          //   props: {
+          //     label: '预约时间',
+          //     is: 'el-date-picker',
+          //   },
+          //   data: {
+          //     attrs: {
+          //       type: 'datetimerange',
+          //       valueFormat: 'yyyyMMddHHmmss',
+          //       size: 'small',
+          //       startPlaceholder: '开始日期',
+          //       endPlaceholder: '结束日期',
+          //       defaultTime: ['00:00:00', '23:59:59'],
+          //     },
+          //   },
+
+          //   keys: ['startTime', 'endTime'],
+          // },
           {
             props: {
               label: '科室',
               is: 'el-select',
+              filterable: true,
               options: [
                 { label: '不限', value: '' },
                 ...pre.dept.map(_ => ({ label: _.name, value: _.syncCode })),
@@ -93,7 +103,7 @@ export default {
           },
           {
             props: {
-              label: '就诊类型',
+              label: '号源类型',
               is: 'el-select',
               options: [
                 { label: '不限', value: '' },
@@ -184,3 +194,11 @@ export default {
   },
 }
 </script>
+<style lang="scss" scoped>
+::v-deep .el-col-sm-6 {
+  width: auto;
+}
+::v-deep .el-col-24 {
+  width: auto;
+}
+</style>

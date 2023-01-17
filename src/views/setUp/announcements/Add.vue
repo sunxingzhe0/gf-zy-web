@@ -19,7 +19,7 @@
               <el-select v-model="form.type" @change="typeChange">
                 <el-option label="角色" :value="0"></el-option>
                 <el-option label="机构" :value="1"></el-option>
-                <el-option label="药房" :value="2"></el-option>
+                <!-- <el-option label="药房" :value="2"></el-option> -->
               </el-select>
               <!--角色-->
               <div v-if="form.type == 0">
@@ -42,19 +42,34 @@
               <!--科室-->
               <div v-if="form.type == 0">
                 <el-select
-                  v-model="form.depts"
-                  style="width: 220px"
+                  v-model="form.deptNames"
+                  style="width: 240px"
                   multiple
                   filterable
-                  collapse-tags
+                  :filter-method="handleFilter"
+                  @remove-tag="removeTag"
                   placeholder="请选择"
                 >
-                  <el-option
-                    v-for="item in options"
-                    :key="item.id"
-                    :label="item.name"
-                    :value="item.id"
-                  >
+                  <el-option style="height: auto; padding: 0">
+                    <el-tree
+                      :data="options"
+                      :props="defaultProps"
+                      show-checkbox
+                      ref="tree"
+                      node-key="id"
+                      default-expand-all
+                      @node-click="handleNodeClick"
+                      highlight-current
+                      current-node-key="node"
+                      :default-checked-keys="form.depts"
+                      :filter-node-method="filterNode"
+                      @check="handleChcek"
+                    >
+                      <!--  <span slot-scope="{ node, data }" class="custom-tree-node">
+                        <span>{{ data.name }}</span>
+                        <span>{{ data.resourceNum }}</span>
+                      </span> -->
+                    </el-tree>
                   </el-option>
                 </el-select>
               </div>
@@ -149,13 +164,13 @@ import ClassicEditor from '@ckeditor/ckeditor5-build-classic'
 import '@ckeditor/ckeditor5-build-classic/build/translations/zh-cn'
 import {
   chooseRoles,
-  selDepartment,
   selectOrgs,
   selectDrugstores,
   addAnn,
   editAnn,
   detailAnn,
 } from '@/api/setup'
+import { deptOuterChooseList } from '@/api'
 import MyUploadAdapter from '@/utils/MyUploadAdapter.js'
 export default {
   data() {
@@ -175,6 +190,11 @@ export default {
       }
     }
     return {
+      deptsList: [],
+      defaultProps: {
+        children: 'next',
+        label: 'name',
+      },
       editor: ClassicEditor,
       // 角色身份
       rolesList: [],
@@ -243,9 +263,43 @@ export default {
     this.getselectOrgs()
     this.getselectDrugstores()
     this.form.announceId = this.$route.query.id
-    this.getDetailInfo()
+    //清除验证
+    this.$nextTick(() => {
+      this.getDetailInfo()
+      this.$refs.ruleForm.clearValidate()
+    })
   },
   methods: {
+    //触发筛选函数
+    handleFilter(data) {
+      this.$refs.tree.filter(data)
+    },
+    //筛选节点
+    filterNode(value, data) {
+      if (!value) return true
+      return data.name.indexOf(value) !== -1
+    },
+    //点击树节点
+    handleNodeClick() {},
+    //树节点选中时
+    handleChcek() {
+      //这里两个true，1. 是否只是叶子节点 2. 是否包含半选节点（就是使得选择的时候不包含父节点）
+      const res = this.$refs.tree.getCheckedNodes(true, true)
+
+      this.form.depts = res.map(item => item.id)
+      this.form.deptNames = res.map(item => item.name)
+    },
+    //移除tag
+    removeTag(data) {
+      let res = this.$refs.tree.getCheckedNodes(true, true)
+      //删除tag移除项
+      res.forEach((item, index) => {
+        item.name === data && res.splice(index, 1)
+      })
+      this.form.depts = res.map(item => item.id)
+      //重新设置选中
+      this.$refs.tree.setCheckedNodes(this.form.depts)
+    },
     // 提交
     submit() {
       this.$refs.ruleForm.validate(async valid => {
@@ -256,6 +310,7 @@ export default {
               ...this.form,
             })
             this.$router.back(-1)
+            this.$message.success('操作成功!')
           } else {
             if (this.form.release == '2' && this.form.releaseTime == '') {
               this.$message.error('请选择预约发布时间!')
@@ -296,11 +351,13 @@ export default {
     },
     // 获取科室
     async getDepartment() {
-      let res = await selDepartment({
-        showUser: true,
+      let res = await deptOuterChooseList({
+        tree: true,
+      })
+      res.forEach(item => {
+        item.next && (item.disabled = true)
       })
       this.options = res
-      console.log(this.options)
     },
     // 获取机构
     async getselectOrgs() {
@@ -331,7 +388,19 @@ export default {
           announceId: this.form.announceId,
         })
         this.form.title = res.title
-        this.form.depts = res.dept
+        // this.form.depts = res.deptRel.split(',')
+        //设置选中科室
+        this.$refs.tree.setCheckedKeys(res.deptRel.split(','))
+
+        const names = this.options
+          .filter(val => {
+            return res.deptRel.split(',').includes(val.id)
+          })
+          .map(i => i.name)
+        console.log(names, '名称合集------')
+        this.form.deptNames = names
+
+        this.$set(this.form, 'deptNames', ['互联网科室1'])
         this.form.content = res.content
 
         if (res.releaseTime) {
@@ -362,7 +431,8 @@ export default {
           this.form.type = 2
           this.form.organizes = res.drugStore.map(item => item.id)
         }
-        this.form.depts = res.dept.map(item => item.id)
+        // this.form.depts = res.dept.map(item => item.id)
+        // this.form.deptNames = res.dept.map(item => item.name)
       }
     },
   },
@@ -376,5 +446,9 @@ export default {
 }
 .input {
   width: 400px;
+}
+::v-deep .el-tree-node__content {
+  height: 36px !important;
+  font-size: 14px;
 }
 </style>

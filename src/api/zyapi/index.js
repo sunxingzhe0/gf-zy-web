@@ -55,3 +55,36 @@ export function getTjIns(params) {
     params,
   })
 }
+
+/**
+ * 管理端查询列表详情
+ */
+export function getFeedBackList(params) {
+  return request({
+    url: 'zyapi/api/v1/record/getFeedBackList',
+    method: 'get',
+    params,
+  })
+}
+
+/**
+ * 回复
+ */
+export function feedBackReply(data) {
+  return request({
+    url: 'zyapi/api/v1/record/feedBackReply',
+    method: 'post',
+    data,
+  })
+}
+
+/**
+ * 获取当前行回复列表
+ */
+export function feedBackReplyList(params) {
+  return request({
+    url: `zyapi/api/v1/record/feedBackReplyList/${params.id}`,
+    method: 'get',
+    params,
+  })
+}

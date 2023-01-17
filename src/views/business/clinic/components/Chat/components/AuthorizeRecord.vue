@@ -48,6 +48,7 @@ export default {
     }
   },
   created() {
+    console.log('>>>>>>>>>>', this.body)
     if (this.body.content) {
       this.getData()
     }

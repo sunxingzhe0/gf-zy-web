@@ -131,12 +131,8 @@
       </el-form>
       <template v-slot:footer>
         <div class="is-center">
-          <el-button size="small" @click="importDialog.visible = false"
-            >取消</el-button
-          >
-          <el-button size="small" type="primary" @click="submitTitle"
-            >保存</el-button
-          >
+          <el-button @click="importDialog.visible = false">取消</el-button>
+          <el-button type="primary" @click="submitTitle">确定</el-button>
         </div>
       </template>
     </el-dialog>
@@ -194,6 +190,7 @@ export default {
         {
           props: {
             label: '使用医生',
+            isInteger: true,
             is: 'InputRange',
           },
           keys: ['doctorNumStart', 'doctorNumEnd'],

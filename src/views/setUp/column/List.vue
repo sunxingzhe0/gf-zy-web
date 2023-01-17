@@ -9,7 +9,13 @@
         @cancel="cancel"
       ></EditableText>
     </div>
-    <List v-model="query" :columns="columns" :tableData="tableData" :bats="[]">
+    <List
+      v-model="query"
+      :columns="columns"
+      :tableData="tableData"
+      :bats="[]"
+      tableClass="table-height"
+    >
       <template v-slot:slot_title>
         <el-image
           style="width: 280px; height: 120px"
@@ -58,7 +64,7 @@
         <el-button type="text" @click="add(row)"> 修改 </el-button>
         <!-- <el-button
           v-if="!row.state"
-          
+
           type="text"
           @click="stateChange_(true, [row.id])"
         >
@@ -66,7 +72,7 @@
         </el-button>
         <el-button
           v-if="row.state"
-          
+
           type="text"
           @click="stateChange_(false, [row.id])"
         >
@@ -164,6 +170,7 @@
 // import { formatDate } from '@/utils'
 import { List, mixin, EditableText } from '@/components'
 import urlList from '@/utils/appLink'
+// import { compressImg } from '@/utils/compress'
 import {
   getColumnList,
   delCol,
@@ -258,7 +265,8 @@ export default {
       // }
     },
     // 自定义上传行为
-    httpRequest({ file, onProgress, onSuccess, onError }) {
+    async httpRequest({ file, onProgress, onSuccess, onError }) {
+      // const res = file.size / 1024 > 50 ? await compressImg(file, 50) : file
       const formData = new FormData()
       formData.append('file', file)
       uploadFile(formData, onProgress).then(onSuccess).catch(onError)
@@ -441,6 +449,9 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.table-height {
+  height: calc(100vh - 135px);
+}
 .title {
   padding: 0 15px;
   margin-bottom: 20px;

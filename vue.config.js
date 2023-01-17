@@ -1,10 +1,12 @@
 'use strice'
-
+const webpack = require('webpack')
 const path = require('path')
 const isProd = process.env.NODE_ENV === 'production'
 const defaultSettings = require('./src/settings.js')
 const name = defaultSettings.title || 'vue Element Admin' // page title
 
+const env_mode = process.argv.pop() //运行模式
+console.log(env_mode, 'mode')
 function resolve(dir) {
   return path.join(__dirname, dir)
 }
@@ -20,7 +22,7 @@ module.exports = {
    */
   publicPath: isProd ? './' : '/',
   lintOnSave: !isProd,
-  // productionSourceMap: false,
+  productionSourceMap: false,
   devServer: {
     open: true,
     overlay: {
@@ -42,7 +44,15 @@ module.exports = {
     // provide the app's title in webpack's name field, so that
     // it can be accessed in index.html to inject the correct title.
     name: name,
+    plugins: [
+      new webpack.DefinePlugin({
+        'process.env': {
+          MODE: JSON.stringify(env_mode),
+        },
+      }),
+    ],
   },
+
   chainWebpack(config) {
     // set svg-sprite-loader
     config.module.rule('svg').exclude.add(resolve('src/icons')).end()

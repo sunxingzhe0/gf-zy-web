@@ -164,7 +164,7 @@ export default {
         searchType: 0,
         pageSize: 10,
         currentNum: 1,
-        pid: this.deptId,
+        pid: this.deptId || '',
         deptLevel: 2,
       },
       columns: {
@@ -259,6 +259,7 @@ export default {
       this.$refs.deptForm.validate(valid => {
         if (valid) {
           const func = this.form.id ? editDept : insertDept
+          !this.form.pid && (this.form.pid = '')
           func(this.form).then(() => {
             this.isAdd = false
             this.$message.success('操作成功!')
